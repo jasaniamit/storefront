@@ -470,7 +470,7 @@ export const PaymentSection = forwardRef<
                   customerContact={billAddress.phone || ""}
                   onReady={handleGatewayReady as any}
                   onSuccess={async (paymentId, signature) => {
-                    if (!paymentSessionId) throw new Error("Missing session ID");
+                    if (!externalId) throw new Error("Missing Razorpay Order ID");
                     await finalizeRazorpaySession(externalId, paymentId, signature);
                   }}
                 />
