@@ -217,7 +217,7 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
               <div className="mt-6">
                 <RazorpayAffordability
                   amount={currentAmountCents || (parseFloat(price?.amount || "0") * 100)}
-                  currency={product.currency || "INR"}
+                  currency={currency || "INR"}
                   clientKey={process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID}
                 />
               </div>
