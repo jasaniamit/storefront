@@ -1,5 +1,6 @@
 import type { Category } from "@spree/sdk";
 import Link from "next/link";
+import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { getCategories } from "@/lib/data/categories";
