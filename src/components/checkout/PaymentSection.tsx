@@ -145,7 +145,7 @@ export const PaymentSection = forwardRef<
         if (requestId !== sessionRequestIdRef.current) return;
 
         if (result.success && result.session) {
-          const secret = result.session.external_data?.client_secret as
+          const secret = (result.session.external_data?.client_secret || result.session.external_data?.client_key) as
             | string
             | undefined;
           if (secret) {
