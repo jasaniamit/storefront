@@ -105,6 +105,7 @@ export const PaymentSection = forwardRef<
   // Payment gateway state
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [paymentSessionId, setPaymentSessionId] = useState<string | null>(null);
+  const [externalId, setExternalId] = useState<string | null>(null);
   const [gatewayError, setGatewayError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const gatewayHandleRef = useRef<StripePaymentFormHandle | null>(null);
@@ -151,6 +152,7 @@ export const PaymentSection = forwardRef<
           if (secret) {
             setClientSecret(secret);
             setPaymentSessionId(result.session.id);
+            setExternalId(result.session.external_id);
           } else {
             setGatewayError(t("failedToInitPayment"));
           }
@@ -461,8 +463,8 @@ export const PaymentSection = forwardRef<
                   key={paymentSessionId}
                   amount={parseFloat(cart.total) * 100}
                   currency={cart.currency}
-                  clientKey={clientSecret} // Spree Razorpay gem passes key_id here
-                  orderId={paymentSessionId || ""}// paymentSessionId holds the external_id
+                  clientKey={clientSecret}
+                  orderId={externalId || ""}
                   customerName={`${billAddress.first_name} ${billAddress.last_name}`}
                   customerEmail={cart.email || ""}
                   customerContact={billAddress.phone || ""}
