@@ -1,3 +1,5 @@
+import { RazorpayPaymentForm } from "@/components/checkout/RazorpayPaymentForm";
+import { finalizeRazorpaySession } from "@/lib/data/razorpay";
 "use client";
 
 import type {
@@ -453,11 +455,29 @@ export const PaymentSection = forwardRef<
 
           {clientSecret && !loading && isAddingNew && (
             <div className="p-4">
-              <StripePaymentForm
-                key={clientSecret}
-                clientSecret={clientSecret}
-                onReady={handleGatewayReady}
-              />
+              {sessionPaymentMethod?.name?.toLowerCase().includes("razorpay") ? (
+                <RazorpayPaymentForm
+                  key={paymentSessionId}
+                  amount={parseFloat(cart.total) * 100}
+                  currency={cart.currency}
+                  clientKey={clientSecret} // Spree Razorpay gem passes key_id here
+                  orderId={paymentSessionId} // paymentSessionId holds the external_id
+                  customerName={`${billAddress.firstname} ${billAddress.lastname}`}
+                  customerEmail={cart.email || ""}
+                  customerContact={billAddress.phone || ""}
+                  onReady={handleGatewayReady as any}
+                  onSuccess={async (paymentId, signature) => {
+                    if (!paymentSessionId) throw new Error("Missing session ID");
+                    await finalizeRazorpaySession(paymentSessionId, paymentId, signature);
+                  }}
+                />
+              ) : (
+                <StripePaymentForm
+                  key={clientSecret}
+                  clientSecret={clientSecret}
+                  onReady={handleGatewayReady}
+                />
+              )}
             </div>
           )}
 
