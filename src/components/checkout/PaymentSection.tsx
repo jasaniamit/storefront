@@ -471,7 +471,7 @@ export const PaymentSection = forwardRef<
                   onReady={handleGatewayReady as any}
                   onSuccess={async (paymentId, signature) => {
                     if (!paymentSessionId) throw new Error("Missing session ID");
-                    await finalizeRazorpaySession(paymentSessionId, paymentId, signature);
+                    await finalizeRazorpaySession(externalId, paymentId, signature);
                   }}
                 />
               ) : (
