@@ -1,6 +1,6 @@
 "use server";
 
-import { getClient, withAuthRefresh } from "@/lib/spree";
+import { withAuthRefresh } from "@/lib/spree";
 
 export async function finalizeRazorpaySession(
   paymentSessionId: string,
@@ -16,7 +16,7 @@ export async function finalizeRazorpaySession(
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${options.bearerToken}`,
+          Authorization: `Bearer ${(options as any).bearerToken}`,
         },
         body: JSON.stringify({
           external_data: {
