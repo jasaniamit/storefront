@@ -1,55 +1,118 @@
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
-import { Button } from "@/components/ui/button";
-import { getStoreName } from "@/lib/store";
+import Image from "next/image";
 
 interface HeroSectionProps {
   basePath: string;
   locale: string;
 }
 
-export async function HeroSection({ basePath, locale }: HeroSectionProps) {
-  const t = await getTranslations({
-    locale: locale as Locale,
-    namespace: "home",
-  });
-  const storeName = getStoreName();
-
-  /* Demo-only: Remove for production. */
-  const githubUrl = "https://github.com/spree/storefront";
-  const quickstartUrl =
-    "https://spreecommerce.org/docs/developer/getting-started/quickstart";
-
+export async function HeroSection({ basePath }: HeroSectionProps) {
   return (
-    <section className="border-b border-gray-200 min-h-[823px] md:min-h-0 flex items-center">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-24">
-        <div className="text-center">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900">
-            {t("welcome", { storeName })}
+    <section
+      style={{
+        backgroundColor: "#ffffff",
+        minHeight: "480px",
+        display: "flex",
+        alignItems: "center",
+        overflow: "hidden",
+      }}
+    >
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          alignItems: "center",
+          width: "100%",
+          maxWidth: "1400px",
+          margin: "0 auto",
+          padding: "48px 48px 0 64px",
+          minHeight: "480px",
+        }}
+      >
+        {/* LEFT — Text content */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            paddingRight: "32px",
+          }}
+        >
+          <h1
+            style={{
+              fontFamily: "'Georgia', 'Times New Roman', serif",
+              fontSize: "clamp(1.6rem, 3vw, 2.4rem)",
+              fontWeight: 400,
+              lineHeight: 1.25,
+              color: "#1a1a1a",
+              margin: 0,
+              marginBottom: "16px",
+            }}
+          >
+            The Perfume House for the{" "}
+            <span style={{ fontWeight: 700, display: "block" }}>
+              NEXT GENERATION
+            </span>
           </h1>
-          <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-            {t("heroDescription")}
+
+          <p
+            style={{
+              fontSize: "13px",
+              color: "#555555",
+              margin: 0,
+              marginBottom: "28px",
+              lineHeight: 1.7,
+            }}
+          >
+            Premium-Quality fragrances.
+            <br />
+            No excessive markups. Crafted with heart,
+            <br />
+            Proud to be Indian Brand.
           </p>
-          <div className="mt-8 flex justify-center gap-4 flex-wrap">
-            <Button size="lg" asChild>
-              <Link href={`${basePath}/products`}>{t("shopNow")}</Link>
-            </Button>
-            {/* Demo-only: Remove for production. */}
-            <Button variant="outline" size="lg" asChild>
-              <Link href={githubUrl} target="_blank" rel="noopener noreferrer">
-                {t("forkOnGithub")}
-              </Link>
-            </Button>
-            <Button variant="outline" size="lg" asChild>
-              <Link
-                href={quickstartUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {t("quickstartGuide")} &rarr;
-              </Link>
-            </Button>
+
+          <div>
+            <Link
+              href={`${basePath}/products`}
+              style={{
+                display: "inline-block",
+                backgroundColor: "#1a1a1a",
+                color: "#ffffff",
+                fontSize: "11px",
+                fontWeight: 600,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                padding: "12px 28px",
+                textDecoration: "none",
+              }}
+            >
+              Shop All
+            </Link>
           </div>
+        </div>
+
+        {/* RIGHT — Hero image */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "flex-end",
+          }}
+        >
+          <Image
+            src="/hero-image.webp"
+            alt="NOZ Fragrances - Premium Perfume"
+            width={600}
+            height={620}
+            priority
+            style={{
+              width: "100%",
+              maxWidth: "560px",
+              height: "auto",
+              objectFit: "contain",
+              display: "block",
+            }}
+          />
         </div>
       </div>
     </section>
