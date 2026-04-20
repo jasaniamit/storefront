@@ -1,6 +1,7 @@
+"use client";
+
 import { RazorpayPaymentForm } from "@/components/checkout/RazorpayPaymentForm";
 import { finalizeRazorpaySession } from "@/lib/data/razorpay";
-"use client";
 
 import type {
   AddressParams,
