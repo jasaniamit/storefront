@@ -426,7 +426,7 @@ export const PaymentSection = forwardRef<
             <div className="flex items-center gap-3">
               <RadioGroupItem value="__new__" />
               <span className="text-sm font-medium text-gray-900">
-                {t("creditCard")}
+                {sessionPaymentMethod ? sessionPaymentMethod.name : t("creditCard")}
               </span>
             </div>
           </div>
