@@ -47,7 +47,7 @@ export function AnnouncementBar() {
           align-items: center;
           padding: 0 48px;
           font-size: 12px;
-          font-weight: 500;
+          font-weight: 320;
           letter-spacing: 0.06em;
           color: #000000;
           white-space: nowrap;
