@@ -6,6 +6,9 @@ import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { MediaGallery } from "@/components/products/MediaGallery";
 import { ProductCustomFields } from "@/components/products/ProductCustomFields";
+import { ProductNotes } from "@/components/products/ProductNotes";
+import { ProductRating } from "@/components/products/ProductRating";
+import { ProductScentIntensity } from "@/components/products/ProductScentIntensity";
 import { VariantPicker } from "@/components/products/VariantPicker";
 import { Button } from "@/components/ui/button";
 import { QuantityPicker } from "@/components/ui/quantity-picker";
@@ -24,7 +27,6 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
   const { currency } = useStore();
   const t = useTranslations("products");
 
-  // Filter variants list
   const variants = useMemo(() => {
     return (product.variants || []).filter(Boolean);
   }, [product.variants]);
@@ -32,22 +34,15 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
   const hasVariants = variants.length > 0;
   const optionTypes = product.option_types || [];
 
-  // Initialize with default variant or first available variant
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(() => {
-    if (product.default_variant) {
-      return product.default_variant;
-    }
-    if (hasVariants) {
-      return variants.find((v) => v.purchasable) || variants[0];
-    }
-    // For products without variants, use default variant
+    if (product.default_variant) return product.default_variant;
+    if (hasVariants) return variants.find((v) => v.purchasable) || variants[0];
     return product.default_variant || null;
   });
 
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  // Track product view (analytics - client-only side effect)
   useEffect(() => {
     trackViewItem(product, currency);
   }, [product, currency]);
@@ -65,8 +60,7 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
   }, [selectedVariant, galleryImages]);
 
   const price = selectedVariant?.price ?? product.price;
-  const originalPrice =
-    selectedVariant?.original_price ?? product.original_price;
+  const originalPrice = selectedVariant?.original_price ?? product.original_price;
   const displayPrice = price?.display_amount;
 
   const currentAmountCents = price?.amount_in_cents;
@@ -87,7 +81,6 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
         : price?.display_compare_at_amount) ?? null)
     : null;
 
-  // Purchasability
   const isPurchasable = hasVariants
     ? (selectedVariant?.purchasable ?? false)
     : (product.purchasable ?? false);
@@ -101,9 +94,7 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
       selectedVariant?.id ||
       product.default_variant?.id ||
       product.default_variant_id;
-    if (!variantId) {
-      throw new Error("No variant selected");
-    }
+    if (!variantId) throw new Error("No variant selected");
 
     setLoading(true);
     try {
@@ -117,10 +108,25 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
     trackAddToCart(product, selectedVariant, quantity, currency);
   };
 
+  // Separate "known" custom fields (notes, scent_intensity, reviews_*)
+  // from remaining fields shown in the generic table
+  const HANDLED_FIELD_NAMES = new Set([
+    "notes",
+    "scent_intensity",
+    "reviews_rating",
+    "reviews_count",
+    "reviews_verified",
+  ]);
+
+  const remainingCustomFields = (product.custom_fields || []).filter(
+    (f) => !HANDLED_FIELD_NAMES.has(f.name?.toLowerCase() ?? ""),
+  );
+
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8  py-8">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* Media Gallery */}
+
+        {/* ── Media Gallery ── */}
         <div>
           <MediaGallery
             images={galleryImages}
@@ -129,7 +135,7 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
           />
         </div>
 
-        {/* Product Info */}
+        {/* ── Product Info ── */}
         <div>
           <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
 
@@ -152,8 +158,17 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
             )}
           </div>
 
+          {/* ── RATINGS ── */}
+          <ProductRating customFields={product.custom_fields} />
+
+          {/* ── NOTES ── */}
+          <ProductNotes customFields={product.custom_fields} />
+
+          {/* ── SCENT INTENSITY ── */}
+          <ProductScentIntensity customFields={product.custom_fields} />
+
           {/* Stock Status */}
-          <div className="mt-4">
+          <div className="mt-6">
             {inStock ? (
               <span className="inline-flex items-center gap-1.5 text-green-600">
                 <CircleCheckBig className="w-5 h-5" />
@@ -188,8 +203,6 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
                 onIncrement={() => setQuantity(quantity + 1)}
                 size="lg"
               />
-
-              {/* Add to Cart Button */}
               <Button
                 size="lg"
                 onClick={handleAddToCart}
@@ -212,16 +225,16 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
             </div>
           </div>
 
-          {/* RAZORPAY AFFORDABILITY WIDGET */}
-            {process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID && (
-              <div className="mt-6">
-                <RazorpayAffordability
-                  amount={currentAmountCents || (parseFloat(price?.amount || "0") * 100)}
-                  currency={currency || "INR"}
-                  clientKey={process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID}
-                />
-              </div>
-            )}
+          {/* Razorpay Affordability Widget */}
+          {process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID && (
+            <div className="mt-6">
+              <RazorpayAffordability
+                amount={currentAmountCents || (parseFloat(price?.amount || "0") * 100)}
+                currency={currency || "INR"}
+                clientKey={process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID}
+              />
+            </div>
+          )}
 
           {/* Description */}
           {product.description && (
@@ -229,7 +242,6 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
               <h2 className="text-lg font-medium text-gray-900 mb-4">
                 {t("description")}
               </h2>
-              {/* Description is admin-authored HTML from the Spree CMS backend (trusted source) */}
               <div
                 className="text-gray-600 prose prose-sm max-w-none"
                 dangerouslySetInnerHTML={{ __html: product.description }}
@@ -237,10 +249,10 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
             </div>
           )}
 
-          {/* Custom Fields */}
-          <ProductCustomFields customFields={product.custom_fields} />
+          {/* Remaining custom fields (not handled by special components) */}
+          <ProductCustomFields customFields={remainingCustomFields} />
 
-          {/* Product Details */}
+          {/* Product Details (SKU, options) */}
           <div className="mt-8 border-t pt-8">
             <h2 className="text-lg font-medium text-gray-900 mb-4">
               {t("details")}
@@ -249,9 +261,7 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
               {selectedVariant?.sku && (
                 <div className="flex">
                   <dt className="w-32 text-gray-500 text-sm">{t("sku")}</dt>
-                  <dd className="text-gray-900 text-sm">
-                    {selectedVariant.sku}
-                  </dd>
+                  <dd className="text-gray-900 text-sm">{selectedVariant.sku}</dd>
                 </div>
               )}
               {selectedVariant?.options_text && (
