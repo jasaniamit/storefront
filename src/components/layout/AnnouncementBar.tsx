@@ -88,7 +88,7 @@ export function AnnouncementBar() {
           animation: noz-slide-out 0.5s cubic-bezier(0.55, 0, 0.1, 1) forwards;
         }
         .noz-ticker-text {
-          font-size: 13px;
+          font-size: 16px;
           font-weight: 300;
           letter-spacing: 0.04em;
           color: #1a1a1a;
