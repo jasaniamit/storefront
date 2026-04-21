@@ -106,7 +106,7 @@ export async function Header({ rootCategories, basePath, locale }: HeaderProps) 
             key={link.label}
             href={`${basePath}${link.href}`}
             style={{
-              fontSize: "12px",
+              fontSize: "14px",
               fontWeight: 400,
               letterSpacing: "0.04em",
               color: "#1a1a1a",
