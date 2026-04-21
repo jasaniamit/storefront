@@ -60,7 +60,7 @@ export function AnnouncementBar() {
       style={{
         backgroundColor: "#ffffff",
         borderBottom: "1px solid #ebebeb",
-        height: "34px",
+        height: "36px",
         overflow: "hidden",
         display: "flex",
         alignItems: "center",
