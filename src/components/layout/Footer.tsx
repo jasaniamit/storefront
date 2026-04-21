@@ -1,9 +1,19 @@
+import type { Category } from "@spree/sdk";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { POLICY_LINKS } from "@/lib/constants/policies";
 import { getStoreDescription, getStoreName } from "@/lib/store";
 
-export default async function Footer() {
+interface FooterProps {
+  rootCategories: Category[];
+  basePath: string;
+  locale: string;
+}
+
+export async function Footer({
+  rootCategories,
+  basePath,
+}: FooterProps) {
   const t = await getTranslations("Footer");
 
   const storeName = getStoreName();
@@ -24,16 +34,19 @@ export default async function Footer() {
           </p>
         </div>
 
-        {/* Shop */}
+        {/* Categories (Dynamic from Spree) */}
         <div>
           <h4 className="text-sm font-semibold text-white mb-4">
-            {t("shop")}
+            {t("categories")}
           </h4>
           <ul className="space-y-2 text-sm">
-            <li><Link href="/products">{t("all_products")}</Link></li>
-            <li><Link href="/categories">{t("categories")}</Link></li>
-            <li><Link href="/brands">{t("brands")}</Link></li>
-            <li><Link href="/collections">{t("collections")}</Link></li>
+            {rootCategories.slice(0, 5).map((cat) => (
+              <li key={cat.id}>
+                <Link href={`${basePath}/c/${cat.permalink}`}>
+                  {cat.name}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 
@@ -43,9 +56,9 @@ export default async function Footer() {
             {t("account")}
           </h4>
           <ul className="space-y-2 text-sm">
-            <li><Link href="/account">{t("my_account")}</Link></li>
-            <li><Link href="/account/orders">{t("order_history")}</Link></li>
-            <li><Link href="/cart">{t("cart")}</Link></li>
+            <li><Link href={`${basePath}/account`}>{t("my_account")}</Link></li>
+            <li><Link href={`${basePath}/account/orders`}>{t("order_history")}</Link></li>
+            <li><Link href={`${basePath}/cart`}>{t("cart")}</Link></li>
           </ul>
         </div>
 
@@ -57,7 +70,9 @@ export default async function Footer() {
           <ul className="space-y-2 text-sm">
             {POLICY_LINKS.map((policy) => (
               <li key={policy.href}>
-                <Link href={policy.href}>{policy.label}</Link>
+                <Link href={`${basePath}${policy.href}`}>
+                  {policy.label}
+                </Link>
               </li>
             ))}
           </ul>
