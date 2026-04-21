@@ -56,9 +56,10 @@ export async function Header({ rootCategories, basePath, locale }: HeaderProps) 
   const t = await getTranslations({ locale, namespace: "header" });
 
   return (
-    <div className="sticky top-0 z-50 bg-white border-b border-gray-200">
-      {/* ── Row 1: SearchToggle (logo + icons) ── */}
-      <SearchToggle
+    <div className="sticky top-0 z-50 bg-white">
+      {/* Neutralize SearchToggle's own sticky+border — we control those here */}
+      <div className="[&>header]:static [&>header]:border-b-0 [&>header]:z-auto">
+        <SearchToggle
         basePath={basePath}
         left={
           <LazyMobileMenu rootCategories={rootCategories} basePath={basePath} />
@@ -93,20 +94,21 @@ export async function Header({ rootCategories, basePath, locale }: HeaderProps) 
           </>
         }
       />
+      </div>
 
-      {/* ── Row 2: Nav links — desktop only ── */}
+      {/* ── Row 2: Nav links — single bottom border ── */}
       <nav
         aria-label="Main navigation"
-        className="hidden lg:flex items-center justify-center gap-8 h-10 border-t border-gray-100"
+        className="hidden lg:flex items-center justify-center gap-8 h-10 border-b border-gray-200"
       >
         {NAV_LINKS.map((link) => (
           <Link
             key={link.label}
             href={`${basePath}${link.href}`}
             style={{
-              fontSize: "14px",
-              fontWeight: 500,
-              letterSpacing: "0.05em",
+              fontSize: "12px",
+              fontWeight: 400,
+              letterSpacing: "0.04em",
               color: "#1a1a1a",
               textDecoration: "none",
               textTransform: "uppercase",
