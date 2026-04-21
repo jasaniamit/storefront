@@ -56,22 +56,34 @@ export async function Footer({
             {t("account")}
           </h4>
           <ul className="space-y-2 text-sm">
-            <li><Link href={`${basePath}/account`}>{t("my_account")}</Link></li>
-            <li><Link href={`${basePath}/account/orders`}>{t("order_history")}</Link></li>
-            <li><Link href={`${basePath}/cart`}>{t("cart")}</Link></li>
+            <li>
+              <Link href={`${basePath}/account`}>
+                {t("my_account")}
+              </Link>
+            </li>
+            <li>
+              <Link href={`${basePath}/account/orders`}>
+                {t("order_history")}
+              </Link>
+            </li>
+            <li>
+              <Link href={`${basePath}/cart`}>
+                {t("cart")}
+              </Link>
+            </li>
           </ul>
         </div>
 
-        {/* Policies */}
+        {/* Policies (FIXED) */}
         <div>
           <h4 className="text-sm font-semibold text-white mb-4">
             {t("policies")}
           </h4>
           <ul className="space-y-2 text-sm">
             {POLICY_LINKS.map((policy) => (
-              <li key={policy.href}>
-                <Link href={`${basePath}${policy.href}`}>
-                  {policy.label}
+              <li key={policy.slug}>
+                <Link href={`${basePath}/${policy.slug}`}>
+                  {policy.name}
                 </Link>
               </li>
             ))}
