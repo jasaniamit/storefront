@@ -55,7 +55,7 @@ export function AnnouncementBar() {
               alignItems: "center",
               paddingInline: "48px",
               fontSize: "12px",
-              fontWeight: 500,
+              fontWeight: 320,
               letterSpacing: "0.06em",
               color: "#EF776A",
               whiteSpace: "nowrap",
