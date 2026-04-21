@@ -37,59 +37,87 @@ const LazyCountrySwitcher = dynamic(
 
 const storeName = getStoreName();
 
+// ── Nav links matching nozfragrances.com ──────────────────────────────────────
+const NAV_LINKS = [
+  { label: "10ML", href: "/c/10ml" },
+  { label: "2ML SAMPLES", href: "/c/2ml-samples" },
+  { label: "NEW ARRIVALS", href: "/c/new-arrivals" },
+  { label: "BLOG", href: "/blog" },
+  { label: "SHOP ALL", href: "/products" },
+];
+
 interface HeaderProps {
   rootCategories: Category[];
   basePath: string;
   locale: Locale;
 }
 
-export async function Header({
-  rootCategories,
-  basePath,
-  locale,
-}: HeaderProps) {
+export async function Header({ rootCategories, basePath, locale }: HeaderProps) {
   const t = await getTranslations({ locale, namespace: "header" });
 
   return (
-    <SearchToggle
-      basePath={basePath}
-      left={
-        <LazyMobileMenu rootCategories={rootCategories} basePath={basePath} />
-      }
-      center={
-        <Link href={basePath || "/"} className="flex items-center min-w-0">
-          <Image
-            src="/noz.svg"
-            alt={storeName}
-            width={105.81}
-            height={41}
-            className="max-w-full object-contain"
-            style={{ width: "105.81px", height: "auto" }}
-            fetchPriority="high"
-            loading="eager"
-          />
-        </Link>
-      }
-      rightStart={
-        <div className="hidden lg:block">
-          <LazyCountrySwitcher />
-        </div>
-      }
-      rightEnd={
-        <>
-          {/* Account - desktop only */}
-          <div className="hidden md:block">
-            <Button variant="ghost" size="icon-lg" asChild>
-              <Link href={`${basePath}/account`} aria-label={t("account")}>
-                <User className="size-5" />
-              </Link>
-            </Button>
+    <div className="sticky top-0 z-50 bg-white border-b border-gray-200">
+      {/* ── Row 1: SearchToggle (logo + icons) ── */}
+      <SearchToggle
+        basePath={basePath}
+        left={
+          <LazyMobileMenu rootCategories={rootCategories} basePath={basePath} />
+        }
+        center={
+          <Link href={basePath || "/"} className="flex items-center">
+            <Image
+              src="/noz.svg"
+              alt={storeName}
+              width={106}
+              height={41}
+              priority
+              style={{ width: "106px", height: "41px", objectFit: "contain" }}
+            />
+          </Link>
+        }
+        rightStart={
+          <div className="hidden lg:block">
+            <LazyCountrySwitcher />
           </div>
+        }
+        rightEnd={
+          <>
+            <div className="hidden md:block">
+              <Button variant="ghost" size="icon-lg" asChild>
+                <Link href={`${basePath}/account`} aria-label={t("account")}>
+                  <User className="size-5" />
+                </Link>
+              </Button>
+            </div>
+            <CartButton />
+          </>
+        }
+      />
 
-          {/* Cart */}
-          <CartButton />
-        </>
-      }
-    />
+      {/* ── Row 2: Nav links — desktop only ── */}
+      <nav
+        aria-label="Main navigation"
+        className="hidden lg:flex items-center justify-center gap-8 h-10 border-t border-gray-100"
+      >
+        {NAV_LINKS.map((link) => (
+          <Link
+            key={link.label}
+            href={`${basePath}${link.href}`}
+            style={{
+              fontSize: "11.5px",
+              fontWeight: 500,
+              letterSpacing: "0.09em",
+              color: "#1a1a1a",
+              textDecoration: "none",
+              textTransform: "uppercase",
+              transition: "color 0.2s",
+            }}
+            className="hover:text-[#EF776A] transition-colors"
+          >
+            {link.label}
+          </Link>
+        ))}
+      </nav>
+    </div>
   );
 }
