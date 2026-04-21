@@ -1,91 +1,94 @@
+import { GoogleTagManager } from "@next/third-parties/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
-import { NextIntlClientProvider } from "next-intl";
-import { CartDrawer } from "@/components/cart/CartDrawer";
-import { JsonLd } from "@/components/seo/JsonLd";
-import { Toaster } from "@/components/ui/sonner";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { StoreProvider } from "@/contexts/StoreContext";
-import { getMarkets } from "@/lib/data/markets";
-import { generateStoreMetadata } from "@/lib/metadata/store";
-import { buildOrganizationJsonLd } from "@/lib/seo";
-import { getDefaultCountry, getDefaultLocale } from "@/lib/store";
-import deMessages from "../../../../messages/de.json";
-import enMessages from "../../../../messages/en.json";
-import esMessages from "../../../../messages/es.json";
-import frMessages from "../../../../messages/fr.json";
-import plMessages from "../../../../messages/pl.json";
+import { Inter } from "next/font/google";
+import Script from "next/script";
+import "./globals.css";
+import { Suspense } from "react";
+import { CartProvider } from "@/contexts/CartContext";
+import { getStoreDescription, getStoreName } from "@/lib/store";
 
-const messagesMap: Record<string, IntlMessages> = {
-  en: enMessages,
-  de: deMessages,
-  es: esMessages,
-  fr: frMessages,
-  pl: plMessages,
+const gtmId = process.env.GTM_ID;
+const spreeApiOrigin = (() => {
+  try {
+    return process.env.SPREE_API_URL
+      ? new URL(process.env.SPREE_API_URL).origin
+      : undefined;
+  } catch {
+    return undefined;
+  }
+})();
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const rootStoreName = getStoreName();
+
+export const metadata: Metadata = {
+  title: {
+    template: `%s | ${rootStoreName}`,
+    default: rootStoreName,
+  },
+  description: getStoreDescription(),
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
-interface CountryLocaleLayoutProps {
-  children: React.ReactNode;
-  params: Promise<{
-    country: string;
-    locale: string;
-  }>;
-}
-
-export async function generateMetadata({
-  params,
-}: CountryLocaleLayoutProps): Promise<Metadata> {
-  const { locale } = await params;
-  return generateStoreMetadata({ locale });
-}
-
-export default async function CountryLocaleLayout({
+export default function RootLayout({
   children,
-  params,
-}: CountryLocaleLayoutProps) {
-  const { country, locale } = await params;
-
-  const markets = await getMarkets({ country, locale })
-    .then((res) => res.data)
-    .catch(() => []);
-
-  // Validate that the URL country belongs to an available market.
-  // If not, redirect server-side to avoid SSR with wrong prices.
-  const isValidCountry = markets.some((market) =>
-    market.countries?.some(
-      (c) => c.iso.toLowerCase() === country.toLowerCase(),
-    ),
-  );
-
-  if (!isValidCountry) {
-    const defaultMarket = markets.find((m) => m.default) ?? markets[0];
-    const fallbackCountry =
-      defaultMarket?.countries?.[0]?.iso.toLowerCase() ?? getDefaultCountry();
-    const fallbackLocale = defaultMarket?.default_locale ?? getDefaultLocale();
-
-    redirect(`/${fallbackCountry}/${fallbackLocale}`);
-  }
-
-  // Load messages statically (no runtime data access) to avoid blocking prerender
-  const messages = messagesMap[locale] || messagesMap.en;
-
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <NextIntlClientProvider
-      messages={messages}
-      locale={locale as "en" | "de" | "pl"}
-    >
-      <StoreProvider
-        initialCountry={country}
-        initialLocale={locale}
-        initialMarkets={markets}
+    <html lang="en">
+      <head>
+        <meta name="theme-color" content="#F07867" />
+        {spreeApiOrigin && (
+          <>
+            <link rel="preconnect" href={spreeApiOrigin} />
+            <link rel="dns-prefetch" href={spreeApiOrigin} />
+          </>
+        )}
+        {/* Ahrefs Analytics */}
+        <Script
+          src="https://analytics.ahrefs.com/analytics.js"
+          data-key="2xFrdGjJnYdcBJmAFTd6Fw"
+          strategy="afterInteractive"
+        />
+        {/* Plausible Analytics */}
+        <Script
+          defer
+          data-domain="nozfragrances.com"
+          src="https://stats.nozfragrances.com/js/script.file-downloads.hash.outbound-links.pageview-props.revenue.tagged-events.js"
+          strategy="afterInteractive"
+        />
+        <Script id="plausible-init" strategy="afterInteractive">{`
+          window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+        `}</Script>
+        {/* Umami Analytics */}
+        <Script
+          defer
+          src="https://cloud.umami.is/script.js"
+          data-website-id="26c905b8-4b5f-4133-8e08-d03512494514"
+          strategy="afterInteractive"
+        />
+      </head>
+      {gtmId && <GoogleTagManager gtmId={gtmId} />}
+      <body
+        className={`${inter.variable} antialiased min-h-screen flex flex-col`}
+        style={{ fontFamily: "var(--font-inter), Inter, sans-serif" }}
       >
-        <AuthProvider>
-          <JsonLd data={buildOrganizationJsonLd()} />
-          {children}
-          <CartDrawer />
-          <Toaster />
-        </AuthProvider>
-      </StoreProvider>
-    </NextIntlClientProvider>
+        <Suspense fallback={null}>
+          <CartProvider>{children}</CartProvider>
+        </Suspense>
+        <Analytics />
+        <SpeedInsights />
+      </body>
+    </html>
   );
 }
