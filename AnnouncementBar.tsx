@@ -23,7 +23,7 @@ export function AnnouncementBar() {
     <div
       className="w-full overflow-hidden"
       style={{
-        backgroundColor: "#ffffff",
+        backgroundColor: "#F5F5F4",
         borderBottom: "1px solid #f0f0f0",
         height: "36px",
         display: "flex",
