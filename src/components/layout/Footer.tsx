@@ -13,7 +13,7 @@ export default async function Footer() {
     <footer className="bg-[#0F0F0F] text-gray-300">
       <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-10">
 
-        {/* First Column (Fully Backend Controlled) */}
+        {/* Store Info */}
         <div>
           <h3 className="text-lg font-semibold text-white">
             {storeName}
@@ -49,7 +49,7 @@ export default async function Footer() {
           </ul>
         </div>
 
-        {/* Policies (Dynamic from config) */}
+        {/* Policies */}
         <div>
           <h4 className="text-sm font-semibold text-white mb-4">
             {t("policies")}
@@ -65,7 +65,7 @@ export default async function Footer() {
 
       </div>
 
-      {/* Bottom Bar */}
+      {/* Bottom */}
       <div className="border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-6 py-6 text-center text-sm text-gray-500">
           © 2017-{new Date().getFullYear()} {storeName}. All rights reserved.
