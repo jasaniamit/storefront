@@ -112,14 +112,14 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
   // from remaining fields shown in the generic table
   const HANDLED_FIELD_NAMES = new Set([
     "notes",
-    "scent_intensity",
-    "reviews_rating",
-    "reviews_count",
-    "reviews_verified",
+    "scent intensity",
+    "reviews rating",
+    "reviews count",
+    "reviews verified",
   ]);
 
   const remainingCustomFields = (product.custom_fields || []).filter(
-    (f) => !HANDLED_FIELD_NAMES.has(f.name?.toLowerCase() ?? ""),
+    (f) => !HANDLED_FIELD_NAMES.has(f.label?.toLowerCase() ?? ""),
   );
 
   return (
