@@ -6,52 +6,58 @@ interface HeroSectionProps {
   locale: string;
 }
 
-// Brand colour used for all text + button
-const BRAND_COLOR = "#546470";
+const BRAND = "#546470";
 
 export async function HeroSection({ basePath }: HeroSectionProps) {
   return (
     <>
       <style>{`
-        .noz-hero {
-          background-color: #ffffff;
-          width: 100%;
-          font-family: var(--font-inter), Inter, sans-serif;
-        }
+        .noz-hero { background: #fff; width: 100%; }
+
+        /* ── Mobile: image top, text below ── */
         .noz-hero-inner {
           display: flex;
           flex-direction: column;
-          width: 100%;
         }
 
-        /* TEXT */
+        .noz-hero-image-wrap {
+          order: 1;
+          width: 100%;
+          line-height: 0;
+        }
+        .noz-hero-image-wrap img {
+          width: 100%;
+          height: auto;
+          display: block;
+          object-fit: contain;
+        }
+
         .noz-hero-text {
           order: 2;
           padding: 28px 24px 44px;
         }
         .noz-hero-text h1 {
           font-family: var(--font-inter), Inter, sans-serif;
-          font-size: 1.45rem;
+          font-size: 1.6rem;
           font-weight: 400;
-          line-height: 1.25;
-          color: ${BRAND_COLOR};
+          line-height: 1.2;
+          color: ${BRAND};
           margin: 0 0 14px 0;
         }
         .noz-hero-text h1 strong {
           font-weight: 700;
-          display: block;
-          color: ${BRAND_COLOR};
+          color: ${BRAND};
         }
         .noz-hero-text p {
           font-family: var(--font-inter), Inter, sans-serif;
           font-size: 13px;
-          color: ${BRAND_COLOR};
+          color: ${BRAND};
           line-height: 1.75;
           margin: 0 0 26px 0;
         }
         .noz-hero-btn {
           display: inline-block;
-          background-color: ${BRAND_COLOR};
+          background-color: ${BRAND};
           color: #ffffff !important;
           font-family: var(--font-inter), Inter, sans-serif;
           font-size: 11px;
@@ -61,25 +67,11 @@ export async function HeroSection({ basePath }: HeroSectionProps) {
           padding: 13px 28px;
           border-radius: 6px;
           text-decoration: none !important;
-          transition: background-color 0.2s, opacity 0.2s;
+          transition: opacity 0.2s;
         }
-        .noz-hero-btn:hover {
-          opacity: 0.85;
-        }
+        .noz-hero-btn:hover { opacity: 0.82; }
 
-        /* IMAGE */
-        .noz-hero-image-wrap {
-          order: 1;
-          width: 100%;
-        }
-        .noz-hero-image-wrap img {
-          width: 100%;
-          height: auto;
-          display: block;
-          object-fit: contain;
-        }
-
-        /* DESKTOP */
+        /* ── Desktop: text LEFT, image RIGHT ── */
         @media (min-width: 768px) {
           .noz-hero-inner {
             flex-direction: row;
@@ -95,13 +87,11 @@ export async function HeroSection({ basePath }: HeroSectionProps) {
             padding: 60px 40px 60px 0;
           }
           .noz-hero-text h1 {
-            font-size: clamp(1.5rem, 2.3vw, 2.2rem);
+            /* Force clean single-line break: "The Perfume House for the NEXT GENERATION" */
+            font-size: clamp(1.35rem, 2.2vw, 2.1rem);
             margin-bottom: 16px;
           }
-          .noz-hero-text p {
-            font-size: 14px;
-            margin-bottom: 32px;
-          }
+          .noz-hero-text p { font-size: 13.5px; margin-bottom: 32px; }
           .noz-hero-image-wrap {
             order: 2;
             flex: 0 0 62%;
@@ -110,25 +100,22 @@ export async function HeroSection({ basePath }: HeroSectionProps) {
             align-items: flex-end;
             align-self: flex-end;
           }
-          .noz-hero-image-wrap img {
-            max-width: 600px;
-          }
+          .noz-hero-image-wrap img { max-width: 580px; }
         }
 
         @media (min-width: 1200px) {
           .noz-hero-inner { padding: 0 80px; }
-          .noz-hero-image-wrap img { max-width: 700px; }
+          .noz-hero-image-wrap img { max-width: 660px; }
         }
       `}</style>
 
       <section className="noz-hero">
         <div className="noz-hero-inner">
 
-          {/* TEXT — left on desktop, below on mobile */}
+          {/* TEXT — left desktop / below mobile */}
           <div className="noz-hero-text">
             <h1>
-              The Perfume House for the{" "}
-              <strong>NEXT GENERATION</strong>
+              The Perfume House for the <strong>NEXT GENERATION</strong>
             </h1>
             <p>
               Premium-Quality fragrances.<br />
@@ -140,7 +127,7 @@ export async function HeroSection({ basePath }: HeroSectionProps) {
             </Link>
           </div>
 
-          {/* IMAGE — right on desktop, top on mobile */}
+          {/* IMAGE — right desktop / top mobile */}
           <div className="noz-hero-image-wrap">
             <Image
               src="/hero-image.webp"
