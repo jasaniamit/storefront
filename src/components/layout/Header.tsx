@@ -96,19 +96,20 @@ export async function Header({ rootCategories, basePath, locale }: HeaderProps) 
       />
       </div>
 
-      {/* ── Row 2: Nav links — single bottom border ── */}
+      {/* ── Row 2: Nav links — gap below logo, single bottom border ── */}
       <nav
         aria-label="Main navigation"
-        className="hidden lg:flex items-center justify-center gap-8 h-10 border-b border-gray-200"
+        className="hidden lg:flex items-center justify-center gap-8 border-b border-gray-200"
+        style={{ height: "36px", paddingTop: "2px" }}
       >
         {NAV_LINKS.map((link) => (
           <Link
             key={link.label}
             href={`${basePath}${link.href}`}
             style={{
-              fontSize: "14px",
+              fontSize: "12px",
               fontWeight: 400,
-              letterSpacing: "0.05em",
+              letterSpacing: "0.04em",
               color: "#1a1a1a",
               textDecoration: "none",
               textTransform: "uppercase",
