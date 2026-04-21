@@ -1,11 +1,9 @@
-import React from "react";
+"use client";
 
 /**
  * AnnouncementBar
- * ---------------
- * A full-width, continuously scrolling ticker (right → left marquee).
- * Add or edit messages in the `messages` array below.
- * Placed above <Header> in the storefront layout.
+ * Continuously scrolling ticker — right to left.
+ * Edit `messages` array to change text.
  */
 
 const messages = [
@@ -16,18 +14,18 @@ const messages = [
 ];
 
 export function AnnouncementBar() {
-  // Duplicate the list so the loop appears seamless
   const track = [...messages, ...messages];
 
   return (
     <div
-      className="w-full overflow-hidden"
       style={{
         backgroundColor: "#ffffff",
-        borderBottom: "1px solid #f0f0f0",
+        borderBottom: "1px solid #ebebeb",
         height: "36px",
+        overflow: "hidden",
         display: "flex",
         alignItems: "center",
+        width: "100%",
       }}
     >
       <style>{`
@@ -38,41 +36,37 @@ export function AnnouncementBar() {
         .noz-marquee-track {
           display: flex;
           width: max-content;
-          animation: noz-marquee 28s linear infinite;
+          animation: noz-marquee 32s linear infinite;
           will-change: transform;
         }
         .noz-marquee-track:hover {
           animation-play-state: paused;
         }
+        .noz-marquee-item {
+          display: inline-flex;
+          align-items: center;
+          padding: 0 48px;
+          font-size: 12px;
+          font-weight: 500;
+          letter-spacing: 0.06em;
+          color: #EF776A;
+          white-space: nowrap;
+          font-family: inherit;
+        }
+        .noz-marquee-dot {
+          display: inline-block;
+          margin-left: 48px;
+          color: #EF776A;
+          opacity: 0.35;
+          font-size: 7px;
+        }
       `}</style>
 
-      <div className="noz-marquee-track" aria-hidden="false">
+      <div className="noz-marquee-track">
         {track.map((msg, i) => (
-          <span
-            key={i}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              paddingInline: "48px",
-              fontSize: "12px",
-              fontWeight: 500,
-              letterSpacing: "0.06em",
-              color: "#EF776A",
-              whiteSpace: "nowrap",
-            }}
-          >
+          <span key={i} className="noz-marquee-item">
             {msg}
-            <span
-              style={{
-                display: "inline-block",
-                marginLeft: "48px",
-                color: "#EF776A",
-                opacity: 0.4,
-                fontSize: "8px",
-              }}
-            >
-              ✦
-            </span>
+            <span className="noz-marquee-dot">✦</span>
           </span>
         ))}
       </div>
