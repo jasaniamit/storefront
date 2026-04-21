@@ -37,7 +37,6 @@ const LazyCountrySwitcher = dynamic(
 
 const storeName = getStoreName();
 
-// ── Nav links matching nozfragrances.com ──────────────────────────────────────
 const NAV_LINKS = [
   { label: "10ML", href: "/c/10ml" },
   { label: "2ML SAMPLES", href: "/c/2ml-samples" },
@@ -57,50 +56,52 @@ export async function Header({ rootCategories, basePath, locale }: HeaderProps) 
 
   return (
     <div className="sticky top-0 z-50 bg-white">
-      {/* Neutralize SearchToggle's own sticky+border — we control those here */}
+      {/* Header Top */}
       <div className="[&>header]:static [&>header]:border-b-0 [&>header]:z-auto">
         <SearchToggle
-        basePath={basePath}
-        left={
-          <LazyMobileMenu rootCategories={rootCategories} basePath={basePath} />
-        }
-        center={
-          <Link href={basePath || "/"} className="flex items-center">
-            <Image
-              src="/noz.svg"
-              alt={storeName}
-              width={106}
-              height={41}
-              priority
-              style={{ width: "106px", height: "41px", objectFit: "contain" }}
-            />
-          </Link>
-        }
-        rightStart={
-          <div className="hidden lg:block">
-            <LazyCountrySwitcher />
-          </div>
-        }
-        rightEnd={
-          <>
-            <div className="hidden md:block">
-              <Button variant="ghost" size="icon-lg" asChild>
-                <Link href={`${basePath}/account`} aria-label={t("account")}>
-                  <User className="size-5" />
-                </Link>
-              </Button>
+          basePath={basePath}
+          left={
+            <LazyMobileMenu rootCategories={rootCategories} basePath={basePath} />
+          }
+          center={
+            <Link href={basePath || "/"} className="flex items-center">
+              <Image
+                src="/noz.svg"
+                alt={storeName}
+                width={106}
+                height={41}
+                priority
+                style={{ width: "106px", height: "41px", objectFit: "contain" }}
+              />
+            </Link>
+          }
+          rightStart={
+            <div className="hidden lg:block">
+              <LazyCountrySwitcher />
             </div>
-            <CartButton />
-          </>
-        }
-      />
+          }
+          rightEnd={
+            <>
+              <div className="hidden md:block">
+                <Button variant="ghost" size="icon-lg" asChild>
+                  <Link href={`${basePath}/account`} aria-label={t("account")}>
+                    <User className="size-5" />
+                  </Link>
+                </Button>
+              </div>
+              <CartButton />
+            </>
+          }
+        />
       </div>
 
-      {/* ── Row 2: Nav links — gap below logo, single bottom border ── */}
+      {/* Nav Bar */}
       <nav
         aria-label="Main navigation"
         className="hidden lg:flex items-center justify-center gap-8 border-b border-gray-200"
-        style={{ height: "36px", paddingTop: "16px", paddingBottom: "16px"  }}
+        style={{
+          height: "44px", // balanced height
+        }}
       >
         {NAV_LINKS.map((link) => (
           <Link
@@ -108,14 +109,14 @@ export async function Header({ rootCategories, basePath, locale }: HeaderProps) 
             href={`${basePath}${link.href}`}
             style={{
               fontSize: "14px",
-              fontWeight: 400,
-              letterSpacing: "0.04em",
+              fontWeight: 500, // stronger like reference
+              letterSpacing: "0.05em",
               color: "#1a1a1a",
               textDecoration: "none",
               textTransform: "uppercase",
               transition: "color 0.2s",
             }}
-            className="hover:text-[#EF776A] transition-colors"
+            className="hover:text-[#e86c5f]"
           >
             {link.label}
           </Link>
