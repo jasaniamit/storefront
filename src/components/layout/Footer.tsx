@@ -1,8 +1,6 @@
 import type { Category } from "@spree/sdk";
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
 import { POLICY_LINKS } from "@/lib/constants/policies";
-import { getStoreDescription, getStoreName } from "@/lib/store";
 
 interface FooterProps {
   rootCategories: Category[];
@@ -10,34 +8,32 @@ interface FooterProps {
   locale: string;
 }
 
-export async function Footer({
+export function Footer({
   rootCategories,
   basePath,
 }: FooterProps) {
-  const t = await getTranslations("Footer");
-
-  const storeName = getStoreName();
-  const storeDescription = getStoreDescription();
-
   return (
     <footer className="bg-[#0F0F0F] text-gray-300">
       <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-10">
 
-        {/* Store Info */}
+        {/* Brand */}
         <div>
           <h3 className="text-lg font-semibold text-white">
-            {storeName}
+            Noz Fragrances
           </h3>
 
           <p className="mt-4 text-sm text-gray-400 leading-relaxed whitespace-pre-line">
-            {storeDescription}
+            The Perfume House for the NEXT GENERATION
+            {"\n"}Premium-Quality fragrances.
+            {"\n"}No excessive markups. Crafted with heart,
+            {"\n"}Proud to be Indian Brand.
           </p>
         </div>
 
-        {/* Categories (Dynamic from Spree) */}
+        {/* Categories */}
         <div>
           <h4 className="text-sm font-semibold text-white mb-4">
-            {t("categories")}
+            Categories
           </h4>
           <ul className="space-y-2 text-sm">
             {rootCategories.slice(0, 5).map((cat) => (
@@ -53,31 +49,31 @@ export async function Footer({
         {/* Account */}
         <div>
           <h4 className="text-sm font-semibold text-white mb-4">
-            {t("account")}
+            Account
           </h4>
           <ul className="space-y-2 text-sm">
             <li>
               <Link href={`${basePath}/account`}>
-                {t("my_account")}
+                My Account
               </Link>
             </li>
             <li>
               <Link href={`${basePath}/account/orders`}>
-                {t("order_history")}
+                Order History
               </Link>
             </li>
             <li>
               <Link href={`${basePath}/cart`}>
-                {t("cart")}
+                Cart
               </Link>
             </li>
           </ul>
         </div>
 
-        {/* Policies (FIXED) */}
+        {/* Policies */}
         <div>
           <h4 className="text-sm font-semibold text-white mb-4">
-            {t("policies")}
+            Policies
           </h4>
           <ul className="space-y-2 text-sm">
             {POLICY_LINKS.map((policy) => (
@@ -95,7 +91,7 @@ export async function Footer({
       {/* Bottom */}
       <div className="border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-6 py-6 text-center text-sm text-gray-500">
-          © 2017-{new Date().getFullYear()} {storeName}. All rights reserved.
+          © 2017-{new Date().getFullYear()} NOZ Fragrances. All rights reserved.
         </div>
       </div>
     </footer>
