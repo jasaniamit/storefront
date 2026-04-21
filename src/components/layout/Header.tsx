@@ -61,10 +61,10 @@ export async function Header({
           <Image
             src="/noz.svg"
             alt={storeName}
-            width={90}
-            height={32}
+            width={80}
+            height={31}
             className="max-w-full object-contain"
-            style={{ width: "auto", height: "auto" }}
+            style={{ width: "80px", height: "auto" }}
             fetchPriority="high"
             loading="eager"
           />
