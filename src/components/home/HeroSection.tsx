@@ -10,32 +10,22 @@ export async function HeroSection({ basePath }: HeroSectionProps) {
   return (
     <>
       <style>{`
+        /* ── Hero wrapper ── */
         .noz-hero {
           background-color: #ffffff;
           width: 100%;
         }
 
-        /* ── MOBILE: image full-width on top, text below ── */
         .noz-hero-inner {
           display: flex;
           flex-direction: column;
-        }
-
-        .noz-hero-image-wrap {
           width: 100%;
-          position: relative;
-          /* Let image breathe — no hard height clamp on mobile */
         }
 
-        .noz-hero-image-wrap img {
-          width: 100%;
-          height: auto;
-          display: block;
-          object-fit: contain;
-        }
-
+        /* ── TEXT block ── */
         .noz-hero-text {
-          padding: 28px 24px 40px;
+          order: 2;          /* on mobile: text BELOW image */
+          padding: 28px 24px 44px;
         }
 
         .noz-hero-text h1 {
@@ -56,53 +46,69 @@ export async function HeroSection({ basePath }: HeroSectionProps) {
           font-size: 13px;
           color: #555555;
           line-height: 1.75;
-          margin: 0 0 24px 0;
+          margin: 0 0 26px 0;
         }
 
         .noz-hero-btn {
           display: inline-block;
           background-color: #1a1a1a;
-          color: #ffffff;
+          color: #ffffff !important;
           font-size: 11px;
           font-weight: 600;
           letter-spacing: 0.12em;
           text-transform: uppercase;
           padding: 13px 28px;
-          text-decoration: none;
+          text-decoration: none !important;
+          transition: background-color 0.2s;
         }
-
         .noz-hero-btn:hover {
           background-color: #333333;
         }
 
-        /* ── DESKTOP: side-by-side, text left, image right ── */
+        /* ── IMAGE block ── */
+        .noz-hero-image-wrap {
+          order: 1;          /* on mobile: image ON TOP */
+          width: 100%;
+        }
+        .noz-hero-image-wrap img {
+          width: 100%;
+          height: auto;
+          display: block;
+          object-fit: contain;
+        }
+
+        /* ── DESKTOP: side by side ── */
         @media (min-width: 768px) {
           .noz-hero-inner {
             flex-direction: row;
             align-items: center;
-            min-height: 520px;
+            min-height: 500px;
             max-width: 1400px;
             margin: 0 auto;
             padding: 0 48px;
           }
 
+          /* text on LEFT */
           .noz-hero-text {
-            flex: 0 0 42%;
-            padding: 60px 40px 60px 16px;
+            order: 1;
+            flex: 0 0 40%;
+            padding: 60px 40px 60px 0;
           }
 
           .noz-hero-text h1 {
-            font-size: clamp(1.7rem, 2.8vw, 2.5rem);
-            margin-bottom: 18px;
+            font-size: clamp(1.6rem, 2.5vw, 2.3rem);
+            margin-bottom: 16px;
           }
 
           .noz-hero-text p {
-            font-size: 14px;
+            font-size: 13.5px;
             margin-bottom: 32px;
           }
 
+          /* image on RIGHT */
           .noz-hero-image-wrap {
-            flex: 0 0 58%;
+            order: 2;
+            flex: 0 0 60%;
             display: flex;
             justify-content: flex-end;
             align-items: flex-end;
@@ -110,20 +116,22 @@ export async function HeroSection({ basePath }: HeroSectionProps) {
           }
 
           .noz-hero-image-wrap img {
-            max-width: 600px;
-            width: 100%;
+            max-width: 580px;
           }
         }
 
-        @media (min-width: 1024px) {
+        @media (min-width: 1200px) {
           .noz-hero-inner {
-            padding: 0 64px;
+            padding: 0 80px;
           }
           .noz-hero-text {
-            flex: 0 0 38%;
+            flex: 0 0 36%;
           }
           .noz-hero-image-wrap {
-            flex: 0 0 62%;
+            flex: 0 0 64%;
+          }
+          .noz-hero-image-wrap img {
+            max-width: 660px;
           }
         }
       `}</style>
@@ -131,21 +139,7 @@ export async function HeroSection({ basePath }: HeroSectionProps) {
       <section className="noz-hero">
         <div className="noz-hero-inner">
 
-          {/* TEXT — on mobile comes after image (order matters in flex column) */}
-          {/* We render image first in DOM to match nozfragrances.com mobile layout */}
-
-          {/* IMAGE */}
-          <div className="noz-hero-image-wrap">
-            <Image
-              src="/hero-image.webp"
-              alt="NOZ Fragrances - Premium Perfume"
-              width={700}
-              height={700}
-              priority
-            />
-          </div>
-
-          {/* TEXT */}
+          {/* TEXT — left on desktop, below on mobile (via CSS order) */}
           <div className="noz-hero-text">
             <h1>
               The Perfume House for the{" "}
@@ -159,6 +153,17 @@ export async function HeroSection({ basePath }: HeroSectionProps) {
             <Link href={`${basePath}/products`} className="noz-hero-btn">
               Shop All
             </Link>
+          </div>
+
+          {/* IMAGE — right on desktop, top on mobile (via CSS order) */}
+          <div className="noz-hero-image-wrap">
+            <Image
+              src="/hero-image.webp"
+              alt="NOZ Fragrances - Premium Perfume"
+              width={700}
+              height={700}
+              priority
+            />
           </div>
 
         </div>
