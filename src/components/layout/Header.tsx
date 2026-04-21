@@ -108,7 +108,7 @@ export async function Header({ rootCategories, basePath, locale }: HeaderProps) 
             style={{
               fontSize: "14px",
               fontWeight: 400,
-              letterSpacing: "0.04em",
+              letterSpacing: "0.05em",
               color: "#1a1a1a",
               textDecoration: "none",
               textTransform: "uppercase",
