@@ -15,30 +15,24 @@ interface NoteItem {
 /**
  * ProductNotes
  * -----------
- * Reads from a custom field named "notes" on the Spree product.
+ * Reads from a custom field with label "Notes" on the Spree product.
  *
- * In Spree Admin → Product → Custom Fields, create a field:
- *   - Name: "notes"
- *   - Type: JSON
- *   - Value (example):
- *     [
- *       { "name": "Pear", "image": "https://cdn.../pear.jpg" },
- *       { "name": "Lavender", "image": "https://cdn.../lavender.jpg" }
- *     ]
+ * In Spree Admin → Product → Custom Fields, create:
+ *   Label: "Notes"   Type: JSON
+ *   Value: [{"name":"Pear","image":"https://cdn.../pear.jpg"},{"name":"Lavender"}]
  *
- * If no image is provided for a note, a text-only tile is shown.
- * The component is fully dynamic — each product can have different notes.
+ * Each note can optionally include an image URL.
+ * If no image, a letter-fallback tile is shown.
  */
 export function ProductNotes({ customFields }: ProductNotesProps) {
   if (!customFields || customFields.length === 0) return null;
 
-  // Find the "notes" custom field (case-insensitive)
+  // Match by label (case-insensitive)
   const notesField = customFields.find(
-    (f) => f.name?.toLowerCase() === "notes",
+    (f) => f.label?.toLowerCase() === "notes",
   );
   if (!notesField) return null;
 
-  // Parse JSON value — supports both string and object
   let notes: NoteItem[] = [];
   try {
     const raw =
@@ -79,7 +73,6 @@ export function ProductNotes({ customFields }: ProductNotesProps) {
               gap: "6px",
             }}
           >
-            {/* Note image tile */}
             <div
               style={{
                 width: "70px",
@@ -100,7 +93,6 @@ export function ProductNotes({ customFields }: ProductNotesProps) {
                   style={{ objectFit: "cover" }}
                 />
               ) : (
-                // Fallback: first letter of note name
                 <div
                   style={{
                     width: "100%",
@@ -117,7 +109,6 @@ export function ProductNotes({ customFields }: ProductNotesProps) {
                 </div>
               )}
             </div>
-            {/* Note label */}
             <span
               style={{
                 fontSize: "11px",
