@@ -19,7 +19,7 @@ export function AnnouncementBar() {
   return (
     <div
       style={{
-        backgroundColor: "#ffffff",
+        backgroundColor: "#F5F5F4",
         borderBottom: "1px solid #ebebeb",
         height: "36px",
         overflow: "hidden",
@@ -49,14 +49,14 @@ export function AnnouncementBar() {
           font-size: 12px;
           font-weight: 500;
           letter-spacing: 0.06em;
-          color: #EF776A;
+          color: #000000;
           white-space: nowrap;
           font-family: inherit;
         }
         .noz-marquee-dot {
           display: inline-block;
           margin-left: 48px;
-          color: #EF776A;
+          color: #000000;
           opacity: 0.35;
           font-size: 7px;
         }
