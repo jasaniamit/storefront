@@ -1,121 +1,145 @@
-<style>{`
-  .noz-hero { background: #fff; width: 100%; }
+import Link from "next/link";
+import Image from "next/image";
 
-  .noz-hero-inner {
-    display: flex;
-    flex-direction: column;
-  }
+interface HeroSectionProps {
+  basePath: string;
+  locale: string;
+}
 
-  .noz-hero-image-wrap {
-    order: 1;
-    width: 100%;
-  }
+const BRAND = "#546470";
 
-  .noz-hero-img {
-    width: 100% !important;
-    height: auto !important;
-    display: block !important;
-    object-fit: contain !important;
-    max-width: 100% !important;
-  }
+export function HeroSection({ basePath }: HeroSectionProps) {
+  return (
+    <>
+      <style>{`
+        .noz-hero { background: #fff; width: 100%; }
 
-  .noz-hero-text {
-    order: 2;
-    padding: 24px 20px 40px;
-  }
+        .noz-hero-inner {
+          display: flex;
+          flex-direction: column;
+        }
 
-  /* ✅ HEADING FIX */
-  .noz-hero-text h1 {
-    font-family: var(--font-inter), Inter, sans-serif;
-    font-size: 30px;           /* updated */
-    font-weight: 400;
-    line-height: 1.3;          /* updated */
-    color: ${BRAND};
-    margin: 0 0 16px 0;        /* updated */
-  }
+        .noz-hero-image-wrap {
+          order: 1;
+          width: 100%;
+        }
 
-  .noz-hero-text h1 strong {
-    font-weight: 500;          /* updated (was 700) */
-    color: ${BRAND};
-    display: inline;
-  }
+        .noz-hero-img {
+          width: 100% !important;
+          height: auto !important;
+          display: block !important;
+          object-fit: contain !important;
+          max-width: 100% !important;
+        }
 
-  /* ✅ PARAGRAPH FIX */
-  .noz-hero-text p {
-    font-family: var(--font-inter), Inter, sans-serif;
-    font-size: 14px;           /* updated */
-    color: ${BRAND};
-    line-height: 1.6;          /* updated */
-    margin: 0 0 24px 0;        /* updated */
-  }
+        .noz-hero-text {
+          order: 2;
+          padding: 24px 20px 40px;
+        }
 
-  /* ✅ BUTTON FIX */
-  .noz-hero-btn {
-    display: inline-block !important;
-    background-color: #000000 !important;   /* updated */
-    color: #ffffff !important;
-    font-family: var(--font-inter), Inter, sans-serif !important;
-    font-size: 14px !important;             /* updated */
-    font-weight: 500 !important;            /* updated */
-    padding: 12px 20px !important;          /* updated */
-    border-radius: 6px !important;
-    text-decoration: none !important;
-    transition: opacity 0.2s !important;
-    border: none !important;
-    outline: none !important;
+        /* ✅ EXACT TEXT FIX */
+        .noz-hero-text h1 {
+          font-family: var(--font-inter), Inter, sans-serif;
+          font-size: 30px;
+          font-weight: 400;
+          line-height: 1.2;
+          color: ${BRAND};
+          margin: 0 0 12px 0;
+        }
 
-    /* removed noz-style uppercase look */
-    letter-spacing: normal !important;
-    text-transform: none !important;
-  }
+        .noz-hero-text h1 strong {
+          font-weight: 700;
+        }
 
-  .noz-hero-btn:hover {
-    opacity: 0.82 !important;
-  }
+        .noz-hero-text p {
+          font-family: var(--font-inter), Inter, sans-serif;
+          font-size: 30px;
+          line-height: 1.2;
+          color: ${BRAND};
+          margin: 0 0 22px 0;
+        }
 
-  /* DESKTOP (unchanged layout, only font sizes removed overrides) */
-  @media (min-width: 768px) {
-    .noz-hero-inner {
-      flex-direction: row;
-      align-items: center;
-      min-height: 500px;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 64px;
-    }
+        /* ✅ BUTTON FIX */
+        .noz-hero-btn {
+          display: inline-block !important;
+          background-color: #000000 !important;
+          color: #ffffff !important;
+          font-family: var(--font-inter), Inter, sans-serif !important;
+          font-size: 14px !important;
+          padding: 12px 20px !important;
+          border-radius: 6px !important;
+          text-decoration: none !important;
+          border: none !important;
+        }
 
-    .noz-hero-text {
-      order: 1;
-      flex: 0 0 38%;
-      padding: 56px 36px 56px 0;
-    }
+        .noz-hero-btn:hover { opacity: 0.85 !important; }
 
-    /* ❌ removed clamp override to keep 30px consistent */
-    .noz-hero-text h1 {
-      margin-bottom: 16px;
-    }
+        @media (min-width: 768px) {
+          .noz-hero-inner {
+            flex-direction: row;
+            align-items: center;
+            min-height: 500px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 64px;
+          }
 
-    .noz-hero-text p {
-      margin-bottom: 24px;
-    }
+          .noz-hero-text {
+            order: 1;
+            flex: 0 0 38%;
+            padding: 56px 36px 56px 0;
+          }
 
-    .noz-hero-image-wrap {
-      order: 2;
-      flex: 0 0 62%;
-      display: flex;
-      justify-content: flex-end;
-      align-items: flex-end;
-      align-self: flex-end;
-    }
+          .noz-hero-image-wrap {
+            order: 2;
+            flex: 0 0 62%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-end;
+          }
 
-    .noz-hero-img {
-      max-width: 560px !important;
-      width: 100% !important;
-    }
-  }
+          .noz-hero-img {
+            max-width: 560px !important;
+          }
+        }
 
-  @media (min-width: 1200px) {
-    .noz-hero-inner { padding: 0 80px; }
-    .noz-hero-img { max-width: 650px !important; }
-  }
-`}</style>
+        @media (min-width: 1200px) {
+          .noz-hero-inner { padding: 0 80px; }
+          .noz-hero-img { max-width: 650px !important; }
+        }
+      `}</style>
+
+      <section className="noz-hero">
+        <div className="noz-hero-inner">
+
+          <div className="noz-hero-text">
+            <h1>
+              The Perfume House for the <strong>NEXT GENERATION</strong>
+            </h1>
+            <p>
+              Premium-Quality fragrances.<br />
+              No excessive markups. Crafted with heart,<br />
+              Proud to be Indian Brand.
+            </p>
+
+            <Link href={`${basePath}/products`} className="noz-hero-btn">
+              Shop All
+            </Link>
+          </div>
+
+          <div className="noz-hero-image-wrap">
+            <Image
+              src="/hero-image.webp"
+              alt="NOZ Fragrances - Premium Perfume"
+              width={700}
+              height={700}
+              priority
+              className="noz-hero-img"
+            />
+          </div>
+
+        </div>
+      </section>
+    </>
+  );
+}
