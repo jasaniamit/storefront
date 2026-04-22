@@ -11,7 +11,7 @@ const messages = [
 
 export function AnnouncementBar() {
   const [index, setIndex] = useState(0);
-  const [phase, setPhase] = useState<"enter" | "hold" | "exit" | "idle">("enter");
+  const [phase, setPhase] = useState<"enter" | "hold" | "exit" | "hidden">("enter");
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
@@ -21,12 +21,14 @@ export function AnnouncementBar() {
     } else if (phase === "hold") {
       timer = setTimeout(() => setPhase("exit"), 2500);
     } else if (phase === "exit") {
-      timer = setTimeout(() => setPhase("idle"), 500);
-    } else if (phase === "idle") {
+      // 🔥 wait for exit animation, then hide completely
+      timer = setTimeout(() => setPhase("hidden"), 500);
+    } else if (phase === "hidden") {
+      // 🔥 now switch text AFTER it's gone
       timer = setTimeout(() => {
         setIndex((i) => (i + 1) % messages.length);
         setPhase("enter");
-      }, 150); // small gap → prevents overlap completely
+      }, 100);
     }
 
     return () => clearTimeout(timer);
@@ -35,7 +37,7 @@ export function AnnouncementBar() {
   return (
     <div
       style={{
-        backgroundColor: "#F5F5F4",
+        backgroundColor: "#f5f5f4", // ✅ FIXED
         borderBottom: "1px solid #e5e5e5",
         height: "32px",
         overflow: "hidden",
@@ -47,13 +49,13 @@ export function AnnouncementBar() {
     >
       <style>{`
         @keyframes slideIn {
-          from { transform: translateX(110%); opacity: 0; }
-          to   { transform: translateX(0); opacity: 1; }
+          from { transform: translateX(110%); }
+          to   { transform: translateX(0); }
         }
 
         @keyframes slideOut {
-          from { transform: translateX(0); opacity: 1; }
-          to   { transform: translateX(-130%); opacity: 0; }
+          from { transform: translateX(0); }
+          to   { transform: translateX(-130%); }
         }
 
         .text {
@@ -65,26 +67,24 @@ export function AnnouncementBar() {
         }
 
         .enter {
-          animation: slideIn 0.6s ease forwards;
+          animation: slideIn 0.6s ease;
         }
 
         .hold {
           transform: translateX(0);
-          opacity: 1;
         }
 
         .exit {
-          animation: slideOut 0.5s ease forwards;
-        }
-
-        .idle {
-          opacity: 0;
+          animation: slideOut 0.5s ease;
         }
       `}</style>
 
-      <span key={index} className={`text ${phase}`}>
-        {messages[index]}
-      </span>
+      {/* 🔥 KEY FIX: unmount when hidden */}
+      {phase !== "hidden" && (
+        <span key={index} className={`text ${phase}`}>
+          {messages[index]}
+        </span>
+      )}
     </div>
   );
 }
