@@ -56,30 +56,41 @@ export async function Header({ rootCategories, basePath, locale }: HeaderProps) 
 
   return (
     <div className="sticky top-0 z-50 bg-white">
-      {/* Header Top */}
+
+      {/* ───── TOP HEADER (LOGO ROW) ───── */}
       <div className="[&>header]:static [&>header]:border-b-0 [&>header]:z-auto">
         <SearchToggle
           basePath={basePath}
           left={
             <LazyMobileMenu rootCategories={rootCategories} basePath={basePath} />
           }
+
+          {/* ✅ STABLE CENTER BLOCK */}
           center={
-            <Link href={basePath || "/"} className="flex items-center pt-2 pb-4">
-              <Image
-                src="/noz.svg"
-                alt={storeName}
-                width={106}
-                height={41}
-                priority
-                style={{ width: "106px", height: "41px", objectFit: "contain" }}
-              />
-            </Link>
+            <div className="flex items-center justify-center h-[72px] w-full">
+              <Link href={basePath || "/"}>
+                <Image
+                  src="/noz.svg"
+                  alt={storeName}
+                  width={106}
+                  height={41}
+                  priority
+                  style={{
+                    width: "106px",
+                    height: "41px",
+                    objectFit: "contain",
+                  }}
+                />
+              </Link>
+            </div>
           }
+
           rightStart={
             <div className="hidden lg:block">
               <LazyCountrySwitcher />
             </div>
           }
+
           rightEnd={
             <>
               <div className="hidden md:block">
@@ -95,12 +106,12 @@ export async function Header({ rootCategories, basePath, locale }: HeaderProps) 
         />
       </div>
 
-      {/* Nav Bar */}
+      {/* ───── NAVBAR ───── */}
       <nav
         aria-label="Main navigation"
         className="hidden lg:flex items-center justify-center gap-8 border-b border-gray-200"
         style={{
-          height: "44px", // balanced height
+          height: "44px",
         }}
       >
         {NAV_LINKS.map((link) => (
@@ -109,7 +120,7 @@ export async function Header({ rootCategories, basePath, locale }: HeaderProps) 
             href={`${basePath}${link.href}`}
             style={{
               fontSize: "14px",
-              fontWeight: 400, 
+              fontWeight: 400, // ✅ as requested
               letterSpacing: "0.05em",
               color: "#1a1a1a",
               textDecoration: "none",
