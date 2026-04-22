@@ -46,7 +46,7 @@ export async function Header({ rootCategories, basePath, locale }: HeaderProps) 
     <div className="sticky top-0 z-50 bg-white">
 
       {/* TOP HEADER */}
-      <div>
+      <div className="[&>header]:border-b-0">
         <SearchToggle
           basePath={basePath}
           left={
