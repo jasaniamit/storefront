@@ -2,7 +2,7 @@ import { GoogleTagManager } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Geist } from "next/font/google";
 import "./globals.css";
 import { Suspense } from "react";
 import { CartProvider } from "@/contexts/CartContext";
@@ -19,8 +19,8 @@ const spreeApiOrigin = (() => {
   }
 })();
 
-const geist = Inter({
-  variable: "--font-inter",
+const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
   display: "swap",
 });
