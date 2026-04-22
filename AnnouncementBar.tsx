@@ -1,12 +1,6 @@
-import React from "react";
+"use client";
 
-/**
- * AnnouncementBar
- * ---------------
- * A full-width, continuously scrolling ticker (right → left marquee).
- * Add or edit messages in the `messages` array below.
- * Placed above <Header> in the storefront layout.
- */
+import { useEffect, useState } from "react";
 
 const messages = [
   "Free Shipping On Order Above ₹999/-",
@@ -16,66 +10,81 @@ const messages = [
 ];
 
 export function AnnouncementBar() {
-  // Duplicate the list so the loop appears seamless
-  const track = [...messages, ...messages];
+  const [index, setIndex] = useState(0);
+  const [phase, setPhase] = useState<"enter" | "hold" | "exit" | "idle">("enter");
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+
+    if (phase === "enter") {
+      timer = setTimeout(() => setPhase("hold"), 600);
+    } else if (phase === "hold") {
+      timer = setTimeout(() => setPhase("exit"), 2500);
+    } else if (phase === "exit") {
+      timer = setTimeout(() => setPhase("idle"), 500);
+    } else if (phase === "idle") {
+      timer = setTimeout(() => {
+        setIndex((i) => (i + 1) % messages.length);
+        setPhase("enter");
+      }, 150); // small gap → prevents overlap completely
+    }
+
+    return () => clearTimeout(timer);
+  }, [phase]);
 
   return (
     <div
-      className="w-full overflow-hidden"
       style={{
         backgroundColor: "#F5F5F4",
-        borderBottom: "1px solid #f0f0f0",
-        height: "36px",
+        borderBottom: "1px solid #e5e5e5",
+        height: "32px",
+        overflow: "hidden",
         display: "flex",
         alignItems: "center",
+        justifyContent: "center",
+        width: "100%",
       }}
     >
       <style>{`
-        @keyframes noz-marquee {
-          0%   { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
+        @keyframes slideIn {
+          from { transform: translateX(110%); opacity: 0; }
+          to   { transform: translateX(0); opacity: 1; }
         }
-        .noz-marquee-track {
-          display: flex;
-          width: max-content;
-          animation: noz-marquee 28s linear infinite;
-          will-change: transform;
+
+        @keyframes slideOut {
+          from { transform: translateX(0); opacity: 1; }
+          to   { transform: translateX(-130%); opacity: 0; }
         }
-        .noz-marquee-track:hover {
-          animation-play-state: paused;
+
+        .text {
+          font-size: 14px;
+          font-weight: 400;
+          letter-spacing: 0.03em;
+          color: #000;
+          white-space: nowrap;
+        }
+
+        .enter {
+          animation: slideIn 0.6s ease forwards;
+        }
+
+        .hold {
+          transform: translateX(0);
+          opacity: 1;
+        }
+
+        .exit {
+          animation: slideOut 0.5s ease forwards;
+        }
+
+        .idle {
+          opacity: 0;
         }
       `}</style>
 
-      <div className="noz-marquee-track" aria-hidden="false">
-        {track.map((msg, i) => (
-          <span
-            key={i}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              paddingInline: "48px",
-              fontSize: "12px",
-              fontWeight: 320,
-              letterSpacing: "0.06em",
-              color: "#EF776A",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {msg}
-            <span
-              style={{
-                display: "inline-block",
-                marginLeft: "48px",
-                color: "#EF776A",
-                opacity: 0.4,
-                fontSize: "8px",
-              }}
-            >
-              ✦
-            </span>
-          </span>
-        ))}
-      </div>
+      <span key={index} className={`text ${phase}`}>
+        {messages[index]}
+      </span>
     </div>
   );
 }
