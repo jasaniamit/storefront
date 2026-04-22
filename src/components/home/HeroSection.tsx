@@ -35,45 +35,57 @@ export function HeroSection({ basePath }: HeroSectionProps) {
         .noz-hero-text {
           order: 2;
           padding: 24px 20px 40px;
+          max-width: 536px;
         }
 
-        /* ✅ EXACT TEXT FIX */
+        /* ✅ HEADING — matches noz */
         .noz-hero-text h1 {
           font-family: var(--font-inter), Inter, sans-serif;
-          font-size: 30px;
-          font-weight: 400;
-          line-height: 1.2;
+          font-size: 24px;
+          font-weight: 500;
+          line-height: 1.3;
           color: ${BRAND};
-          margin: 0 0 12px 0;
+          margin: 0 0 8px 0;
+        }
+
+        @media (min-width: 768px) {
+          .noz-hero-text h1 {
+            font-size: 30px;
+          }
         }
 
         .noz-hero-text h1 strong {
-          font-weight: 700;
+          font-weight: 600;
         }
 
+        /* ✅ PARAGRAPH */
         .noz-hero-text p {
           font-family: var(--font-inter), Inter, sans-serif;
-          font-size: 16px;
-          line-height: 1.2;
+          font-size: 14px;
+          line-height: 1.6;
           color: ${BRAND};
-          margin: 0 0 22px 0;
+          margin: 0 0 16px 0;
         }
 
-        /* ✅ BUTTON FIX */
+        /* ✅ BUTTON */
         .noz-hero-btn {
           display: inline-block !important;
           background-color: #000000 !important;
           color: #ffffff !important;
           font-family: var(--font-inter), Inter, sans-serif !important;
           font-size: 14px !important;
+          font-weight: 500 !important;
           padding: 12px 20px !important;
           border-radius: 6px !important;
           text-decoration: none !important;
           border: none !important;
         }
 
-        .noz-hero-btn:hover { opacity: 0.85 !important; }
+        .noz-hero-btn:hover {
+          opacity: 0.85 !important;
+        }
 
+        /* DESKTOP */
         @media (min-width: 768px) {
           .noz-hero-inner {
             flex-direction: row;
@@ -104,18 +116,26 @@ export function HeroSection({ basePath }: HeroSectionProps) {
         }
 
         @media (min-width: 1200px) {
-          .noz-hero-inner { padding: 0 80px; }
-          .noz-hero-img { max-width: 650px !important; }
+          .noz-hero-inner {
+            padding: 0 80px;
+          }
+
+          .noz-hero-img {
+            max-width: 650px !important;
+          }
         }
       `}</style>
 
       <section className="noz-hero">
         <div className="noz-hero-inner">
 
+          {/* TEXT */}
           <div className="noz-hero-text">
             <h1>
-              The Perfume House for the <strong>NEXT GENERATION</strong>
+              The Perfume House for the<br />
+              <strong>NEXT GENERATION</strong>
             </h1>
+
             <p>
               Premium-Quality fragrances.<br />
               No excessive markups. Crafted with heart,<br />
@@ -127,6 +147,7 @@ export function HeroSection({ basePath }: HeroSectionProps) {
             </Link>
           </div>
 
+          {/* IMAGE */}
           <div className="noz-hero-image-wrap">
             <Image
               src="/hero-image.webp"
