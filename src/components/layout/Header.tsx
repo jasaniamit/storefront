@@ -57,15 +57,12 @@ export async function Header({ rootCategories, basePath, locale }: HeaderProps) 
   return (
     <div className="sticky top-0 z-50 bg-white">
 
-      {/* ───── TOP HEADER (LOGO ROW) ───── */}
       <div className="[&>header]:static [&>header]:border-b-0 [&>header]:z-auto">
         <SearchToggle
           basePath={basePath}
           left={
             <LazyMobileMenu rootCategories={rootCategories} basePath={basePath} />
           }
-
-          {/* ✅ STABLE CENTER BLOCK */}
           center={
             <div className="flex items-center justify-center h-[72px] w-full">
               <Link href={basePath || "/"}>
@@ -84,13 +81,11 @@ export async function Header({ rootCategories, basePath, locale }: HeaderProps) 
               </Link>
             </div>
           }
-
           rightStart={
             <div className="hidden lg:block">
               <LazyCountrySwitcher />
             </div>
           }
-
           rightEnd={
             <>
               <div className="hidden md:block">
@@ -106,13 +101,10 @@ export async function Header({ rootCategories, basePath, locale }: HeaderProps) 
         />
       </div>
 
-      {/* ───── NAVBAR ───── */}
       <nav
         aria-label="Main navigation"
         className="hidden lg:flex items-center justify-center gap-8 border-b border-gray-200"
-        style={{
-          height: "44px",
-        }}
+        style={{ height: "44px" }}
       >
         {NAV_LINKS.map((link) => (
           <Link
@@ -120,7 +112,7 @@ export async function Header({ rootCategories, basePath, locale }: HeaderProps) 
             href={`${basePath}${link.href}`}
             style={{
               fontSize: "14px",
-              fontWeight: 400, // ✅ as requested
+              fontWeight: 400,
               letterSpacing: "0.05em",
               color: "#1a1a1a",
               textDecoration: "none",
