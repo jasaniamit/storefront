@@ -46,7 +46,7 @@ export async function Header({ rootCategories, basePath, locale }: HeaderProps) 
     <div className="sticky top-0 z-50 bg-white">
 
       {/* TOP HEADER */}
-      <div className="border-b border-gray-200">
+      <div>
         <SearchToggle
           basePath={basePath}
           left={
@@ -100,7 +100,7 @@ export async function Header({ rootCategories, basePath, locale }: HeaderProps) 
             <Link
               key={link.label}
               href={`${basePath}${link.href}`}
-              className="text-[13px] tracking-widest uppercase text-[#1a1a1a] hover:text-[#e86c5f] transition"
+              className="text-[14px] tracking-widest uppercase text-[#1a1a1a] hover:text-[#e86c5f] transition"
             >
               {link.label}
             </Link>
