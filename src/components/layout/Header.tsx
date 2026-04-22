@@ -14,6 +14,11 @@ const LazyMobileMenu = dynamic(
     import("@/components/layout/MobileMenu").then((mod) => ({
       default: mod.MobileMenu,
     })),
+  {
+    loading: () => (
+      <div className="inline-flex items-center justify-center h-10 w-10" />
+    ),
+  },
 );
 
 const LazyCountrySwitcher = dynamic(
@@ -21,10 +26,18 @@ const LazyCountrySwitcher = dynamic(
     import("@/components/layout/CountrySwitcher").then((mod) => ({
       default: mod.CountrySwitcher,
     })),
+  {
+    loading: () => (
+      <div className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-400">
+        <div className="w-4 h-4 border-2 border-gray-300 border-t-transparent rounded-full animate-spin" />
+      </div>
+    ),
+  },
 );
 
 const storeName = getStoreName();
 
+// ── Nav links matching nozfragrances.com ──────────────────────────────────────
 const NAV_LINKS = [
   { label: "10ML", href: "/c/10ml" },
   { label: "2ML SAMPLES", href: "/c/2ml-samples" },
@@ -44,66 +57,70 @@ export async function Header({ rootCategories, basePath, locale }: HeaderProps) 
 
   return (
     <div className="sticky top-0 z-50 bg-white">
-
-      {/* TOP BAR */}
-      <div className="border-b border-gray-200">
+      {/* Neutralize SearchToggle's own sticky+border — we control those here */}
+      <div className="[&>header]:static [&>header]:border-b-0 [&>header]:z-auto">
         <SearchToggle
-          basePath={basePath}
-          left={
-            <LazyMobileMenu rootCategories={rootCategories} basePath={basePath} />
-          }
-          center={
-            <div className="flex flex-col items-center justify-center pt-[15px] pb-[10px]">
-
-              {/* LOGO */}
-              <Link href={basePath || "/"}>
-                <Image
-                  src="/noz.svg"
-                  alt={storeName}
-                  width={120}
-                  height={45}
-                  priority
-                  style={{
-                    objectFit: "contain",
-                  }}
-                />
-              </Link>
-
+        basePath={basePath}
+        left={
+          <LazyMobileMenu rootCategories={rootCategories} basePath={basePath} />
+        }
+        center={
+          <Link href={basePath || "/"} className="flex items-center">
+            <Image
+              src="/noz.svg"
+              alt={storeName}
+              width={106}
+              height={41}
+              priority
+              style={{ width: "106px", height: "41px", objectFit: "contain" }}
+            />
+          </Link>
+        }
+        rightStart={
+          <div className="hidden lg:block">
+            <LazyCountrySwitcher />
+          </div>
+        }
+        rightEnd={
+          <>
+            <div className="hidden md:block">
+              <Button variant="ghost" size="icon-lg" asChild>
+                <Link href={`${basePath}/account`} aria-label={t("account")}>
+                  <User className="size-5" />
+                </Link>
+              </Button>
             </div>
-          }
-          rightStart={
-            <div className="hidden lg:block">
-              <LazyCountrySwitcher />
-            </div>
-          }
-          rightEnd={
-            <>
-              <div className="hidden md:block">
-                <Button variant="ghost" size="icon-lg" asChild>
-                  <Link href={`${basePath}/account`} aria-label={t("account")}>
-                    <User className="size-5" />
-                  </Link>
-                </Button>
-              </div>
-              <CartButton />
-            </>
-          }
-        />
+            <CartButton />
+          </>
+        }
+      />
       </div>
 
-      {/* NAVIGATION (SEPARATE ROW LIKE NOZ) */}
-      <nav className="hidden lg:flex justify-center gap-8 py-3 border-b border-gray-200">
+      {/* ── Row 2: Nav links — gap below logo, single bottom border ── */}
+      <nav
+        aria-label="Main navigation"
+        className="hidden lg:flex items-center justify-center gap-8 border-b border-gray-200"
+        style={{ height: "36px", paddingTop: "16px" }}
+      >
         {NAV_LINKS.map((link) => (
           <Link
             key={link.label}
             href={`${basePath}${link.href}`}
-            className="text-[13px] tracking-widest uppercase text-[#1a1a1a] hover:text-[#e86c5f] transition"
+            style={{
+              fontSize: "16px",
+              fontWeight: 300,
+              letterSpacing: "0.04em",
+              color: "#1a1a1a",
+              textDecoration: "none",
+              textTransform: "uppercase",
+              transition: "color 0.2s",
+            }}
+            className="hover:text-[#EF776A] transition-colors"
           >
             {link.label}
           </Link>
         ))}
       </nav>
-
     </div>
   );
 }
