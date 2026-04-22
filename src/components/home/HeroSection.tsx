@@ -53,7 +53,7 @@ export function HeroSection({ basePath }: HeroSectionProps) {
 
         .noz-hero-text p {
           font-family: var(--font-inter), Inter, sans-serif;
-          font-size: 30px;
+          font-size: 16px;
           line-height: 1.2;
           color: ${BRAND};
           margin: 0 0 22px 0;
