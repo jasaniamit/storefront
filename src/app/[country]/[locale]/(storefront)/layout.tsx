@@ -52,7 +52,6 @@ export default async function StorefrontLayout({
 
   return (
     <>
-      <AnnouncementBar />
       <Header
         rootCategories={rootCategories}
         basePath={basePath}
