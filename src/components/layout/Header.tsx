@@ -104,7 +104,6 @@ export async function Header({ rootCategories, basePath, locale }: HeaderProps) 
       <nav
         aria-label="Main navigation"
         className="hidden lg:flex items-center justify-center gap-8 border-b border-gray-200 py-3"
-        style={{ height: "48px" }}
       >
         {NAV_LINKS.map((link) => (
           <Link
