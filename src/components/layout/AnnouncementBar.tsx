@@ -11,7 +11,7 @@ const messages = [
 
 export function AnnouncementBar() {
   const [index, setIndex] = useState(0);
-  const [phase, setPhase] = useState<"enter" | "hold" | "exit">("enter");
+  const [phase, setPhase] = useState<"enter" | "hold" | "exit" | "hidden">("enter");
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
@@ -21,11 +21,14 @@ export function AnnouncementBar() {
     } else if (phase === "hold") {
       timer = setTimeout(() => setPhase("exit"), 2500);
     } else if (phase === "exit") {
-      // 🔥 IMPORTANT: wait before switching message (prevents overlap)
+      // 🔥 wait for exit animation, then hide completely
+      timer = setTimeout(() => setPhase("hidden"), 500);
+    } else if (phase === "hidden") {
+      // 🔥 now switch text AFTER it's gone
       timer = setTimeout(() => {
         setIndex((i) => (i + 1) % messages.length);
         setPhase("enter");
-      }, 600); // slightly longer than exit animation
+      }, 100);
     }
 
     return () => clearTimeout(timer);
@@ -34,51 +37,54 @@ export function AnnouncementBar() {
   return (
     <div
       style={{
-        backgroundColor: "#ffffff",
-        borderBottom: "1px solid #ebebeb",
-        height: "32px", // slimmer like reference
+        backgroundColor: "#f5f5f4", // ✅ FIXED
+        borderBottom: "1px solid #e5e5e5",
+        height: "32px",
         overflow: "hidden",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         width: "100%",
-        position: "relative",
       }}
     >
       <style>{`
-        @keyframes noz-slide-in {
+        @keyframes slideIn {
           from { transform: translateX(110%); }
           to   { transform: translateX(0); }
         }
-        @keyframes noz-slide-out {
+
+        @keyframes slideOut {
           from { transform: translateX(0); }
-          to   { transform: translateX(-130%); } /* fully gone */
+          to   { transform: translateX(-130%); }
         }
 
-        .noz-enter {
-          animation: noz-slide-in 0.6s ease forwards;
-        }
-        .noz-hold {
-          transform: translateX(0);
-        }
-        .noz-exit {
-          animation: noz-slide-out 0.5s ease forwards;
-        }
-
-        .noz-text {
+        .text {
           font-size: 14px;
           font-weight: 400;
           letter-spacing: 0.03em;
-          color: #1a1a1a;
+          color: #000;
           white-space: nowrap;
-          display: inline-block;
+        }
+
+        .enter {
+          animation: slideIn 0.6s ease;
+        }
+
+        .hold {
+          transform: translateX(0);
+        }
+
+        .exit {
+          animation: slideOut 0.5s ease;
         }
       `}</style>
 
-      {/* ✅ Only ONE element rendered → no overlap */}
-      <span key={index} className={`noz-text noz-${phase}`}>
-        {messages[index]}
-      </span>
+      {/* 🔥 KEY FIX: unmount when hidden */}
+      {phase !== "hidden" && (
+        <span key={index} className={`text ${phase}`}>
+          {messages[index]}
+        </span>
+      )}
     </div>
   );
 }
