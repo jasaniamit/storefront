@@ -64,7 +64,7 @@ export async function Header({ rootCategories, basePath, locale }: HeaderProps) 
             <LazyMobileMenu rootCategories={rootCategories} basePath={basePath} />
           }
           center={
-            <div className="flex items-center justify-center h-[72px] w-full">
+            <div className="flex items-center justify-center h-[64px]">
               <Link href={basePath || "/"}>
                 <Image
                   src="/noz.svg"
