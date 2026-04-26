@@ -53,15 +53,10 @@ export function BundleClient({
 
       const variant =
         product.default_variant ??
-        (product.variants && product.variants[0]);
-      if (!variant) return;
+        (Array.isArray(product.variants) ? product.variants[0] : undefined);
+      if (!variant?.id) return;
 
-      const image =
-        product.primary_image?.styles?.find(
-          (s: { width: number }) => s.width >= 200,
-        )?.url ??
-        product.primary_image?.original_url ??
-        "";
+      const image = product.thumbnail_url ?? "";
 
       setSelected((prev) => [
         ...prev,
@@ -601,16 +596,9 @@ export function BundleClient({
             {products.map((product) => {
               const count = countOf(product);
               const isSelected = count > 0;
-              const imgUrl =
-                product.primary_image?.styles?.find(
-                  (s: { width: number }) => s.width >= 200,
-                )?.url ??
-                product.primary_image?.original_url ??
-                null;
+              const imgUrl = product.thumbnail_url ?? null;
               const price =
-                product.default_variant?.price?.display_amount ??
-                product.price?.display_amount ??
-                "₹50";
+                product.price?.display_amount ?? "₹50";
 
               return (
                 <div
