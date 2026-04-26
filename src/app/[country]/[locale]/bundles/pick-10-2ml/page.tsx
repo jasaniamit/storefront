@@ -20,7 +20,7 @@ export default async function BundlePage({ params }: PageProps) {
   const result = await getProducts({
     filter: { taxons: "2ml-samples" },
     per_page: 100,
-    expand: ["primary_media", "variants", "option_types"],
+    expand: ["variants", "images"],
   }).catch(() => null);
 
   const products = result?.data ?? [];
