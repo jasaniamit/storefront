@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getProducts } from "@/lib/data/products";
+import { getCategory, getCategoryProducts } from "@/lib/data/categories";
 import { BundleClient } from "./BundleClient";
 
 export const metadata: Metadata = {
@@ -16,12 +16,15 @@ export default async function BundlePage({ params }: PageProps) {
   const { country, locale } = await params;
   const basePath = `/${country}/${locale}`;
 
-  // Fetch all 2ml sample products via taxon filter
-  const result = await getProducts({
-    filter: { taxons: "2ml-samples" },
-    per_page: 100,
-    expand: ["variants", "images"],
-  }).catch(() => null);
+  // Fetch the 2ml-samples category to get its ID
+  const category = await getCategory("2ml-samples").catch(() => null);
+
+  // Fetch products belonging to that category
+  const result = category
+    ? await getCategoryProducts(category.id, {
+        per_page: 100,
+      }).catch(() => null)
+    : null;
 
   const products = result?.data ?? [];
 
