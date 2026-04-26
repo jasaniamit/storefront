@@ -150,3 +150,21 @@ export async function associateCartWithUser() {
     return {};
   }, "Failed to associate cart");
 }
+
+/**
+ * Apply a coupon/promo code to the current cart.
+ * Used by the bundle page to auto-apply BUNDLE2ML silently.
+ */
+export async function applyCouponCode(code: string) {
+  return actionResult(async () => {
+    const options = await getCartOptions();
+    const cartId = await requireCartId();
+    const cart = await getClient().carts.discountCodes.apply(
+      cartId,
+      code,
+      options,
+    );
+    updateTag("cart");
+    return { cart };
+  }, "Failed to apply coupon code");
+}
