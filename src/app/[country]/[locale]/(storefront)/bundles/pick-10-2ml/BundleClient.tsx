@@ -3,9 +3,9 @@
 import type { Product } from "@spree/sdk";
 import { Check, Minus, Plus, ShoppingBag, X } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import { addToCart, applyCouponCode } from "@/lib/data/cart";
+import { useCart } from "@/contexts/CartContext";
 
 const BRAND = "#546470";
 const CORAL = "#EF776A";
@@ -36,7 +36,7 @@ export function BundleClient({
   promoCode,
   shippingNote,
 }: BundleClientProps) {
-  const router = useRouter();
+  const { openCart } = useCart();
   const [selected, setSelected] = useState<SelectedItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -103,14 +103,14 @@ export function BundleClient({
     [selected],
   );
 
-  // Add all to cart + apply promo silently
+  // Add all to cart + apply promo silently + open cart drawer
   const handleAddToCart = useCallback(async () => {
     if (!isComplete) return;
     setLoading(true);
     setError(null);
 
     try {
-      // Add all items to cart (sequentially to avoid race on cart creation)
+      // Add all items to cart sequentially to avoid race on cart creation
       for (const item of selected) {
         const result = await addToCart(item.variantId, 1);
         if (!result.success) throw new Error(result.error ?? "Failed to add item");
@@ -119,15 +119,16 @@ export function BundleClient({
       // Auto-apply promo code silently
       await applyCouponCode(promoCode);
 
-      // Redirect to cart
-      router.push(`${basePath}/cart`);
+      // Open cart drawer — same UX as adding a single product
+      openCart();
+      setLoading(false);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Something went wrong. Please try again.",
       );
       setLoading(false);
     }
-  }, [isComplete, selected, promoCode, basePath, router]);
+  }, [isComplete, selected, promoCode, openCart]);
 
   // Slots display
   const slots = useMemo(
