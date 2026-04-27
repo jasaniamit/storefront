@@ -51,6 +51,9 @@ export function BundleClient({
     (product: Product) => {
       if (totalSelected >= bundleSize) return;
 
+      // Block out of stock products
+      if (product.in_stock === false || product.purchasable === false) return;
+
       // default_variant_id is always present; default_variant only when expanded
       const variantId =
         product.default_variant?.id ??
@@ -318,7 +321,7 @@ export function BundleClient({
           grid-template-columns: repeat(2, 1fr);
           gap: 12px;
         }
-        @media (min-width: 480px) {
+        @media (min-width: 640px) {
           .bundle-grid { grid-template-columns: repeat(3, 1fr); }
         }
         @media (min-width: 768px) {
@@ -612,22 +615,47 @@ export function BundleClient({
               const count = countOf(product);
               const isSelected = count > 0;
               const imgUrl = product.thumbnail_url ?? null;
-              const price =
-                product.price?.display_amount ?? "₹50";
+              const price = product.price?.display_amount ?? "₹50";
+
+              // Out of stock check
+              const inStock = product.in_stock !== false && product.purchasable !== false;
 
               return (
                 <div
                   key={product.id}
-                  className={`bundle-card ${isSelected ? "selected-card" : ""}`}
+                  className={`bundle-card ${isSelected ? "selected-card" : ""} ${!inStock ? "out-of-stock-card" : ""}`}
                 >
                   {isSelected && (
-                    <div className="bundle-card-badge">
-                      {count}
+                    <div className="bundle-card-badge">{count}</div>
+                  )}
+
+                  {/* Out of stock overlay */}
+                  {!inStock && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "8px",
+                        left: "8px",
+                        background: "rgba(0,0,0,0.55)",
+                        color: "#fff",
+                        fontSize: "9px",
+                        fontWeight: 700,
+                        letterSpacing: "0.08em",
+                        textTransform: "uppercase",
+                        padding: "3px 7px",
+                        borderRadius: "4px",
+                        zIndex: 3,
+                      }}
+                    >
+                      Out of Stock
                     </div>
                   )}
 
                   {/* Image */}
-                  <div className="bundle-card-img-wrap">
+                  <div
+                    className="bundle-card-img-wrap"
+                    style={{ opacity: inStock ? 1 : 0.45 }}
+                  >
                     {imgUrl ? (
                       <img src={imgUrl} alt={product.name} loading="lazy" />
                     ) : (
@@ -649,11 +677,24 @@ export function BundleClient({
 
                   {/* Body */}
                   <div className="bundle-card-body">
-                    <p className="bundle-card-name">{product.name}</p>
+                    <p className="bundle-card-name" style={{ opacity: inStock ? 1 : 0.5 }}>
+                      {product.name}
+                    </p>
                     <div className="bundle-card-actions">
                       <span className="bundle-card-price">{price}</span>
 
-                      {isSelected ? (
+                      {!inStock ? (
+                        /* Out of stock — disabled button */
+                        <button
+                          className="bundle-add-btn"
+                          disabled
+                          aria-label="Out of stock"
+                          title="Out of stock"
+                          style={{ borderColor: "#ddd", color: "#ddd", cursor: "not-allowed" }}
+                        >
+                          <Plus size={13} strokeWidth={2.5} />
+                        </button>
+                      ) : isSelected ? (
                         /* Stepper when already selected */
                         <div className="bundle-card-stepper">
                           <button
