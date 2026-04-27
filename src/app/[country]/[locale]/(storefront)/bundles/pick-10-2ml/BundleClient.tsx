@@ -4,7 +4,7 @@ import type { Product } from "@spree/sdk";
 import { Check, Minus, Plus, ShoppingBag, X } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useMemo, useState } from "react";
-import { addToCart, applyCouponCode } from "@/lib/data/cart";
+import { applyCouponCode } from "@/lib/data/cart";
 import { useCart } from "@/contexts/CartContext";
 
 const BRAND = "#546470";
@@ -36,7 +36,7 @@ export function BundleClient({
   promoCode,
   shippingNote,
 }: BundleClientProps) {
-  const { openCart } = useCart();
+  const { openCart, addItem } = useCart();
   const [selected, setSelected] = useState<SelectedItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -110,10 +110,9 @@ export function BundleClient({
     setError(null);
 
     try {
-      // Add all items to cart sequentially to avoid race on cart creation
+      // Add all items using useCart's addItem which updates React state + backend
       for (const item of selected) {
-        const result = await addToCart(item.variantId, 1);
-        if (!result.success) throw new Error(result.error ?? "Failed to add item");
+        await addItem(item.variantId, 1);
       }
 
       // Auto-apply promo code silently
@@ -128,7 +127,7 @@ export function BundleClient({
       );
       setLoading(false);
     }
-  }, [isComplete, selected, promoCode, openCart]);
+  }, [isComplete, selected, promoCode, addItem, openCart]);
 
   // Slots display
   const slots = useMemo(
