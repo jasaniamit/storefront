@@ -199,6 +199,10 @@ export function BundleClient({
           top: 0;
           z-index: 30;
         }
+        .bundle-progress-inner {
+          max-width: 760px;
+          margin: 0 auto;
+        }
         .bundle-progress-label {
           display: flex;
           justify-content: space-between;
@@ -233,11 +237,15 @@ export function BundleClient({
           border-bottom: 1px solid #ebebeb;
           padding: 16px 24px;
           overflow-x: auto;
+          display: flex;
+          justify-content: center;
         }
         .bundle-slots-inner {
           display: flex;
           gap: 8px;
-          min-width: max-content;
+          flex-wrap: wrap;
+          justify-content: center;
+          max-width: 760px;
         }
         .bundle-slot {
           width: 56px;
@@ -530,7 +538,8 @@ export function BundleClient({
 
         {/* ── PROGRESS BAR ── */}
         <div className="bundle-progress-wrap">
-          <div className="bundle-progress-label">
+          <div className="bundle-progress-inner">
+            <div className="bundle-progress-label">
             <span className="bundle-progress-text">
               {isComplete
                 ? "✓ Selection complete! Ready to add to cart"
@@ -547,6 +556,7 @@ export function BundleClient({
               className="bundle-progress-bar-fill"
               style={{ width: `${(totalSelected / bundleSize) * 100}%` }}
             />
+            </div>
           </div>
         </div>
 
