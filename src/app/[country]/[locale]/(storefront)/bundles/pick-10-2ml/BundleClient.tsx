@@ -51,10 +51,15 @@ export function BundleClient({
     (product: Product) => {
       if (totalSelected >= bundleSize) return;
 
-      const variant =
-        product.default_variant ??
-        (Array.isArray(product.variants) ? product.variants[0] : undefined);
-      if (!variant?.id) return;
+      // default_variant_id is always present; default_variant only when expanded
+      const variantId =
+        product.default_variant?.id ??
+        product.default_variant_id ??
+        (Array.isArray(product.variants) && product.variants[0]?.id
+          ? product.variants[0].id
+          : null);
+
+      if (!variantId) return;
 
       const image = product.thumbnail_url ?? "";
 
@@ -62,7 +67,7 @@ export function BundleClient({
         ...prev,
         {
           product,
-          variantId: variant.id,
+          variantId,
           image,
           name: product.name,
         },
