@@ -18,6 +18,7 @@ interface BundleClientProps {
   originalPrice: number;
   promoCode: string;
   shippingNote: string;
+  sizeLabel?: string;
 }
 
 interface SelectedItem {
@@ -35,6 +36,7 @@ export function BundleClient({
   originalPrice,
   promoCode,
   shippingNote,
+  sizeLabel = "2ml",
 }: BundleClientProps) {
   const { openCart, addItem } = useCart();
   const [selected, setSelected] = useState<SelectedItem[]>([]);
@@ -120,6 +122,7 @@ export function BundleClient({
 
       // Open cart drawer — same UX as adding a single product
       openCart();
+      setSelected([]); // Reset selection instantly — no refresh needed
       setLoading(false);
     } catch (err) {
       setError(
@@ -157,7 +160,7 @@ export function BundleClient({
           margin-bottom: 10px;
         }
         .bundle-hero-title {
-          font-family: Georgia, serif;
+          font-family: sans-serif;
           font-size: clamp(1.6rem, 4vw, 2.8rem);
           font-weight: 400;
           color: ${BRAND};
@@ -534,7 +537,7 @@ export function BundleClient({
         <div className="bundle-hero">
           <p className="bundle-hero-eyebrow">NOZ Discovery Bundle</p>
           <h1 className="bundle-hero-title">
-            Pick Any <strong>{bundleSize} × 2ml</strong> Samples
+            Pick any <strong>{bundleSize} × {sizeLabel}</strong> samples at
           </h1>
           <div className="bundle-hero-price-row">
             <span className="bundle-price-new">₹{bundlePrice}</span>
@@ -750,7 +753,7 @@ export function BundleClient({
                 Add {bundleSize} to Cart — ₹{bundlePrice}
               </>
             ) : (
-              `Pick ${remaining} more fragrance${remaining !== 1 ? "s" : ""}`
+              `PICK ANY ${bundleSize} FRAGRANCES`
             )}
           </button>
 
