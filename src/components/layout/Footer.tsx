@@ -17,9 +17,12 @@ export function Footer({ rootCategories, basePath }: FooterProps) {
 
         {/* Brand */}
         <div>
-          <h3 className="text-lg font-semibold text-white">
-            Noz Fragrances
-          </h3>
+          {/* 🔥 Animated Logo */}
+          <img
+            src="/icons/noz_full_animated.svg"
+            alt="Noz Fragrances"
+            className="h-10 w-auto"
+          />
 
           <p className="mt-4 text-sm text-gray-400 leading-relaxed whitespace-pre-line">
             The Perfume House for the NEXT GENERATION
@@ -88,19 +91,19 @@ export function Footer({ rootCategories, basePath }: FooterProps) {
           <div className="flex space-x-4">
 
             <a href="https://www.instagram.com/noz.fragrances" target="_blank" rel="noopener noreferrer">
-              <img src="/icons/instagram.svg" alt="Instagram" className="h-5 w-5 opacity-70 hover:opacity-100 invert brightness-0" />
+              <img src="/icons/instagram.svg" className="h-5 w-5 opacity-70 hover:opacity-100 invert brightness-0" />
             </a>
 
             <a href="https://www.facebook.com/nozfragrances" target="_blank" rel="noopener noreferrer">
-              <img src="/icons/facebook.svg" alt="Facebook" className="h-5 w-5 opacity-70 hover:opacity-100 invert brightness-0" />
+              <img src="/icons/facebook.svg" className="h-5 w-5 opacity-70 hover:opacity-100 invert brightness-0" />
             </a>
 
             <a href="https://www.youtube.com/nozfragrances" target="_blank" rel="noopener noreferrer">
-              <img src="/icons/youtube.svg" alt="YouTube" className="h-5 w-5 opacity-70 hover:opacity-100 invert brightness-0" />
+              <img src="/icons/youtube.svg" className="h-5 w-5 opacity-70 hover:opacity-100 invert brightness-0" />
             </a>
 
             <a href="https://wa.me/919499521425" target="_blank" rel="noopener noreferrer">
-              <img src="/icons/whatsapp.svg" alt="WhatsApp" className="h-5 w-5 opacity-70 hover:opacity-100 invert brightness-0" />
+              <img src="/icons/whatsapp.svg" className="h-5 w-5 opacity-70 hover:opacity-100 invert brightness-0" />
             </a>
 
           </div>
@@ -114,12 +117,10 @@ export function Footer({ rootCategories, basePath }: FooterProps) {
 
           {/* Payment Icons */}
           <div className="flex items-center space-x-4 opacity-80">
-
-            <img src="/icons/visa.svg" alt="Visa" className="h-6" />
-            <img src="/icons/mastercard.svg" alt="Mastercard" className="h-6" />
-            <img src="/icons/rupay.svg" alt="RuPay" className="h-6" />
-            <img src="/icons/upi.svg" alt="UPI" className="h-6" />
-
+            <img src="/icons/visa.svg" className="h-6" />
+            <img src="/icons/mastercard.svg" className="h-6" />
+            <img src="/icons/rupay.svg" className="h-6" />
+            <img src="/icons/upi.svg" className="h-6" />
           </div>
 
           {/* Copyright */}
