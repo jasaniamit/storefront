@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  viewBox="0 0 235.4 91.1" xml:space="preserve">
+
+  <defs>
+
+    <!-- Silver metallic gradient (vertical) -->
+    <linearGradient id="silverGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#e8e8e8"/>
+      <stop offset="20%"  stop-color="#ffffff"/>
+      <stop offset="50%"  stop-color="#c0c0c0"/>
+      <stop offset="78%"  stop-color="#989898"/>
+      <stop offset="100%" stop-color="#cecece"/>
+    </linearGradient>
+
+    <!-- Sweep light gradient (horizontal, animated) -->
+    <linearGradient id="sweepGrad" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
+      <stop offset="0%"   stop-color="white" stop-opacity="0"/>
+      <stop offset="38%"  stop-color="white" stop-opacity="0"/>
+      <stop offset="50%"  stop-color="white" stop-opacity="0.88"/>
+      <stop offset="62%"  stop-color="white" stop-opacity="0"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+      <animateTransform
+        attributeName="gradientTransform"
+        type="translate"
+        values="-1.6 0; 2.4 0"
+        dur="3s"
+        begin="0.6s"
+        repeatCount="indefinite"
+        calcMode="spline"
+        keyTimes="0;1"
+        keySplines="0.42 0 0.58 1"/>
+    </linearGradient>
+
+    <!-- Clip path: exact logo shapes -->
+    <clipPath id="logoClip">
+      <path d="M0,28h19.9v11.2c3.9-5.3,13.3-11.1,23.8-11.1c20.4,0,30.9,14.3,30.9,34.5v28.5H54.6V64.4
+        c0-10.1-3-20.8-15.2-20.8c-13.6,0-19.7,12.7-19.7,20.3l0.1,27.1H0V28z"/>
+      <polygon points="233.9,75.3 233.9,90.8 163.3,91.1 163.6,90.8 163.3,90.8 200.5,44 164.8,44 164.8,28 235.4,28 196.8,75.3"/>
+      <rect x="98.8" y="0" width="41.5" height="15.1"/>
+      <path d="M119.5,28c-17.8,0-35.8,12.6-35.8,31.6s18,31.5,35.8,31.5s35.8-12.4,35.8-31.5S137.3,28,119.5,28z
+        M119.5,74.8c-9.2,0-17.7-6.2-17.7-15.2s8.5-15.3,17.7-15.3c9,0,17.5,6.1,17.5,15.3S128.4,74.8,119.5,74.8z"/>
+    </clipPath>
+
+  </defs>
+
+  <!-- Silver logo shapes -->
+  <path fill="url(#silverGrad)" d="M0,28h19.9v11.2c3.9-5.3,13.3-11.1,23.8-11.1c20.4,0,30.9,14.3,30.9,34.5v28.5H54.6V64.4
+    c0-10.1-3-20.8-15.2-20.8c-13.6,0-19.7,12.7-19.7,20.3l0.1,27.1H0V28z"/>
+  <polygon fill="url(#silverGrad)" points="233.9,75.3 233.9,90.8 163.3,91.1 163.6,90.8 163.3,90.8 200.5,44 164.8,44 164.8,28 235.4,28 196.8,75.3"/>
+  <rect x="98.8" y="0" width="41.5" height="15.1" fill="url(#silverGrad)"/>
+  <path fill="url(#silverGrad)" d="M119.5,28c-17.8,0-35.8,12.6-35.8,31.6s18,31.5,35.8,31.5s35.8-12.4,35.8-31.5S137.3,28,119.5,28z
+    M119.5,74.8c-9.2,0-17.7-6.2-17.7-15.2s8.5-15.3,17.7-15.3c9,0,17.5,6.1,17.5,15.3S128.4,74.8,119.5,74.8z"/>
+
+  <!-- Sweep overlay clipped to logo -->
+  <rect x="0" y="0" width="235.4" height="91.1" fill="url(#sweepGrad)" clip-path="url(#logoClip)"/>
+
+</svg>
