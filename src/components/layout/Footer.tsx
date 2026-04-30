@@ -21,7 +21,7 @@ export function Footer({ rootCategories, basePath }: FooterProps) {
           <img
             src="/icons/noz_full_animated.svg"
             alt="Noz Fragrances"
-            className="h-10 w-auto"
+            className="h-23 w-auto"
           />
 
           <p className="mt-4 text-sm text-gray-400 leading-relaxed whitespace-pre-line">
