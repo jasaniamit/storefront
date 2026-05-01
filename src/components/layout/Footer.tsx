@@ -116,7 +116,7 @@ export function Footer({ rootCategories, basePath }: FooterProps) {
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
 
           {/* Payment Icons */}
-          <div className="flex items-center space-x-4 opacity-80">
+          <div className="flex items-center space-x-4 opacity-100">
             <img src="/icons/visa.svg" className="h-6" />
             <img src="/icons/mastercard.svg" className="h-6" />
             <img src="/icons/rupay.svg" className="h-6" />
