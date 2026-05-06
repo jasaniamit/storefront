@@ -135,12 +135,13 @@ export function VariantPicker({
 
         return (
           <div key={optionType.id}>
-            <div className="flex items-center gap-1 mb-3">
+            <div className="flex items-center gap-2 mb-4">
               <span className="text-sm font-medium text-gray-900">
                 {optionType.label}
               </span>
               {selectedValue && (
                 <span className="text-sm text-gray-500">
+                  —{" "}
                   {getOptionValueDetails(optionType.id, selectedValue)?.label ||
                     selectedValue}
                 </span>
