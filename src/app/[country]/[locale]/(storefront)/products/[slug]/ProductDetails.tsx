@@ -131,7 +131,7 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
 
         {/* Product Info */}
         <div>
-          <h1 className="text-3xl md:text-4xl font-medium font-google tracking-tight text-gray-900">
+          <h1 className="text-3xl md:text-4xl font-medium font-google tracking-tight text-gray-900">{product.name}</h1>
 
           {/* Price */}
           <div className="mt-4 flex items-center gap-4">
