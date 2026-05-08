@@ -131,12 +131,12 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
 
         {/* Product Info */}
         <div>
-          <h1 className="text-3xl md:text-4xl font-bold font-google tracking-tight text-gray-900">{product.name}</h1>
+          <h1 className="text-3xl md:text-4xl font-medium font-google tracking-tight text-gray-900">
 
           {/* Price */}
           <div className="mt-4 flex items-center gap-4">
             {displayPrice && (
-              <span className="text-3xl font-bold text-gray-900">
+              <span className="text-3xl font-medium font-google text-gray-900">
                 {displayPrice}
               </span>
             )}
