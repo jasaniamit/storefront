@@ -19,6 +19,7 @@ export function VariantPicker({
   onVariantChange,
 }: VariantPickerProps) {
   const t = useTranslations("products");
+
   const optionValuesMap = useMemo(() => {
     const map: Record<string, Set<string>> = {};
 
@@ -39,39 +40,51 @@ export function VariantPicker({
 
   const selectedOptions = useMemo(() => {
     const options: Record<string, string> = {};
+
     if (selectedVariant) {
       selectedVariant.option_values.forEach((ov) => {
         options[ov.option_type_id] = ov.name;
       });
     }
+
     return options;
   }, [selectedVariant]);
 
   const { variantOptionMaps, optionValueDetailsMap } = useMemo(() => {
     const maps = variants.map((variant) => {
       const optionsMap: Record<string, string> = {};
+
       variant.option_values.forEach((ov) => {
         optionsMap[ov.option_type_id] = ov.name;
       });
+
       return { variant, optionsMap };
     });
 
-    const detailsMap: Record<string, (typeof variants)[0]["option_values"][0]> =
-      {};
+    const detailsMap: Record<
+      string,
+      (typeof variants)[0]["option_values"][0]
+    > = {};
+
     for (const variant of variants) {
       for (const ov of variant.option_values) {
         const key = `${ov.option_type_id}:${ov.name}`;
+
         if (!detailsMap[key]) {
           detailsMap[key] = ov;
         }
       }
     }
 
-    return { variantOptionMaps: maps, optionValueDetailsMap: detailsMap };
+    return {
+      variantOptionMaps: maps,
+      optionValueDetailsMap: detailsMap,
+    };
   }, [variants]);
 
   const findVariant = (newOptions: Record<string, string>): Variant | null => {
     const optionCount = Object.keys(newOptions).length;
+
     return (
       variantOptionMaps.find(
         ({ variant, optionsMap }) =>
@@ -87,7 +100,11 @@ export function VariantPicker({
     optionTypeId: string,
     optionValue: string,
   ): boolean => {
-    const testOptions = { ...selectedOptions, [optionTypeId]: optionValue };
+    const testOptions = {
+      ...selectedOptions,
+      [optionTypeId]: optionValue,
+    };
+
     return variantOptionMaps.some(({ optionsMap }) =>
       Object.entries(testOptions).every(
         ([typeId, value]) => optionsMap[typeId] === value,
@@ -99,7 +116,11 @@ export function VariantPicker({
     optionTypeId: string,
     optionValue: string,
   ): boolean => {
-    const testOptions = { ...selectedOptions, [optionTypeId]: optionValue };
+    const testOptions = {
+      ...selectedOptions,
+      [optionTypeId]: optionValue,
+    };
+
     return variantOptionMaps.some(
       ({ variant, optionsMap }) =>
         variant.purchasable &&
@@ -109,9 +130,17 @@ export function VariantPicker({
     );
   };
 
-  const handleOptionSelect = (optionTypeId: string, optionValue: string) => {
-    const newOptions = { ...selectedOptions, [optionTypeId]: optionValue };
+  const handleOptionSelect = (
+    optionTypeId: string,
+    optionValue: string,
+  ) => {
+    const newOptions = {
+      ...selectedOptions,
+      [optionTypeId]: optionValue,
+    };
+
     const newVariant = findVariant(newOptions);
+
     onVariantChange(newVariant);
   };
 
@@ -119,7 +148,11 @@ export function VariantPicker({
     optionTypeId: string,
     optionValueName: string,
   ): Variant["option_values"][0] | null => {
-    return optionValueDetailsMap[`${optionTypeId}:${optionValueName}`] || null;
+    return (
+      optionValueDetailsMap[
+        `${optionTypeId}:${optionValueName}`
+      ] || null
+    );
   };
 
   if (optionTypes.length === 0) {
@@ -129,8 +162,29 @@ export function VariantPicker({
   return (
     <div className="space-y-6">
       {optionTypes.map((optionType) => {
-        const values = Array.from(optionValuesMap[optionType.id] || []);
+
+        // SORT SIZE OPTIONS NUMERICALLY
+        const values =
+          optionType.label?.toLowerCase().includes("size")
+            ? Array.from(optionValuesMap[optionType.id] || []).sort(
+                (a, b) => {
+                  const numA = parseInt(
+                    a.replace(/[^\d]/g, ""),
+                    10,
+                  );
+
+                  const numB = parseInt(
+                    b.replace(/[^\d]/g, ""),
+                    10,
+                  );
+
+                  return numA - numB;
+                },
+              )
+            : Array.from(optionValuesMap[optionType.id] || []);
+
         const selectedValue = selectedOptions[optionType.id];
+
         const isColor = optionType.kind === "color_swatch";
 
         return (
@@ -139,11 +193,14 @@ export function VariantPicker({
               <span className="text-sm font-medium text-gray-900">
                 {optionType.label}
               </span>
+
               {selectedValue && (
                 <span className="text-sm text-gray-500">
                   —{" "}
-                  {getOptionValueDetails(optionType.id, selectedValue)?.label ||
-                    selectedValue}
+                  {getOptionValueDetails(
+                    optionType.id,
+                    selectedValue,
+                  )?.label || selectedValue}
                 </span>
               )}
             </div>
@@ -155,8 +212,14 @@ export function VariantPicker({
                     optionType.id,
                     value,
                   );
+
                   const isSelected = selectedValue === value;
-                  const isAvailable = isOptionAvailable(optionType.id, value);
+
+                  const isAvailable = isOptionAvailable(
+                    optionType.id,
+                    value,
+                  );
+
                   const isPurchasable = isOptionPurchasable(
                     optionType.id,
                     value,
@@ -166,14 +229,31 @@ export function VariantPicker({
                     <button
                       type="button"
                       key={value}
-                      onClick={() => handleOptionSelect(optionType.id, value)}
+                      onClick={() =>
+                        handleOptionSelect(
+                          optionType.id,
+                          value,
+                        )
+                      }
                       disabled={!isAvailable}
                       title={optionValue?.label || value}
                       className={`
                         w-10 h-10 rounded-lg border transition-all relative overflow-hidden
-                        ${isSelected ? "border-gray-900 ring-2 ring-primary ring-offset-2" : "border-gray-200"}
-                        ${!isAvailable ? "opacity-30 cursor-not-allowed" : "cursor-pointer"}
-                        ${!isPurchasable && isAvailable ? "opacity-50" : ""}
+                        ${
+                          isSelected
+                            ? "border-gray-900 ring-2 ring-primary ring-offset-2"
+                            : "border-gray-200"
+                        }
+                        ${
+                          !isAvailable
+                            ? "opacity-30 cursor-not-allowed"
+                            : "cursor-pointer"
+                        }
+                        ${
+                          !isPurchasable && isAvailable
+                            ? "opacity-50"
+                            : ""
+                        }
                       `}
                       style={
                         optionValue?.image_url
@@ -182,8 +262,13 @@ export function VariantPicker({
                               backgroundSize: "cover",
                             }
                           : optionValue?.color_code
-                            ? { backgroundColor: optionValue.color_code }
-                            : { backgroundColor: "#e5e7eb" }
+                            ? {
+                                backgroundColor:
+                                  optionValue.color_code,
+                              }
+                            : {
+                                backgroundColor: "#e5e7eb",
+                              }
                       }
                     >
                       {!isPurchasable && isAvailable && (
@@ -202,8 +287,14 @@ export function VariantPicker({
                     optionType.id,
                     value,
                   );
+
                   const isSelected = selectedValue === value;
-                  const isAvailable = isOptionAvailable(optionType.id, value);
+
+                  const isAvailable = isOptionAvailable(
+                    optionType.id,
+                    value,
+                  );
+
                   const isPurchasable = isOptionPurchasable(
                     optionType.id,
                     value,
@@ -214,7 +305,12 @@ export function VariantPicker({
                       type="button"
                       key={value}
                       variant="outline"
-                      onClick={() => handleOptionSelect(optionType.id, value)}
+                      onClick={() =>
+                        handleOptionSelect(
+                          optionType.id,
+                          value,
+                        )
+                      }
                       disabled={!isAvailable}
                       className={
                         isSelected
@@ -223,6 +319,7 @@ export function VariantPicker({
                       }
                     >
                       {optionValue?.label || value}
+
                       {!isPurchasable && isAvailable && (
                         <span className="ml-1 text-xs text-gray-400">
                           {t("outOfStockVariant")}
