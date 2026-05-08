@@ -91,7 +91,7 @@ export const ProductCard = memo(function ProductCard({
 
         <div className="mt-2 flex items-center gap-2">
           {displayPrice && (
-            <span className="text-2xl font-medium font-google text-gray-900">
+            <span className="text-xl font-medium font-google text-gray-900">
               {displayPrice}
             </span>
           )}
