@@ -26,9 +26,6 @@ export function Footer({ rootCategories, basePath }: FooterProps) {
 
           <p className="mt-4 text-sm text-gray-400 leading-relaxed whitespace-pre-line">
             The Perfume House for the NEXT GENERATION
-            {"\n"}Premium-Quality fragrances.
-            {"\n"}No excessive markups. Crafted with heart,
-            {"\n"}Proud to be Indian Brand.
           </p>
         </div>
 
