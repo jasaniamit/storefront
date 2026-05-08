@@ -12,7 +12,10 @@ export function HeroSection({ basePath }: HeroSectionProps) {
   return (
     <>
       <style>{`
-        .noz-hero { background: #fff; width: 100%; }
+        .noz-hero {
+          background: #fff;
+          width: 100%;
+        }
 
         .noz-hero-inner {
           display: flex;
@@ -38,51 +41,65 @@ export function HeroSection({ basePath }: HeroSectionProps) {
           max-width: 536px;
         }
 
-        /* ✅ HEADING — matches noz */
+        /* ✅ HEADING */
         .noz-hero-text h1 {
-          font-family: var(--font-inter), Inter, sans-serif;
+          font-family: "Google Sans", system-ui, sans-serif;
           font-size: 24px;
           font-weight: 500;
-          line-height: 1.3;
+          line-height: 1.25;
+          letter-spacing: -0.02em;
           color: ${BRAND};
-          margin: 0 0 8px 0;
+          margin: 0 0 12px 0;
         }
 
         @media (min-width: 768px) {
           .noz-hero-text h1 {
-            font-size: 30px;
+            font-size: 48px;
           }
         }
 
         .noz-hero-text h1 strong {
-          font-weight: 600;
+          font-weight: 500;
         }
 
         /* ✅ PARAGRAPH */
         .noz-hero-text p {
-          font-family: var(--font-inter), Inter, sans-serif;
-          font-size: 14px;
-          line-height: 1.6;
+          font-family: "Google Sans", system-ui, sans-serif;
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 1.7;
           color: ${BRAND};
-          margin: 0 0 16px 0;
+          margin: 0 0 28px 0;
         }
 
         /* ✅ BUTTON */
         .noz-hero-btn {
-          display: inline-block !important;
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+
           background-color: #000000 !important;
           color: #ffffff !important;
-          font-family: var(--font-inter), Inter, sans-serif !important;
-          font-size: 14px !important;
+
+          font-family: "Google Sans", system-ui, sans-serif !important;
+          font-size: 16px !important;
           font-weight: 500 !important;
-          padding: 12px 20px !important;
-          border-radius: 6px !important;
+          letter-spacing: 0.08em !important;
+          text-transform: uppercase !important;
+
+          height: 54px !important;
+          padding: 0 28px !important;
+
+          border-radius: 9999px !important;
+
           text-decoration: none !important;
           border: none !important;
+
+          transition: opacity 0.2s ease !important;
         }
 
         .noz-hero-btn:hover {
-          opacity: 0.85 !important;
+          opacity: 0.88 !important;
         }
 
         /* DESKTOP */
@@ -132,18 +149,21 @@ export function HeroSection({ basePath }: HeroSectionProps) {
           {/* TEXT */}
           <div className="noz-hero-text">
             <h1>
-              The Perfume House for the<br />
+              The Perfume House for the
+              <br />
               <strong>NEXT GENERATION</strong>
             </h1>
 
             <p>
-              Premium-Quality fragrances.<br />
-              No excessive markups. Crafted with heart,<br />
+              Premium-Quality fragrances.
+              <br />
+              No excessive markups. Crafted with heart,
+              <br />
               Proud to be Indian Brand.
             </p>
 
             <Link href={`${basePath}/products`} className="noz-hero-btn">
-              Shop All
+              SHOP ALL
             </Link>
           </div>
 
