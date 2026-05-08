@@ -85,13 +85,13 @@ export const ProductCard = memo(function ProductCard({
 
       {/* Content */}
       <div className="p-4">
-        <h3 className="text-sm font-medium text-gray-900 group-hover:text-primary transition-colors line-clamp-2">
+        <h3 className="text-[17px] md:text-[18px] font-medium font-google tracking-tight text-gray-900 group-hover:text-primary transition-colors line-clamp-2 leading-snug">
           {product.name}
         </h3>
 
         <div className="mt-2 flex items-center gap-2">
           {displayPrice && (
-            <span className="text-lg font-semibold text-gray-900">
+            <span className="text-2xl font-medium font-google text-gray-900">
               {displayPrice}
             </span>
           )}
