@@ -160,7 +160,7 @@ export function VariantPicker({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {optionTypes.map((optionType) => {
 
         // SORT SIZE OPTIONS NUMERICALLY
@@ -189,8 +189,9 @@ export function VariantPicker({
 
         return (
           <div key={optionType.id}>
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-sm font-medium text-gray-900">
+            {/* LABEL */}
+            <div className="flex items-center gap-2 mb-5">
+              <span className="text-[13px] uppercase tracking-[0.12em] font-semibold text-gray-900">
                 {optionType.label}
               </span>
 
@@ -206,7 +207,7 @@ export function VariantPicker({
             </div>
 
             {isColor ? (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-3">
                 {values.map((value) => {
                   const optionValue = getOptionValueDetails(
                     optionType.id,
@@ -238,11 +239,11 @@ export function VariantPicker({
                       disabled={!isAvailable}
                       title={optionValue?.label || value}
                       className={`
-                        w-10 h-10 rounded-lg border transition-all relative overflow-hidden
+                        w-11 h-11 rounded-full border transition-all duration-200 relative overflow-hidden
                         ${
                           isSelected
-                            ? "border-gray-900 ring-2 ring-primary ring-offset-2"
-                            : "border-gray-200"
+                            ? "border-black ring-2 ring-black ring-offset-2"
+                            : "border-gray-300 hover:border-black"
                         }
                         ${
                           !isAvailable
@@ -273,7 +274,7 @@ export function VariantPicker({
                     >
                       {!isPurchasable && isAvailable && (
                         <span className="absolute inset-0 flex items-center justify-center">
-                          <span className="w-full h-0.5 bg-gray-400 rotate-45 absolute" />
+                          <span className="w-full h-0.5 bg-gray-500 rotate-45 absolute" />
                         </span>
                       )}
                     </button>
@@ -281,7 +282,7 @@ export function VariantPicker({
                 })}
               </div>
             ) : (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-3">
                 {values.map((value) => {
                   const optionValue = getOptionValueDetails(
                     optionType.id,
@@ -304,7 +305,7 @@ export function VariantPicker({
                     <Button
                       type="button"
                       key={value}
-                      variant="outline"
+                      variant="ghost"
                       onClick={() =>
                         handleOptionSelect(
                           optionType.id,
@@ -312,16 +313,41 @@ export function VariantPicker({
                         )
                       }
                       disabled={!isAvailable}
-                      className={
-                        isSelected
-                          ? "ring-2 ring-primary ring-offset-2 border-primary"
-                          : ""
-                      }
+                      className={`
+                        h-12
+                        min-w-[88px]
+                        px-6
+                        rounded-full
+                        border
+                        text-sm
+                        font-medium
+                        transition-all
+                        duration-200
+                        shadow-none
+
+                        ${
+                          isSelected
+                            ? "bg-black text-white border-black hover:bg-black hover:text-white"
+                            : "bg-white text-gray-900 border-gray-300 hover:border-black hover:bg-gray-50"
+                        }
+
+                        ${
+                          !isAvailable
+                            ? "opacity-30 cursor-not-allowed"
+                            : "cursor-pointer"
+                        }
+                      `}
                     >
                       {optionValue?.label || value}
 
                       {!isPurchasable && isAvailable && (
-                        <span className="ml-1 text-xs text-gray-400">
+                        <span
+                          className={`ml-2 text-[11px] uppercase tracking-wide ${
+                            isSelected
+                              ? "text-gray-300"
+                              : "text-gray-400"
+                          }`}
+                        >
                           {t("outOfStockVariant")}
                         </span>
                       )}
