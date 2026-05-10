@@ -191,7 +191,7 @@ export function VariantPicker({
           <div key={optionType.id}>
             {/* LABEL */}
             <div className="flex items-center gap-2 mb-5">
-              <span className="text-[13px] uppercase tracking-[0.12em] font-semibold text-gray-900">
+              <span className="text-[13px] tracking-[0.08em] font-semibold text-gray-900">
                 {optionType.label}
               </span>
 
@@ -239,7 +239,7 @@ export function VariantPicker({
                       disabled={!isAvailable}
                       title={optionValue?.label || value}
                       className={`
-                        w-11 h-11 rounded-full border transition-all duration-200 relative overflow-hidden
+                        w-11 h-11 rounded-2xl border transition-all duration-200 relative overflow-hidden
                         ${
                           isSelected
                             ? "border-black ring-2 ring-black ring-offset-2"
@@ -317,7 +317,7 @@ export function VariantPicker({
                         h-12
                         min-w-[88px]
                         px-6
-                        rounded-full
+                        rounded-2xl
                         border
                         text-sm
                         font-medium
@@ -342,7 +342,7 @@ export function VariantPicker({
 
                       {!isPurchasable && isAvailable && (
                         <span
-                          className={`ml-2 text-[11px] uppercase tracking-wide ${
+                          className={`ml-2 text-[11px] tracking-wide ${
                             isSelected
                               ? "text-gray-300"
                               : "text-gray-400"
