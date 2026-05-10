@@ -3,7 +3,6 @@
 import type { OptionType, Variant } from "@spree/sdk";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
-import { Button } from "@/components/ui/button";
 
 interface VariantPickerProps {
   variants: Variant[];
@@ -160,7 +159,7 @@ export function VariantPicker({
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {optionTypes.map((optionType) => {
 
         // SORT SIZE OPTIONS NUMERICALLY
@@ -190,8 +189,8 @@ export function VariantPicker({
         return (
           <div key={optionType.id}>
             {/* LABEL */}
-            <div className="flex items-center gap-2 mb-5">
-              <span className="text-[13px] tracking-[0.08em] font-semibold text-gray-900">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-sm font-semibold text-gray-900">
                 {optionType.label}
               </span>
 
@@ -239,11 +238,11 @@ export function VariantPicker({
                       disabled={!isAvailable}
                       title={optionValue?.label || value}
                       className={`
-                        w-11 h-11 rounded-2xl border transition-all duration-200 relative overflow-hidden
+                        w-10 h-10 rounded-lg border transition-all relative overflow-hidden
                         ${
                           isSelected
-                            ? "border-black ring-2 ring-black ring-offset-2"
-                            : "border-gray-300 hover:border-black"
+                            ? "border-[#0F172A] ring-1 ring-[#0F172A] ring-offset-2"
+                            : "border-gray-300"
                         }
                         ${
                           !isAvailable
@@ -274,7 +273,7 @@ export function VariantPicker({
                     >
                       {!isPurchasable && isAvailable && (
                         <span className="absolute inset-0 flex items-center justify-center">
-                          <span className="w-full h-0.5 bg-gray-500 rotate-45 absolute" />
+                          <span className="w-full h-0.5 bg-gray-400 rotate-45 absolute" />
                         </span>
                       )}
                     </button>
@@ -302,10 +301,9 @@ export function VariantPicker({
                   );
 
                   return (
-                    <Button
+                    <button
                       type="button"
                       key={value}
-                      variant="ghost"
                       onClick={() =>
                         handleOptionSelect(
                           optionType.id,
@@ -314,21 +312,20 @@ export function VariantPicker({
                       }
                       disabled={!isAvailable}
                       className={`
-                        h-12
-                        min-w-[88px]
-                        px-6
-                        rounded-2xl
+                        min-w-[90px]
+                        px-5
+                        py-2.5
+                        rounded-lg
                         border
                         text-sm
                         font-medium
-                        transition-all
+                        transition-colors
                         duration-200
-                        shadow-none
 
                         ${
                           isSelected
-                            ? "bg-black text-white border-black hover:bg-black hover:text-white"
-                            : "bg-white text-gray-900 border-gray-300 hover:border-black hover:bg-gray-50"
+                            ? "bg-[#0F172A] text-white border-[#0F172A]"
+                            : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
                         }
 
                         ${
@@ -342,7 +339,7 @@ export function VariantPicker({
 
                       {!isPurchasable && isAvailable && (
                         <span
-                          className={`ml-2 text-[11px] tracking-wide ${
+                          className={`ml-2 text-xs ${
                             isSelected
                               ? "text-gray-300"
                               : "text-gray-400"
@@ -351,7 +348,7 @@ export function VariantPicker({
                           {t("outOfStockVariant")}
                         </span>
                       )}
-                    </Button>
+                    </button>
                   );
                 })}
               </div>
