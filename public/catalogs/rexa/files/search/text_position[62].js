@@ -1,1 +1,0 @@
-positionForPages[62]={page:62,positions:[{word:"Abstract",left:0.430838,top:0.772678,width:0.131150,height:0.043939},{word:"SERIES",left:0.471692,top:0.804215,width:0.037450,height:0.010088}]};

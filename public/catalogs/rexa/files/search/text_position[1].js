@@ -1,1 +1,0 @@
-positionForPages[1]={page:1,positions:[{word:"Premium",left:0.068889,top:0.929114,width:0.078664,height:0.013679},{word:"Collection",left:0.153781,top:0.929396,width:0.091972,height:0.013186}]};

@@ -1,1 +1,0 @@
-positionForPages[86]={page:86,positions:[{word:"SERIES",left:0.483051,top:0.803365,width:0.033485,height:0.009020}]};

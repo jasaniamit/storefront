@@ -1,1 +1,0 @@
-positionForPages[2]={page:2,positions:[{word:"doorware",left:0.415802,top:0.799032,width:0.204910,height:0.028794}]};

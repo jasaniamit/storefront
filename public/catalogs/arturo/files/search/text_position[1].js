@@ -1,1 +1,0 @@
-positionForPages[1]={page:1,positions:[{word:"Modern",left:0.071113,top:0.901109,width:0.069224,height:0.013542},{word:"Backdrop",left:0.146628,top:0.900967,width:0.086315,height:0.013815},{word:"Lookbook",left:0.239234,top:0.901109,width:0.087875,height:0.013542}]};
