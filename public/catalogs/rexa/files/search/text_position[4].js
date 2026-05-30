@@ -1,0 +1,1 @@
+positionForPages[4]={page:4,positions:[{word:"Residential",left:0.293277,top:0.879644,width:0.066861,height:0.011608},{word:"Commercial",left:0.403580,top:0.879644,width:0.076006,height:0.011608},{word:"Restaurants",left:0.521586,top:0.879644,width:0.071319,height:0.011608},{word:"Institutions",left:0.641036,top:0.879644,width:0.062942,height:0.011608}]};

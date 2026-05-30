@@ -1,0 +1,1 @@
+positionForPages[90]={page:90,positions:[{word:"Decor",left:0.443682,top:0.757326,width:0.108663,height:0.044461},{word:"SERIES",left:0.485022,top:0.789238,width:0.037894,height:0.010208}]};

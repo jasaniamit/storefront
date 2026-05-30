@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="monitor-signature" content="monitor:player:html5">
+
+<meta property="og:image" content="files/shot.jpg"/>
+<meta property="og:title" content="Rexa by Artolika"/>
+<meta property="og:description" content="Premium Lookbook" />
+<meta name="og:image" content="files/shot.jpg"/>
+<link rel="image_src" href="files/shot.jpg"/>
+    
+<meta name="Keywords" content="rexa,3d,lookbook,glass,digital print,fabric,texture,signature,hd print,4k,uhd" />
+<meta name="Description" content="Redefine Luxury" />
+<meta name="Generator" content="Rexa Lookbook 1.8.6 at https://www.artolika.com" />
+<meta name="apple-mobile-web-app-status-bar" content="#aa7700">
+<meta name="theme-color" content="black">
+<link rel="manifest" href="manifest.webmanifest">
+
+<title>Rexa Lookbook</title>
+<link rel="stylesheet" href="style/style.css" />
+<link rel="stylesheet" href="style/player.css" />
+<link rel="stylesheet" href="style/phoneTemplate.css" />
+
+<link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+<link rel="manifest" href="favicon/site.webmanifest">
+<link rel="mask-icon" href="favicon/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<script src="javascript/jquery-3.5.1.min.js"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1ZNZLWTJ2S"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-1ZNZLWTJ2S');
+</script>
+
+</head>	
+    <body>
+        <script>
+    window.addEventListener('load', () => {
+    registerSW();
+    });
+
+    // Register the Service Worker
+    async function registerSW() {
+    if ('serviceWorker' in navigator) {
+        try {
+        await navigator
+                .serviceWorker
+                .register('serviceworker.js');
+        }
+        catch (e) {
+        console.log('SW registration failed');
+        }
+    }
+    }
+</script>
+        <script src="javascript/config.js"></script>
+<script src="javascript/LoadingJS.js"></script>
+	
+    <script src="javascript/main.js"></script>
+<script src="javascript/editor.js"></script>
+<script src="files/search/book_config.js"></script>
+<link rel="stylesheet" href="style/template.css" />
+
+<script type="text/javascript" async>
+    var sendvisitinfo = function(type,page){};
+    /*
+    var addr=window.location.href;
+    var isMatch=addr.match('http');
+    var isLocal=addr.match('127.0.0.1');
+    if(isLocal)
+    {
+        //islocal ?
+    }
+    else if(isMatch)
+    {
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-32955071-1']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+         var ga = document.createElement('script');
+         ga.type = 'text/javascript';
+         ga.async = true;
+         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+         var s = document.getElementsByTagName('script')[0];
+         s.parentNode.insertBefore(ga, s);
+         })();
+         
+    }
+    */
+</script>
+
+<script src="javascript/MovingBackgrounds.min.js"></script>
+<link rel="stylesheet" href="style/MovingBackgrounds.min.css" />
+<script src="javascript/FlipBookPlugins.min.js"></script>
+<link rel="stylesheet" href="style/FlipBookPlugins.min.css" />
+<script src="javascript/flipHtml5.hiSlider2.min.js"></script>
+<link rel="stylesheet" href="style/hiSlider2.min.css" />
+<script src="slide_javascript/slideJS.js"></script>
+        
+</body>
+</html>
