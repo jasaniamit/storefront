@@ -2,7 +2,7 @@ import { GoogleTagManager } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Montserrat, Open_Sans } from "next/font/google";
 import "./globals.css";
 import { Suspense } from "react";
 import { getStoreDescription, getStoreName } from "@/lib/store";
@@ -18,8 +18,14 @@ const spreeApiOrigin = (() => {
   }
 })();
 
-const geist = Geist({
-  variable: "--font-geist",
+const openSans = Open_Sans({
+  variable: "--font-body",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const montserrat = Montserrat({
+  variable: "--font-heading",
   subsets: ["latin"],
   display: "swap",
 });
@@ -51,7 +57,7 @@ export default function RootLayout({
       </head>
       {gtmId && <GoogleTagManager gtmId={gtmId} />}
       <body
-        className={`${geist.variable} antialiased min-h-screen flex flex-col`}
+        className={`${openSans.variable} ${montserrat.variable} antialiased min-h-screen flex flex-col`}
       >
         <Suspense fallback={null}>{children}</Suspense>
         <Analytics />
