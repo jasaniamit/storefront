@@ -147,8 +147,8 @@ export default function StoreLocatorClientPage({ initialSelectedStore }: StoreLo
                 <div className="px-6 py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100">
                     <div className="max-w-xl">
                         <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Find us</h1>
-                        <p className="text-xs text-gray-400 mt-1 leading-normal">
-                            Find our official stores and experience our luxurious products in our display centers
+                        <p className="text-s text-gray-400 mt-1 leading-normal">
+                            Find our official stores to experience our luxurious products near you
                         </p>
                     </div>
 
@@ -171,7 +171,7 @@ export default function StoreLocatorClientPage({ initialSelectedStore }: StoreLo
                                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                                 className={`flex items-center gap-0.5 text-[11px] font-bold tracking-wider uppercase bg-transparent px-1 transition-opacity whitespace-nowrap py-2 ${!userCoords ? "text-gray-400 cursor-not-allowed" : "text-gray-800 hover:opacity-80"}`}
                             >
-                                <span>{!userCoords ? "Distance Locked" : maxDistance === "all" ? "Distance" : `< ${maxDistance} KM`}</span>
+                                <span>{!userCoords ? "No Location" : maxDistance === "all" ? "Distance" : `< ${maxDistance} KM`}</span>
                                 {userCoords && <ChevronDown className={`w-3 h-3 text-gray-600 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />}
                             </button>
 
