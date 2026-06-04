@@ -29,11 +29,18 @@ import {
   PayPalPaymentForm,
   type PayPalPaymentFormHandle,
 } from "@/components/checkout/PayPalPaymentForm";
+// --- RAZORPAY IMPORT ---
+import {
+  RazorpayPaymentForm,
+  type RazorpayPaymentFormHandle,
+} from "@/components/checkout/RazorpayPaymentForm";
 import {
   confirmWithSavedCard,
   StripePaymentForm,
   type StripePaymentFormHandle,
 } from "@/components/checkout/StripePaymentForm";
+// -----------------------
+
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useCountryStates } from "@/hooks/useCountryStates";
@@ -158,27 +165,35 @@ export function PaymentSection({
   const [paymentSessionId, setPaymentSessionId] = useState<string | null>(null);
   const [gatewayError, setGatewayError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // --- ADDED RAZORPAY HANDLE TYPE ---
   const gatewayHandleRef = useRef<
     | StripePaymentFormHandle
     | AdyenPaymentFormHandle
     | PayPalPaymentFormHandle
+    | RazorpayPaymentFormHandle
     | null
   >(null);
+  // ----------------------------------
+
   const initRef = useRef(false);
   const sessionRequestIdRef = useRef(0);
   const completionInFlightRef = useRef(false);
 
+  // --- ADDED RAZORPAY HANDLE TYPE ---
   const handleGatewayReady = useCallback(
     (
       handle:
         | StripePaymentFormHandle
         | AdyenPaymentFormHandle
-        | PayPalPaymentFormHandle,
+        | PayPalPaymentFormHandle
+        | RazorpayPaymentFormHandle,
     ) => {
       gatewayHandleRef.current = handle;
     },
     [],
   );
+  // ----------------------------------
 
   // ── Session management ──────────────────────────────────────────────
   const createSession = useCallback(
@@ -241,8 +256,19 @@ export function PaymentSection({
     [cart.id, t],
   );
 
-  // Track the cart total so we can recreate the session when it changes
-  const lastTotalRef = useRef<string | null>(null);
+  // FIX: Track a comprehensive fingerprint of the cart. 
+  // If the total OR the address OR the selected shipping rate changes, we MUST 
+  // recreate the payment session because Spree invalidates previous sessions.
+  const cartFingerprint = useMemo(() => {
+    return [
+      cart.total,
+      cart.shipping_address?.id,
+      cart.billing_address?.id,
+      cart.fulfillments?.map(f => f.delivery_rates?.find(r => r.selected)?.id).join(',')
+    ].join('|');
+  }, [cart.total, cart.shipping_address?.id, cart.billing_address?.id, cart.fulfillments]);
+
+  const lastFingerprintRef = useRef<string | null>(null);
   const selectedCardRef = useRef<string | null>(null);
 
   // On mount: load saved cards (if authenticated + session method), then create initial session
@@ -279,7 +305,7 @@ export function PaymentSection({
       }
 
       selectedCardRef.current = initialCardId;
-      lastTotalRef.current = cart.total;
+      lastFingerprintRef.current = cartFingerprint;
 
       await createSession(initialCardId, selectedMethod);
     };
@@ -290,19 +316,19 @@ export function PaymentSection({
     isSessionBased,
     isAuthenticated,
     createSession,
-    cart.total,
+    cartFingerprint,
     isZeroAmount,
   ]);
 
-  // When cart total changes, recreate the payment session
+  // When cart fingerprint changes (Total OR Address), recreate the payment session
   useEffect(() => {
     if (!initRef.current) return;
     if (!isSessionBased || !selectedMethod) return;
-    if (lastTotalRef.current === cart.total) return;
+    if (lastFingerprintRef.current === cartFingerprint) return;
 
-    lastTotalRef.current = cart.total;
+    lastFingerprintRef.current = cartFingerprint;
     createSession(selectedCardRef.current, selectedMethod);
-  }, [cart.total, createSession, isSessionBased, selectedMethod]);
+  }, [cartFingerprint, createSession, isSessionBased, selectedMethod]);
 
   const [billStates, isPendingBill] = useCountryStates(
     billAddress.country_iso,
@@ -360,7 +386,7 @@ export function PaymentSection({
           }
 
           selectedCardRef.current = cardId;
-          lastTotalRef.current = cart.total;
+          lastFingerprintRef.current = cartFingerprint;
           await createSession(cardId, newMethod);
         };
         init();
@@ -517,8 +543,14 @@ export function PaymentSection({
                 | undefined;
               const gatewayId = resolveGatewayId(selectedMethod.type);
               const isStripe = gatewayId === "stripe";
+
+              // --- ADDED RAZORPAY TO APPROVAL FLAG ---
               const isApprovalDriven =
-                gatewayId === "adyen" || gatewayId === "paypal";
+                gatewayId === "adyen" ||
+                gatewayId === "paypal" ||
+                gatewayId === "razorpay";
+              // ---------------------------------------
+
               const canUseSavedCard =
                 isStripe && Boolean(selectedCardId && clientSecret);
 
@@ -548,7 +580,7 @@ export function PaymentSection({
                 return { error };
               }
 
-              // Approval-driven gateways (Adyen, PayPal) complete the order
+              // Approval-driven gateways (Adyen, PayPal, Razorpay) complete the order
               // via handleGatewayApproved when their callback fires — don't
               // call onPaymentComplete here or we'll race with the callback.
               if (isApprovalDriven) {
@@ -701,9 +733,8 @@ export function PaymentSection({
               {/* Method header row */}
               {hasMultipleMethods && (
                 <label
-                  className={`flex items-center gap-3 px-4 py-3.5 cursor-pointer transition-colors ${
-                    isSelected ? "bg-blue-50" : "bg-white hover:bg-gray-50"
-                  } ${index > 0 ? "border-t" : ""}`}
+                  className={`flex items-center gap-3 px-4 py-3.5 cursor-pointer transition-colors ${isSelected ? "bg-blue-50" : "bg-white hover:bg-gray-50"
+                    } ${index > 0 ? "border-t" : ""}`}
                 >
                   <RadioGroupItem value={pm.id} />
                   <span className="text-sm font-medium text-gray-900">
@@ -753,12 +784,11 @@ export function PaymentSection({
                                 {savedCards.map((card, cardIndex) => (
                                   <label
                                     key={card.id}
-                                    className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${
-                                      selectedCardId ===
+                                    className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${selectedCardId ===
                                       card.gateway_payment_profile_id
-                                        ? "bg-white"
-                                        : "bg-white hover:bg-gray-50"
-                                    } ${cardIndex > 0 ? "border-t" : ""}`}
+                                      ? "bg-white"
+                                      : "bg-white hover:bg-gray-50"
+                                      } ${cardIndex > 0 ? "border-t" : ""}`}
                                   >
                                     <RadioGroupItem
                                       value={
@@ -796,11 +826,10 @@ export function PaymentSection({
 
                                 {/* Add new card */}
                                 <label
-                                  className={`flex items-center gap-3 px-4 py-3 cursor-pointer border-t transition-colors ${
-                                    isAddingNew
-                                      ? "bg-white"
-                                      : "bg-white hover:bg-gray-50"
-                                  }`}
+                                  className={`flex items-center gap-3 px-4 py-3 cursor-pointer border-t transition-colors ${isAddingNew
+                                    ? "bg-white"
+                                    : "bg-white hover:bg-gray-50"
+                                    }`}
                                 >
                                   <RadioGroupItem value="__new__" />
                                   <CreditCard
@@ -895,6 +924,24 @@ export function PaymentSection({
                                 </div>
                               ) : null;
                             }
+                            // --- ADDED RAZORPAY COMPONENT RENDER ---
+                            case "razorpay": {
+                              return ext ? (
+                                <div className="p-4">
+                                  <RazorpayPaymentForm
+                                    // FIX: Appending paymentSessionId forces React to fully unmount 
+                                    // and remount the component when shipping rates change, 
+                                    // guaranteeing that onReady fires and sets the Ref correctly.
+                                    key={`${ext._external_id}-${paymentSessionId}`}
+                                    sessionData={ext}
+                                    cart={cart}
+                                    onReady={handleGatewayReady}
+                                    onApproved={handleGatewayApproved}
+                                  />
+                                </div>
+                              ) : null;
+                            }
+                            // ---------------------------------------
                             default:
                               return (
                                 <div className="px-4 py-6 text-center">
