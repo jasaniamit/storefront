@@ -15,7 +15,7 @@ export async function HeroSection({ locale }: HeroSectionProps) {
         >
             
             {/* BLOCK 1: MASTER HERO BANNER */}
-            <div className="relative w-full h-[65vh] min-h-[440px] sm:h-[75vh] flex items-center justify-center text-center px-4 overflow-hidden bg-slate-900">
+            <div className="relative w-full h-[65vh] min-h-[440px] sm:h-[75vh] flex items-center justify-start px-6 sm:px-12 lg:px-24 overflow-hidden bg-slate-900">
                 <div className="absolute inset-0 z-0">
                     <Image
                         src="/images/home/hero-main-bg.webp"
@@ -36,11 +36,11 @@ export async function HeroSection({ locale }: HeroSectionProps) {
                     />
                 </div>
 
-                <div className="relative z-10 max-w-4xl mx-auto space-y-3.5 px-2">
-                    <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-tight drop-shadow-sm">
+                <div className="relative z-10 w-full max-w-7xl mx-auto space-y-3.5 text-center sm:text-left">
+                    <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-tight max-w-2xl drop-shadow-sm">
                         Master of Infinite Artistry
                     </h1>
-                    <p className="text-xs sm:text-base lg:text-lg text-gray-200/90 font-medium max-w-2xl mx-auto leading-relaxed tracking-wide">
+                    <p className="text-xs sm:text-base lg:text-lg text-gray-200/90 font-medium max-w-2xl leading-relaxed tracking-wide">
                         Feel the remarkable artistry & experience the splendour of modern design
                     </p>
                 </div>
@@ -84,7 +84,8 @@ export async function HeroSection({ locale }: HeroSectionProps) {
                 </div>
             </div>
 
-            <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 space-y-24 sm:space-y-36">
+            {/* UNIFIED CONTAINER WRAPPER FOR SECTIONS 3-6 */}
+            <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 sm:mt-24 space-y-24 sm:space-y-36">
 
                 {/* BLOCK 3: BEYOND IMAGINATION SPLIT SECTION */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
@@ -102,7 +103,7 @@ export async function HeroSection({ locale }: HeroSectionProps) {
                         </p>
                     </div>
                     <div className="lg:col-span-7 flex justify-center lg:justify-end w-full">
-                        <div className="w-full max-w-[620px] aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3] relative rounded-3xl overflow-hidden border border-gray-100 shadow-2xs">
+                        <div className="w-full aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3] relative rounded-3xl overflow-hidden border border-gray-100 shadow-2xs">
                             <Image
                                 src="/images/home/beyond-imagination.webp"
                                 alt="Luxury Living Room Architectural Mockup displaying Custom Frame Setup"
@@ -175,7 +176,7 @@ export async function HeroSection({ locale }: HeroSectionProps) {
                 {/* BLOCK 5: TECHNOLOGY SPLIT SEGMENT */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center pt-4">
                     <div className="lg:col-span-6 space-y-4 text-center lg:text-left order-2 lg:order-1 flex justify-center lg:justify-start w-full">
-                        <div className="w-full max-w-[620px] aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3] relative rounded-3xl overflow-hidden border border-gray-100 shadow-2xs">
+                        <div className="w-full aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3] relative rounded-3xl overflow-hidden border border-gray-100 shadow-2xs">
                             <Image
                                 src="/images/home/technology-display.webp"
                                 alt="Vibrant Colorful Structural Installation in Architectural Lounge Room"
@@ -226,7 +227,7 @@ export async function HeroSection({ locale }: HeroSectionProps) {
                     </div>
                 </div>
 
-            </div>
-        </div>
+            </div> {/* Closes max-w-7xl Container */}
+        </section>
     );
 }
