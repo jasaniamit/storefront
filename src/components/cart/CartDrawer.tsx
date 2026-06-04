@@ -1,6 +1,6 @@
 "use client";
 
-import { ShoppingBag, Trash, X } from "lucide-react";
+import { ShoppingCart, ShoppingBag, Trash, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -94,7 +94,7 @@ export function CartDrawer() {
       >
         <SheetHeader className="flex flex-row gap-2 items-center justify-between border-b">
           <SheetTitle className="flex flex-row gap-2 items-center">
-            <ShoppingBag className="w-6 h-6 text-gray-600" />
+            <ShoppingCart className="w-6 h-6 text-gray-600" />
             <span>{t("cart")}</span>
             {itemCount > 0 && (
               <span className="text-gray-600">
@@ -205,15 +205,15 @@ export function CartDrawer() {
                           disabled={updating}
                         />
 
-                        <div className="text-sm font-medium">
+                        <div className="text-sm font-medium flex flex-col items-end">
                           {item.compare_at_amount &&
                           parseFloat(item.compare_at_amount) >
                             parseFloat(item.price) ? (
                             <>
-                              <span className="text-gray-400 line-through mr-2">
+                              <span className="text-gray-400 line-through">
                                 {item.display_compare_at_amount}
                               </span>
-                              <span className="text-red-600">
+                              <span className="text-red-600 mt-0.5">
                                 {item.display_price}
                               </span>
                             </>
