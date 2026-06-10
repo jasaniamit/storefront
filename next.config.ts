@@ -58,9 +58,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-};
 
-  // Redirection
+  // Redirection block now cleanly nested inside nextConfig
   async redirects() {
     return [
       {
