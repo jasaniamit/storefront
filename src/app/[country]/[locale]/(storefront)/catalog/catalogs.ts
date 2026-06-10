@@ -19,7 +19,7 @@ export const CATALOGS_DATA: CatalogItem[] = [
         collection: "Gods Collection",
         description: "Experience spiritual luxury with intricately structured high-definition visual layouts.",
         imageSrc: "/images/catalog/divine.webp",
-        viewLink: "http://hc8koswws0co0c8cws0go0g0.147.79.67.138.sslip.io/artolika/",
+        viewLink: "https://catalogs.artolika.com/artolika/",
         tags: ["Divine", "Premium", "New Releases"]
     },
     {
@@ -29,7 +29,7 @@ export const CATALOGS_DATA: CatalogItem[] = [
         collection: "Premium Collection",
         description: "Minimalistic architectural framing hardware engineered for premium contemporary spaces.",
         imageSrc: "/images/catalog/rexa.webp",
-        viewLink: "http://hc8koswws0co0c8cws0go0g0.147.79.67.138.sslip.io/rexa/",
+        viewLink: "https://catalogs.artolika.com/rexa/",
         tags: ["Rexa", "Minimalist", "Hardware"]
     },
     {
@@ -39,7 +39,7 @@ export const CATALOGS_DATA: CatalogItem[] = [
         collection: "Modern Exclusivity",
         description: "Luxury integrated profile lighting setups and architectural design installations.",
         imageSrc: "/images/catalog/arturo.webp",
-        viewLink: "http://hc8koswws0co0c8cws0go0g0.147.79.67.138.sslip.io/arturo/",
+        viewLink: "https://catalogs.artolika.com/arturo/",
         tags: ["Arturo", "Lighting", "Luxury"]
     },
     {
@@ -49,7 +49,7 @@ export const CATALOGS_DATA: CatalogItem[] = [
         collection: "Premium Doors",
         description: "Italian collection handle accents and bespoke premium solid-surface passages.",
         imageSrc: "/images/catalog/doorware.webp",
-        viewLink: "http://hc8koswws0co0c8cws0go0g0.147.79.67.138.sslip.io/doorware/",
+        viewLink: "https://catalogs.artolika.com/doorware/",
         tags: ["Doorware", "Handles", "Italian"]
     }
 ];
