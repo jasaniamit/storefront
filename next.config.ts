@@ -60,6 +60,18 @@ const nextConfig: NextConfig = {
   },
 };
 
+  // Redirection
+  async redirects() {
+    return [
+      {
+        source: "/catalogs/:path*",
+        destination: "https://catalogs.artolika.com/:path*",
+        permanent: true,
+      },
+    ];
+  },
+};
+
 const configWithIntl = withNextIntl(nextConfig);
 
 export default process.env.SENTRY_DSN
