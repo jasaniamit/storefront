@@ -1,7 +1,9 @@
 import type { Category } from "@spree/sdk";
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/navigation/Breadcrumbs";
+import ProductReviews from "@/components/products/ProductReviews";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getCachedProduct, PRODUCT_PAGE_EXPAND } from "@/lib/data/cached";
 import { generateProductMetadata } from "@/lib/metadata/product";
@@ -51,6 +53,15 @@ export default async function ProductPage({
   const { category_id } = await searchParams;
   const basePath = `/${country}/${locale}`;
 
+  // --- FIX: Capture the exact JWT token from cookies ---
+  const cookieStore = await cookies();
+  const authToken =
+    cookieStore.get("_spree_jwt")?.value ||
+    cookieStore.get("spree_bearer_token")?.value ||
+    cookieStore.get("_spree_refresh_token")?.value ||
+    "";
+  const isLoggedIn = !!authToken;
+
   let product;
   try {
     product = await getCachedProduct(slug, PRODUCT_PAGE_EXPAND);
@@ -94,7 +105,18 @@ export default async function ProductPage({
           />
         )}
       </div>
+
       <ProductDetails product={product} basePath={basePath} />
+
+      {/* Passed basePath so the component knows where to route logins */}
+      <ProductReviews
+        productId={product.id}
+        productName={product.name}
+        slug={product.slug}
+        basePath={basePath}
+        isLoggedIn={isLoggedIn}
+        authToken={authToken}
+      />
     </>
   );
 }
