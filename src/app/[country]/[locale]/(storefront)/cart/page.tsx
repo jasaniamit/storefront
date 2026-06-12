@@ -19,14 +19,7 @@ const ExpressCheckoutButton = dynamic(
     import("@/components/checkout/ExpressCheckoutButton").then((m) => ({
       default: m.ExpressCheckoutButton,
     })),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="h-12 flex items-center justify-center">
-        <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
-      </div>
-    ),
-  },
+  { ssr: false },
 );
 
 export default function CartPage() {
@@ -73,7 +66,7 @@ export default function CartPage() {
     );
   }
 
-  if (!cart || !cart.items || cart.items.length === 0) {
+  if (!cart?.items || cart.items.length === 0) {
     return (
       <div className="container mx-auto px-4 sm:px-6 lg:px-8  py-16">
         <div className="text-center">
