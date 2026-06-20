@@ -27,11 +27,9 @@ const storeName = getStoreName();
 
 // ── Nav links with correct Spree category permalinks ──────────────────────────
 const NAV_LINKS = [
-  { label: "10ML", href: "/c/categories/10ml" },
+  { label: "15ML", href: "/c/categories/15ml" },
   { label: "2ML SAMPLES", href: "/c/categories/2ml-samples" },
   { label: "NEW ARRIVALS", href: "/c/categories/new-arrivals" },
-  { label: "BUNDLES", href: "/bundles/pick-10-2ml" },
-  { label: "BLOG", href: "/blog" },
   { label: "SHOP ALL", href: "/products" },
 ];
 
