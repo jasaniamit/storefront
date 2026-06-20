@@ -26,12 +26,13 @@ function CheckoutHeader() {
     <header className="flex items-center justify-between h-16">
       <Link href={basePath || "/"} className="flex items-center space-x-2">
         <Image
-          src="/spree.png"
+          src="/noz.png"
           alt={storeName}
-          width={90}
-          height={32}
+          width={120}
+          height={41}
           fetchPriority="high"
           loading="eager"
+          style={{ height: "32px", width: "auto", objectFit: "contain" }}
         />
       </Link>
       <Link
