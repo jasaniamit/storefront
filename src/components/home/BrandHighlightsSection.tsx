@@ -38,7 +38,7 @@ export function BrandHighlightsSection() {
                             <Image src="/images/home/icons/features/grain-ethanol.svg" alt="Grain Ethanol" fill className="object-contain" />
                         </div>
                         <div>
-                            <h4 className="text-sm font-bold text-gray-900 tracking-tight">Grain Ethanol</h4>
+                            <h4 className="text-sm font-bold text-gray-900 tracking-tight">Use Grain Ethanol</h4>
                             <p className="text-[13px] text-gray-400 font-medium mt-0.5">Sourced from grain ethanol across India</p>
                         </div>
                     </div>
