@@ -2,9 +2,6 @@
 import Image from "next/image";
 import {
     Sparkles,
-    Layers,
-    BadgeCheck,
-    Clock,
     Droplet,
     FlaskConical,
     Plane,
@@ -19,31 +16,39 @@ export function BrandHighlightsSection() {
             <div className="border-b border-gray-100 bg-white py-10">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-8 gap-x-6 text-center sm:text-left">
                     <div className="flex flex-col sm:flex-row items-center gap-4 px-2">
-                        <Sparkles className="w-8 h-8 text-gray-900 shrink-0" strokeWidth={1.75} />
+                        <div className="w-8 h-8 relative shrink-0">
+                            <Image src="/images/home/icons/features/ifra-compliance.svg" alt="IFRA Compliance" fill className="object-contain" />
+                        </div>
                         <div>
-                            <h4 className="text-sm font-bold text-gray-900 tracking-tight">100% Authentic</h4>
-                            <p className="text-[13px] text-gray-400 font-medium mt-0.5">Premium imported ingredients</p>
+                            <h4 className="text-sm font-bold text-gray-900 tracking-tight">IFRA Compliance</h4>
+                            <p className="text-[13px] text-gray-400 font-medium mt-0.5">Compliant with IFRA&apos;s 50th Amendment</p>
                         </div>
                     </div>
                     <div className="flex flex-col sm:flex-row items-center gap-4 px-2">
-                        <Layers className="w-8 h-8 text-gray-900 shrink-0" strokeWidth={1.75} />
+                        <div className="w-8 h-8 relative shrink-0">
+                            <Image src="/images/home/icons/features/cruelty-free.svg" alt="Cruelty Free" fill className="object-contain" />
+                        </div>
                         <div>
-                            <h4 className="text-sm font-bold text-gray-900 tracking-tight">Multi-Note Blend</h4>
-                            <p className="text-[13px] text-gray-400 font-medium mt-0.5">Top, heart & base notes</p>
+                            <h4 className="text-sm font-bold text-gray-900 tracking-tight">Cruelty Free</h4>
+                            <p className="text-[13px] text-gray-400 font-medium mt-0.5">No animal testing, ever</p>
                         </div>
                     </div>
                     <div className="flex flex-col sm:flex-row items-center gap-4 px-2">
-                        <BadgeCheck className="w-8 h-8 text-gray-900 shrink-0" strokeWidth={1.75} />
+                        <div className="w-8 h-8 relative shrink-0">
+                            <Image src="/images/home/icons/features/grain-ethanol.svg" alt="Grain Ethanol" fill className="object-contain" />
+                        </div>
                         <div>
-                            <h4 className="text-sm font-bold text-gray-900 tracking-tight">Skin-Safe Formula</h4>
-                            <p className="text-[13px] text-gray-400 font-medium mt-0.5">Dermatologically tested</p>
+                            <h4 className="text-sm font-bold text-gray-900 tracking-tight">Grain Ethanol</h4>
+                            <p className="text-[13px] text-gray-400 font-medium mt-0.5">Sourced from grain ethanol across India</p>
                         </div>
                     </div>
                     <div className="flex flex-col sm:flex-row items-center gap-4 px-2">
-                        <Clock className="w-8 h-8 text-gray-900 shrink-0" strokeWidth={1.75} />
+                        <div className="w-8 h-8 relative shrink-0">
+                            <Image src="/images/home/icons/features/globe.svg" alt="Globally Sourced" fill className="object-contain" />
+                        </div>
                         <div>
-                            <h4 className="text-sm font-bold text-gray-900 tracking-tight">Long Lasting Scent</h4>
-                            <p className="text-[13px] text-gray-400 font-medium mt-0.5">Up to 8+ hours of wear</p>
+                            <h4 className="text-sm font-bold text-gray-900 tracking-tight">Globally Sourced</h4>
+                            <p className="text-[13px] text-gray-400 font-medium mt-0.5">Premium ingredients procured worldwide</p>
                         </div>
                     </div>
                 </div>
