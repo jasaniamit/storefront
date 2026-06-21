@@ -76,14 +76,6 @@ export default function RootLayout({
           }}
         />
 
-        {/* Umami Analytics (self-hosted) */}
-        <Script
-          defer
-          src="https://umamistats.nozfragrances.com/script.js"
-          data-website-id="c5c5aacf-f575-4f05-904b-1839b125b21d"
-          strategy="afterInteractive"
-        />
-
         {/* Umami Analytics (cloud) */}
         <Script
           defer
