@@ -250,7 +250,7 @@ export default function ContactClientPage() {
                         <div className="md:col-span-6 order-2 md:order-1 flex justify-center md:justify-start w-full">
                             <div className="w-full max-w-[220px] aspect-square relative">
                                 <Image
-                                    src="images/contact/live-chat.webp"
+                                    src="/images/contact/live-chat.webp"
                                     alt="WhatsApp"
                                     fill
                                     className="object-contain"
