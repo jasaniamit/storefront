@@ -16,7 +16,7 @@ export function BrandHighlightsSection() {
             <div className="border-b border-gray-100 bg-white py-10">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-8 gap-x-6 text-center sm:text-left">
                     <div className="flex flex-col sm:flex-row items-center gap-4 px-2">
-                        <div className="w-8 h-8 relative shrink-0">
+                        <div className="w-12 h-12 relative shrink-0">
                             <Image src="/icons/features/ifra-compliance.svg" alt="IFRA Compliance" fill className="object-contain" />
                         </div>
                         <div>
@@ -25,7 +25,7 @@ export function BrandHighlightsSection() {
                         </div>
                     </div>
                     <div className="flex flex-col sm:flex-row items-center gap-4 px-2">
-                        <div className="w-8 h-8 relative shrink-0">
+                        <div className="w-12 h-12 relative shrink-0">
                             <Image src="/icons/features/cruelty-free.svg" alt="Cruelty Free" fill className="object-contain" />
                         </div>
                         <div>
@@ -34,7 +34,7 @@ export function BrandHighlightsSection() {
                         </div>
                     </div>
                     <div className="flex flex-col sm:flex-row items-center gap-4 px-2">
-                        <div className="w-8 h-8 relative shrink-0">
+                        <div className="w-12 h-12 relative shrink-0">
                             <Image src="/icons/features/grain-ethanol.svg" alt="Grain Ethanol" fill className="object-contain" />
                         </div>
                         <div>
@@ -43,7 +43,7 @@ export function BrandHighlightsSection() {
                         </div>
                     </div>
                     <div className="flex flex-col sm:flex-row items-center gap-4 px-2">
-                        <div className="w-8 h-8 relative shrink-0">
+                        <div className="w-12 h-12 relative shrink-0">
                             <Image src="/icons/features/globe.svg" alt="Globally Sourced" fill className="object-contain" />
                         </div>
                         <div>
