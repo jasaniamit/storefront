@@ -254,7 +254,7 @@ export function MobileMenu({ rootCategories, basePath }: MobileMenuProps) {
                 ),
               )}
               <Link
-                href={`${basePath}/#contact`}
+                href={`${basePath}/contact`}
                 onClick={() => setOpen(false)}
                 className={linkClass}
               >
