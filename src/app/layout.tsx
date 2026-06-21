@@ -1,8 +1,9 @@
 import { GoogleTagManager } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { Suspense } from "react";
 import { getStoreDescription, getStoreName } from "@/lib/store";
@@ -26,6 +27,10 @@ const geist = Geist({
 
 const rootStoreName = getStoreName();
 
+export const viewport: Viewport = {
+  themeColor: "#F07867",
+};
+
 export const metadata: Metadata = {
   title: {
     template: `%s | ${rootStoreName}`,
@@ -48,6 +53,44 @@ export default function RootLayout({
             <link rel="dns-prefetch" href={spreeApiOrigin} />
           </>
         )}
+
+        {/* Ahrefs Analytics */}
+        <Script
+          src="https://analytics.ahrefs.com/analytics.js"
+          data-key="2xFrdGjJnYdcBJmAFTd6Fw"
+          strategy="afterInteractive"
+        />
+
+        {/* Self-hosted Plausible-style Analytics */}
+        <Script
+          defer
+          data-domain="nozfragrances.com"
+          src="https://stats.nozfragrances.com/js/script.file-downloads.hash.outbound-links.pageview-props.revenue.tagged-events.js"
+          strategy="afterInteractive"
+        />
+        <Script
+          id="plausible-queue-init"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`,
+          }}
+        />
+
+        {/* Umami Analytics (self-hosted) */}
+        <Script
+          defer
+          src="https://umamistats.nozfragrances.com/script.js"
+          data-website-id="c5c5aacf-f575-4f05-904b-1839b125b21d"
+          strategy="afterInteractive"
+        />
+
+        {/* Umami Analytics (cloud) */}
+        <Script
+          defer
+          src="https://cloud.umami.is/script.js"
+          data-website-id="26c905b8-4b5f-4133-8e08-d03512494514"
+          strategy="afterInteractive"
+        />
       </head>
       {gtmId && <GoogleTagManager gtmId={gtmId} />}
       <body
