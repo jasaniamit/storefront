@@ -6,14 +6,97 @@ import Image from "next/image";
 import Link from "next/link";
 import { Mail, Phone, MessageCircle, ArrowRight } from "lucide-react";
 
+// Web3Forms access key (from your Web3Forms dashboard / form setup)
+const WEB3FORMS_ACCESS_KEY = "4e4f0952-a768-4529-9f62-07ceb1f30593";
+
+// Common countries with their dial code, flag, and expected mobile number
+// length. "Other" is a catch-all for any country not listed, with a looser
+// length check. Add more rows here any time without installing anything.
+const COUNTRIES = [
+    { name: "India", dial: "+91", flag: "🇮🇳", digits: 10 },
+    { name: "United States", dial: "+1", flag: "🇺🇸", digits: 10 },
+    { name: "Canada", dial: "+1", flag: "🇨🇦", digits: 10 },
+    { name: "United Kingdom", dial: "+44", flag: "🇬🇧", digits: 10 },
+    { name: "United Arab Emirates", dial: "+971", flag: "🇦🇪", digits: 9 },
+    { name: "Saudi Arabia", dial: "+966", flag: "🇸🇦", digits: 9 },
+    { name: "Qatar", dial: "+974", flag: "🇶🇦", digits: 8 },
+    { name: "Kuwait", dial: "+965", flag: "🇰🇼", digits: 8 },
+    { name: "Australia", dial: "+61", flag: "🇦🇺", digits: 9 },
+    { name: "Singapore", dial: "+65", flag: "🇸🇬", digits: 8 },
+    { name: "Germany", dial: "+49", flag: "🇩🇪", digits: 10 },
+    { name: "France", dial: "+33", flag: "🇫🇷", digits: 9 },
+    { name: "Other", dial: "", flag: "🌐", digits: 0 },
+];
+
+type SubmitStatus = "idle" | "submitting" | "success" | "error";
+
 export default function ContactClientPage() {
     const [email, setEmail] = useState("");
+    const [countryIndex, setCountryIndex] = useState(0); // defaults to India
+    const [phoneDigits, setPhoneDigits] = useState("");
+    const [phoneError, setPhoneError] = useState("");
     const [subject, setSubject] = useState("");
     const [message, setMessage] = useState("");
+    const [status, setStatus] = useState<SubmitStatus>("idle");
 
-    const handleFormSubmit = (e: React.FormEvent) => {
+    const selectedCountry = COUNTRIES[countryIndex];
+
+    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        // Strip anything that isn't a digit, and cap the length to what the
+        // selected country expects (skip capping for "Other").
+        const digitsOnly = e.target.value.replace(/\D/g, "");
+        const limit = selectedCountry.digits || 15;
+        setPhoneDigits(digitsOnly.slice(0, limit));
+    };
+
+    const handleFormSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log({ email, subject, message });
+
+        const expectedLength = selectedCountry.digits;
+        if (
+            !phoneDigits ||
+            (expectedLength > 0 && phoneDigits.length !== expectedLength)
+        ) {
+            setPhoneError(
+                expectedLength > 0
+                    ? `Please enter a valid ${expectedLength}-digit mobile number for ${selectedCountry.name}.`
+                    : "Please enter a valid mobile number.",
+            );
+            return;
+        }
+        setPhoneError("");
+        setStatus("submitting");
+
+        const fullPhoneNumber = `${selectedCountry.dial}${phoneDigits}`;
+
+        try {
+            const response = await fetch("https://api.web3forms.com/submit", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    access_key: WEB3FORMS_ACCESS_KEY,
+                    email,
+                    phone: fullPhoneNumber,
+                    subject,
+                    message,
+                }),
+            });
+
+            const result = await response.json();
+
+            if (!result.success) {
+                throw new Error(result.message || "Submission failed");
+            }
+
+            setStatus("success");
+            setEmail("");
+            setPhoneDigits("");
+            setSubject("");
+            setMessage("");
+        } catch (error) {
+            console.error("Contact form submission error:", error);
+            setStatus("error");
+        }
     };
 
     return (
@@ -89,6 +172,36 @@ export default function ContactClientPage() {
                                     required
                                     className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-xs font-semibold text-gray-800 placeholder-gray-400 outline-none focus:border-gray-400 transition-colors shadow-2xs"
                                 />
+                                <div className="flex gap-2">
+                                    <select
+                                        value={countryIndex}
+                                        onChange={(e) => {
+                                            setCountryIndex(Number(e.target.value));
+                                            setPhoneDigits("");
+                                        }}
+                                        className="bg-white border border-gray-200 rounded-xl px-2 py-3 text-xs font-semibold text-gray-800 outline-none focus:border-gray-400 transition-colors shadow-2xs"
+                                    >
+                                        {COUNTRIES.map((country, index) => (
+                                            <option key={country.name} value={index}>
+                                                {country.flag} {country.dial || "+__"}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <input
+                                        type="tel"
+                                        inputMode="numeric"
+                                        value={phoneDigits}
+                                        onChange={handlePhoneChange}
+                                        placeholder="Mobile Number"
+                                        required
+                                        className="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-3 text-xs font-semibold text-gray-800 placeholder-gray-400 outline-none focus:border-gray-400 transition-colors shadow-2xs"
+                                    />
+                                </div>
+                                {phoneError && (
+                                    <p className="text-xs font-semibold text-red-600 -mt-2">
+                                        {phoneError}
+                                    </p>
+                                )}
                                 <input
                                     type="text"
                                     value={subject}
@@ -105,12 +218,23 @@ export default function ContactClientPage() {
                                     required
                                     className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-xs font-semibold text-gray-800 placeholder-gray-400 outline-none focus:border-gray-400 transition-colors shadow-2xs resize-none"
                                 />
+                                {status === "success" && (
+                                    <p className="text-xs font-semibold text-emerald-600">
+                                        Thanks! Your message has been sent — we'll get back to you shortly.
+                                    </p>
+                                )}
+                                {status === "error" && (
+                                    <p className="text-xs font-semibold text-red-600">
+                                        Something went wrong sending your message. Please try again.
+                                    </p>
+                                )}
                                 <div className="flex justify-end pt-1">
                                     <button
                                         type="submit"
-                                        className="bg-black hover:bg-zinc-900 text-white font-bold text-xs tracking-wide px-6 py-3 rounded-lg transition-colors shadow-xs"
+                                        disabled={status === "submitting"}
+                                        className="bg-black hover:bg-zinc-900 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-xs tracking-wide px-6 py-3 rounded-lg transition-colors shadow-xs"
                                     >
-                                        Submit Form
+                                        {status === "submitting" ? "Sending..." : "Submit Form"}
                                     </button>
                                 </div>
                             </form>
