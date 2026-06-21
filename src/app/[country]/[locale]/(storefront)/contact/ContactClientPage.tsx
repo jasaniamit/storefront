@@ -3,8 +3,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { Mail, Phone, MessageCircle, ArrowRight } from "lucide-react";
+import { Phone, MessageCircle } from "lucide-react";
 
 // Web3Forms access key (from your Web3Forms dashboard / form setup)
 const WEB3FORMS_ACCESS_KEY = "4e4f0952-a768-4529-9f62-07ceb1f30593";
@@ -136,10 +135,10 @@ export default function ContactClientPage() {
                     {/* Left Column Text Group */}
                     <div className="lg:col-span-7 bg-transparent pt-20 lg:pt-32 space-y-6">
                         <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight leading-tight max-w-md">
-                            Let's Print an amazing masterpiece together
+                            We're Here to Help
                         </h2>
                         <p className="text-sm sm:text-base text-gray-500 font-medium leading-relaxed max-w-2xl">
-                            We would love to hear from you. Our experts will cater all your needs and enquiries. Whether you are looking to renovate, reconstruct or upgrade your space, our experts will guide you from conceptualisation to implementation. Leave us a message, and we'll get back to you as soon as possible.
+                            Have a question about our fragrances, need assistance, or want to share a suggestion? We'd love to hear from you — please fill out the form below and we'll get back to you shortly.
                         </p>
                     </div>
 
@@ -246,54 +245,21 @@ export default function ContactClientPage() {
                 {/* LOWER CHANNELS MATRICES SEGMENT */}
                 <div className="mt-20 sm:mt-32 space-y-8">
 
-                    {/* Tier 1: Technical Support */}
-                    <div className="bg-white border border-gray-200/70 rounded-3xl p-6 sm:p-10 md:p-12 grid grid-cols-1 md:grid-cols-12 gap-8 items-center shadow-2xs hover:shadow-xs transition-shadow">
-                        <div className="md:col-span-6 space-y-4">
-                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">
-                                Technical Support
-                            </h3>
-                            <div className="space-y-0.5 text-xs sm:text-sm text-gray-400 font-semibold tracking-normal">
-                                <p className="text-gray-900 font-bold">Print & Design</p>
-                                <p>Professional Support</p>
-                                <p>(9-10) Monday – Saturday</p>
-                            </div>
-                            <div className="pt-2 flex items-center gap-2 text-gray-900 font-bold text-sm sm:text-base">
-                                <Mail className="w-4 h-4 text-gray-900 shrink-0" strokeWidth={2.5} />
-                                <a href="mailto:support@artolika.com" className="hover:underline">
-                                    support@artolika.com
-                                </a>
-                            </div>
-                        </div>
-                        <div className="md:col-span-6 flex justify-center md:justify-end w-full">
-                            {/* Upscaled max-width constraints to expand vector presentation fields */}
-                            <div className="w-full max-w-[460px] aspect-[4/3] relative">
-                                <Image
-                                    src="/images/contact/technical-support.webp"
-                                    alt="Technical Support Engineering Vector Representation"
-                                    fill
-                                    className="object-contain"
-                                    unoptimized
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Tier 2: Live Chat */}
+                    {/* WhatsApp Support */}
                     <div className="bg-white border border-gray-200/70 rounded-3xl p-6 sm:p-10 md:p-12 grid grid-cols-1 md:grid-cols-12 gap-8 items-center shadow-2xs hover:shadow-xs transition-shadow">
                         <div className="md:col-span-6 order-2 md:order-1 flex justify-center md:justify-start w-full">
-                            <div className="w-full max-w-[460px] aspect-[4/3] relative">
+                            <div className="w-full max-w-[220px] aspect-square relative">
                                 <Image
-                                    src="/images/contact/live-chat.webp"
-                                    alt="Customer Care Representatives Chatting Live Illustration"
+                                    src="/icons/whatsapp.svg"
+                                    alt="WhatsApp"
                                     fill
                                     className="object-contain"
-                                    unoptimized
                                 />
                             </div>
                         </div>
                         <div className="md:col-span-6 order-1 md:order-2 space-y-4 md:pl-10">
                             <h3 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">
-                                Live Chat
+                                WhatsApp Support
                             </h3>
                             <div className="space-y-0.5 text-xs sm:text-sm text-gray-400 font-semibold tracking-normal">
                                 <p className="text-gray-900 font-bold">Customer Support</p>
@@ -301,13 +267,6 @@ export default function ContactClientPage() {
                                 <p>(9-10) Monday – Saturday</p>
                             </div>
                             <div className="pt-3 flex flex-col sm:flex-row items-start sm:items-center gap-4 text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                <a
-                                    href="tel:+919390735447"
-                                    className="inline-flex items-center gap-2 bg-gray-50 border border-gray-200 px-4 py-2.5 rounded-xl hover:bg-gray-100 transition-colors w-full sm:w-auto justify-center shadow-2xs"
-                                >
-                                    <Phone className="w-3.5 h-3.5 text-blue-600" strokeWidth={2.5} />
-                                    <span>Talk to us</span>
-                                </a>
                                 <a
                                     href="https://wa.me/919390735447"
                                     target="_blank"
@@ -317,39 +276,6 @@ export default function ContactClientPage() {
                                     <MessageCircle className="w-4 h-4 text-emerald-600" strokeWidth={2.2} />
                                     <span>Whatsapp</span>
                                 </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Tier 3: Locate Us */}
-                    <div className="bg-white border border-gray-200/70 rounded-3xl p-6 sm:p-10 md:p-12 grid grid-cols-1 md:grid-cols-12 gap-8 items-center shadow-2xs hover:shadow-xs transition-shadow">
-                        <div className="md:col-span-6 space-y-4">
-                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">
-                                Locate Us
-                            </h3>
-                            <div className="space-y-0.5 text-xs sm:text-sm text-gray-400 font-semibold tracking-normal">
-                                <p className="text-gray-900 font-bold">Official Showrooms</p>
-                                <p>Order from your Nearest Stores Hassle Free</p>
-                            </div>
-                            <div className="pt-3">
-                                <Link
-                                    href="/locate-stores"
-                                    className="inline-flex items-center gap-2 bg-black hover:bg-zinc-900 text-white font-bold text-xs uppercase tracking-wider px-5 py-3 rounded-xl transition-all group"
-                                >
-                                    <span>Visit Stores</span>
-                                    <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
-                                </Link>
-                            </div>
-                        </div>
-                        <div className="md:col-span-6 flex justify-center md:justify-end w-full">
-                            <div className="w-full max-w-[460px] aspect-[4/3] relative">
-                                <Image
-                                    src="/images/contact/locate-us.webp"
-                                    alt="Clients Reviewing Design Prints Inside Architecture Showroom Center"
-                                    fill
-                                    className="object-contain"
-                                    unoptimized
-                                />
                             </div>
                         </div>
                     </div>
