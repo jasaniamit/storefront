@@ -186,7 +186,7 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
 
         {/* Product Info */}
         <div className="flex flex-col">
-          <h1 className="text-4xl font-normal text-gray-900 mb-2 leading-tight">
+          <h1 className="font-google-sans text-4xl font-normal text-gray-900 mb-2 leading-tight">
             {product.name}
           </h1>
 
