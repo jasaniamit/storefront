@@ -268,7 +268,7 @@ export default function ContactClientPage() {
                             </div>
                             <div className="pt-3 flex flex-col sm:flex-row items-start sm:items-center gap-4 text-xs font-bold text-gray-900 uppercase tracking-wider">
                                 <a
-                                    href="https://wa.me/919390735447"
+                                    href="https://wa.me/919499521425"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="inline-flex items-center gap-2 bg-gray-50 border border-gray-200 px-4 py-2.5 rounded-xl hover:bg-gray-100 transition-colors w-full sm:w-auto justify-center shadow-2xs"
