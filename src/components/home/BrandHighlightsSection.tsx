@@ -21,7 +21,7 @@ export function BrandHighlightsSection() {
                         </div>
                         <div>
                             <h4 className="text-sm font-bold text-gray-900 tracking-tight">IFRA Compliance</h4>
-                            <p className="text-[13px] text-gray-400 font-medium mt-0.5">Compliant with IFRA&apos;s 50th Amendment</p>
+                            <p className="text-[13px] text-gray-400 font-medium mt-0.5">Compliant with IFRA&apos;s 51st Amendment</p>
                         </div>
                     </div>
                     <div className="flex flex-col sm:flex-row items-center gap-4 px-2">
@@ -56,24 +56,24 @@ export function BrandHighlightsSection() {
 
             <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 sm:mt-24 space-y-24 sm:space-y-36">
 
-                {/* BLOCK 2: BEYOND IMAGINATION SPLIT SECTION */}
+                {/* BLOCK 2: DELIVERED WITH CARE SPLIT SECTION */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                     <div className="lg:col-span-5 space-y-4 text-center lg:text-left">
                         <div className="flex items-center justify-center lg:justify-start w-full">
                             <Sparkles className="w-9 h-9 text-gray-900" strokeWidth={1.5} />
                         </div>
                         <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
-                            Beyond Imagination
+                            Delivered with Care
                         </h2>
                         <p className="text-xs sm:text-sm text-gray-400 font-medium leading-relaxed max-w-md mx-auto lg:mx-0">
-                            A fragrance that turns every moment into a lasting memory — elegant, timeless, and unmistakably you.
+                            Define through a Quality
                         </p>
                     </div>
                     <div className="lg:col-span-7 flex justify-center lg:justify-end w-full">
                         <div className="w-full aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3] relative rounded-3xl overflow-hidden border border-gray-100 shadow-2xs bg-gray-50">
                             <Image
-                                src="/images/home/beyond-imagination.webp"
-                                alt="Noz Fragrances lifestyle shot"
+                                src="/images/home/store-front-nozfragrances.webp"
+                                alt="Noz Fragrances storefront"
                                 fill
                                 className="object-cover"
                                 unoptimized
