@@ -32,7 +32,7 @@ function CheckoutHeader() {
           height={41}
           fetchPriority="high"
           loading="eager"
-          style={{ height: "32px", width: "auto", objectFit: "contain" }}
+          style={{ height: "48px", width: "auto", objectFit: "contain" }}
         />
         
       </Link>
