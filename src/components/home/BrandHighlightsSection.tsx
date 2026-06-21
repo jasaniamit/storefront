@@ -128,13 +128,13 @@ export function BrandHighlightsSection() {
                     </div>
                 </div>
 
-                {/* BLOCK 4: CRAFTSMANSHIP SPLIT SEGMENT */}
+                {/* BLOCK 4: EXPORT TO EUROPE, AFRICA SPLIT SEGMENT */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center pt-4">
                     <div className="lg:col-span-6 order-2 lg:order-1 flex justify-center lg:justify-start w-full">
                         <div className="w-full aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3] relative rounded-3xl overflow-hidden border border-gray-100 shadow-2xs bg-gray-50">
                             <Image
-                                src="/images/home/craftsmanship.webp"
-                                alt="Noz Fragrances craftsmanship"
+                                src="/images/home/eu.webp"
+                                alt="Noz Fragrances exports to Europe and Africa"
                                 fill
                                 className="object-cover"
                                 unoptimized
@@ -146,10 +146,10 @@ export function BrandHighlightsSection() {
                             <FlaskConical className="w-9 h-9 text-gray-900" strokeWidth={1.5} />
                         </div>
                         <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
-                            Craftsmanship
+                            Export to Europe, Africa
                         </h2>
                         <p className="text-xs sm:text-sm text-gray-400 font-medium leading-relaxed max-w-xl mx-auto lg:mx-0">
-                            Every Noz fragrance is blended by skilled perfumers using premium concentrated oils sourced internationally, then tested for consistency and lasting performance before it reaches you.
+                            The first Indian brand to export to Europe — starting with Portugal and the UK.
                         </p>
                     </div>
                 </div>
