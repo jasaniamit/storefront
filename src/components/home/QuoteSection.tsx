@@ -21,7 +21,7 @@ export function QuoteSection({ basePath }: QuoteSectionProps) {
                         "इश्क और मुश्क छुपाए नहीं छुपते
                     </blockquote>
 
-                    <p className="text-gray-500 mb-8 font-medium">— From very famous and reputed Youtuber</p>
+                    <p className="text-gray-500 mb-8 font-medium">— From the very famous and reputed Youtuber</p>
 
                     <Button asChild className="rounded-full h-12 px-8 bg-black hover:bg-gray-800 text-white font-medium">
                         <Link href={`${basePath}/products`}>Shop ALL</Link>
