@@ -70,12 +70,12 @@ export function BrandHighlightsSection() {
                         </p>
                     </div>
                     <div className="w-full flex justify-center lg:justify-end">
-                        <div className="relative w-full max-w-[700px] aspect-[4/3]">
                             <Image
                                 src="/images/home/Delivered-with-Care.webp"
                                 alt="Delivered with Care"
-                                fill
-                                className="object-contain"
+                                width={700}
+                                height={700}
+                                className="w-full max-w-[700px] h-auto"
                                 unoptimized
                             />
                         </div>
