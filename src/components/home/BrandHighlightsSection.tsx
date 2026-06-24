@@ -69,15 +69,17 @@ export function BrandHighlightsSection() {
                             Define through a Quality
                         </p>
                     </div>
-                    <div className="w-full flex justify-center lg:justify-end">
+                    <div className="lg:col-span-7 w-full flex justify-center lg:justify-end">
+                        <div className="relative w-full max-w-[500px] aspect-square">
                             <Image
                                 src="/images/home/Delivered-with-Care.webp"
                                 alt="Delivered with Care"
-                                width={700}
-                                height={700}
-                                className="w-full max-w-[700px] h-auto"
+                                fill
+                                className="object-contain"
+                                sizes="(max-width: 1024px) 100vw, 50vw"
                                 unoptimized
                             />
+                        </div>
                     </div>
                 </div>
 
@@ -136,6 +138,7 @@ export function BrandHighlightsSection() {
                                 alt="Noz Fragrances exports to Europe and Africa"
                                 fill
                                 className="object-cover"
+                                sizes="(max-width: 1024px) 100vw, 50vw"
                                 unoptimized
                             />
                         </div>
