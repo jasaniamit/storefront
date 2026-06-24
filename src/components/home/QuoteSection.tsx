@@ -18,7 +18,7 @@ export function QuoteSection({ basePath }: QuoteSectionProps) {
                     <Quote className="w-12 h-12 text-gray-200 mb-6 mx-auto md:mx-0" fill="currentColor" />
 
                     <blockquote className="text-3xl md:text-4xl font-medium text-gray-900 leading-[1.4] mb-6 tracking-tight">
-                        "इश्क और मुश्क छुपाए नहीं छुपते
+                        "इश्क और मुश्क छुपाए नहीं छुपते"
                     </blockquote>
 
                     <p className="text-gray-500 mb-8 font-medium">— From the very famous and reputed Youtuber</p>
