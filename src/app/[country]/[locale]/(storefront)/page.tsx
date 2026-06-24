@@ -5,6 +5,7 @@ import { HeroSection } from "@/components/home/HeroSection";
 import { getMarkets, resolveCurrency } from "@/lib/data/markets";
 import { generateHomeMetadata } from "@/lib/metadata/home";
 import { getDefaultCountry, getDefaultLocale } from "@/lib/store";
+import { QuoteSection } from "@/components/home/QuoteSection";
 
 interface HomePageProps {
   params: Promise<{
@@ -84,6 +85,7 @@ export default async function HomePage({ params }: HomePageProps) {
         country={country}
         currency={currency}
       />
+      <QuoteSection basePath={basePath} />
     </div>
   );
 }
