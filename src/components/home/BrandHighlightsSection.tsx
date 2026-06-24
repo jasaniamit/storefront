@@ -78,7 +78,6 @@ export function BrandHighlightsSection() {
                                 className="w-full max-w-[700px] h-auto"
                                 unoptimized
                             />
-                        </div>
                     </div>
                 </div>
 
