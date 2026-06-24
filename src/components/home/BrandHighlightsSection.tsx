@@ -69,13 +69,13 @@ export function BrandHighlightsSection() {
                             Define through a Quality
                         </p>
                     </div>
-                    <div className="lg:col-span-7 flex justify-center lg:justify-end w-full">
-                        <div className="w-full aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3] relative rounded-3xl overflow-hidden border border-gray-100 shadow-2xs bg-gray-50">
+                    <div className=""w-full flex justify-center lg:justify-end">
+                        <div className="relative w-full max-w-[700px] aspect-[4/3]">
                             <Image
                                 src="/images/home/Delivered-with-Care.webp"
                                 alt="Delivered with Care"
                                 fill
-                                className="object-cover"
+                                className="object-contain"
                                 unoptimized
                             />
                         </div>
