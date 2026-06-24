@@ -69,7 +69,7 @@ export function BrandHighlightsSection() {
                             Define through a Quality
                         </p>
                     </div>
-                    <div className=""w-full flex justify-center lg:justify-end">
+                    <div className="w-full flex justify-center lg:justify-end">
                         <div className="relative w-full max-w-[700px] aspect-[4/3]">
                             <Image
                                 src="/images/home/Delivered-with-Care.webp"
