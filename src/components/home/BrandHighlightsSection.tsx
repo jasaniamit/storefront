@@ -72,8 +72,8 @@ export function BrandHighlightsSection() {
                     <div className="lg:col-span-7 flex justify-center lg:justify-end w-full">
                         <div className="w-full aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3] relative rounded-3xl overflow-hidden border border-gray-100 shadow-2xs bg-gray-50">
                             <Image
-                                src="/images/home/store-front-nozfragrances.webp"
-                                alt="Noz Fragrances storefront"
+                                src="/images/home/Delivered-with-Care.webp"
+                                alt="Delivered with Care"
                                 fill
                                 className="object-cover"
                                 unoptimized
