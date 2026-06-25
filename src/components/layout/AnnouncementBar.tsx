@@ -15,7 +15,7 @@ const messages: AnnouncementItem[] = [
   { text: "Free Shipping On Order Above ₹999/-" },
   { text: "2ml Samples Available · Try Before You Buy", href: "/c/categories/2ml-samples" },
   { text: "All Products are IFRA Compliant" },
-  { text: "Get Our Support", href: "/contact" },
+  { text: "Contact our Support Service", href: "/contact" },
   { text: "Check Out Our New Release", href: "/c/categories/new-arrivals" },
 ];
 
