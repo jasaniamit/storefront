@@ -60,7 +60,7 @@ export function HeroSection({ basePath }: HeroSectionProps) {
         /* ✅ HEADING — label line */
         .noz-hero-text h1 {
           font-family: var(--font-inter), system-ui, sans-serif;
-          font-size: 20px;
+          font-size: 24px;
           font-weight: 400;
           line-height: 1.3;
           letter-spacing: -0.01em;
@@ -73,7 +73,7 @@ export function HeroSection({ basePath }: HeroSectionProps) {
           display: block;
           font-family: var(--font-next-generation), serif;
           font-weight: 700;
-          font-size: 38px;
+          font-size: 48px;
           line-height: 1.1;
           color: ${BRAND};
         }
