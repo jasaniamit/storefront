@@ -1,12 +1,28 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 
 interface HeroSectionProps {
   basePath: string;
   locale: string;
 }
 
-const BRAND = "#546470";
+const BRAND = "#53665d";
+const ACCENT = "#F07867"; // logo colour, used for the button
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-inter",
+});
+
+// Local custom display font, already uploaded to public/fonts
+const nextGenerationFont = localFont({
+  src: "../../../public/fonts/next-generation-font.otf",
+  variable: "--font-next-generation",
+  display: "swap",
+});
 
 export function HeroSection({ basePath }: HeroSectionProps) {
   return (
@@ -41,35 +57,44 @@ export function HeroSection({ basePath }: HeroSectionProps) {
           max-width: 536px;
         }
 
-        /* ✅ HEADING */
+        /* ✅ HEADING — label line */
         .noz-hero-text h1 {
-          font-family: "Google Sans", system-ui, sans-serif;
-          font-size: 24px;
-          font-weight: 500;
-          line-height: 1.25;
-          letter-spacing: -0.02em;
+          font-family: var(--font-inter), system-ui, sans-serif;
+          font-size: 20px;
+          font-weight: 400;
+          line-height: 1.3;
+          letter-spacing: -0.01em;
           color: ${BRAND};
-          margin: 0 0 12px 0;
+          margin: 0 0 4px 0;
+        }
+
+        /* ✅ HEADING — display words (custom font) */
+        .noz-hero-text h1 strong {
+          display: block;
+          font-family: var(--font-next-generation), serif;
+          font-weight: 700;
+          font-size: 38px;
+          line-height: 1.1;
+          color: ${BRAND};
         }
 
         @media (min-width: 768px) {
           .noz-hero-text h1 {
-            font-size: 48px;
+            font-size: 24px;
           }
-        }
-
-        .noz-hero-text h1 strong {
-          font-weight: 500;
+          .noz-hero-text h1 strong {
+            font-size: 56px;
+          }
         }
 
         /* ✅ PARAGRAPH */
         .noz-hero-text p {
-          font-family: "Google Sans", system-ui, sans-serif;
+          font-family: var(--font-inter), system-ui, sans-serif;
           font-size: 16px;
           font-weight: 400;
           line-height: 1.7;
           color: ${BRAND};
-          margin: 0 0 28px 0;
+          margin: 24px 0 28px 0;
         }
 
         /* ✅ BUTTON */
@@ -78,10 +103,10 @@ export function HeroSection({ basePath }: HeroSectionProps) {
           align-items: center !important;
           justify-content: center !important;
 
-          background-color: #000000 !important;
+          background-color: ${ACCENT} !important;
           color: #ffffff !important;
 
-          font-family: "Google Sans", system-ui, sans-serif !important;
+          font-family: var(--font-inter), system-ui, sans-serif !important;
           font-size: 16px !important;
           font-weight: 500 !important;
           letter-spacing: 0.08em !important;
@@ -143,15 +168,18 @@ export function HeroSection({ basePath }: HeroSectionProps) {
         }
       `}</style>
 
-      <section className="noz-hero">
+      <section className={`noz-hero ${inter.variable} ${nextGenerationFont.variable}`}>
         <div className="noz-hero-inner">
 
           {/* TEXT */}
           <div className="noz-hero-text">
             <h1>
-              The Perfume House for the
-              <br />
-              <strong>NEXT GENERATION</strong>
+              Perfume house for the
+              <strong>
+                next
+                <br />
+                generation
+              </strong>
             </h1>
 
             <p>
