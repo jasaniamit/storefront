@@ -1,9 +1,7 @@
 import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
-
 const withNextIntl = createNextIntlPlugin();
-
 const nextConfig: NextConfig = {
   output: "standalone",
   allowedDevOrigins: ["shop.lvh.me", "*.trycloudflare.com", "192.168.33.13"],
@@ -58,6 +56,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "spree.nozfragrances.com",
+        pathname: "/rails/active_storage/**",
+      },
+      {
+        protocol: "https",
         hostname: "server.nozfragrances.com",
         pathname: "/rails/active_storage/**",
       },
@@ -73,7 +76,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-
   redirects: async () => {
     return [
       {
@@ -96,12 +98,10 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-
   rewrites: async () => {
     const baseUrl = (
       process.env.SPREE_API_URL || "http://localhost:3000"
     ).replace(/\/$/, "");
-
     return [
       {
         source: "/api/:path*",
@@ -118,9 +118,7 @@ const nextConfig: NextConfig = {
     ];
   },
 };
-
 const configWithIntl = withNextIntl(nextConfig);
-
 export default process.env.SENTRY_DSN
   ? withSentryConfig(configWithIntl, {
       org: process.env.SENTRY_ORG,
