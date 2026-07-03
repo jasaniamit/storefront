@@ -79,6 +79,18 @@ export function OrderConfirmationEmail({
       </Preview>
       <Body style={main}>
         <Container style={container}>
+
+          {/* ── LOGO ── */}
+          <Section style={logoSection}>
+            <Img
+              src="https://www.nozfragrances.com/noz.png"
+              alt="NOZ Fragrances"
+              width={80}
+              height={80}
+              style={logo}
+            />
+          </Section>
+
           <Heading style={heading}>Thanks for your order, {firstName}!</Heading>
           <Text style={paragraph}>
             Your order <strong>{orderNumber}</strong> has been confirmed. We'll
@@ -257,6 +269,15 @@ const container: React.CSSProperties = {
   maxWidth: "600px",
 };
 
+const logoSection: React.CSSProperties = {
+  textAlign: "center" as const,
+  marginBottom: "24px",
+};
+
+const logo: React.CSSProperties = {
+  margin: "0 auto",
+};
+
 const heading: React.CSSProperties = {
   fontSize: "24px",
   fontWeight: "bold",
@@ -304,7 +325,7 @@ const imagePlaceholder: React.CSSProperties = {
 };
 
 const itemDetailsCol: React.CSSProperties = {
-  paddingLeft: "12px",
+<  paddingLeft: "12px",
   verticalAlign: "top",
 };
 
