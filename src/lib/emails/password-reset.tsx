@@ -6,6 +6,7 @@ import {
   Heading,
   Hr,
   Html,
+  Img,
   Link,
   Preview,
   Section,
@@ -30,6 +31,18 @@ export function PasswordResetEmail({
       <Preview>Reset your password - {storeName}</Preview>
       <Body style={main}>
         <Container style={container}>
+
+          {/* ── LOGO ── */}
+          <Section style={logoSection}>
+            <Img
+              src="https://www.nozfragrances.com/noz.png"
+              alt="NOZ Fragrances"
+              width={80}
+              height={80}
+              style={logo}
+            />
+          </Section>
+
           <Heading style={heading}>Reset your password</Heading>
           <Text style={paragraph}>
             We received a request to reset your password. Click the button below
@@ -83,6 +96,15 @@ const container: React.CSSProperties = {
   margin: "0 auto",
   padding: "40px 20px",
   maxWidth: "600px",
+};
+
+const logoSection: React.CSSProperties = {
+  textAlign: "center" as const,
+  marginBottom: "24px",
+};
+
+const logo: React.CSSProperties = {
+  margin: "0 auto",
 };
 
 const heading: React.CSSProperties = {
