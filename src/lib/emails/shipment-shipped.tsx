@@ -58,6 +58,18 @@ export function ShipmentShippedEmail({
       </Preview>
       <Body style={main}>
         <Container style={container}>
+
+          {/* ── LOGO ── */}
+          <Section style={logoSection}>
+            <Img
+              src="https://www.nozfragrances.com/noz.png"
+              alt="NOZ Fragrances"
+              width={80}
+              height={80}
+              style={logo}
+            />
+          </Section>
+
           <Heading style={heading}>Your order is on its way!</Heading>
           <Text style={paragraph}>
             Hi {firstName}, great news! Your order{" "}
@@ -154,6 +166,7 @@ export function ShipmentShippedEmail({
   );
 }
 
+// Styles
 const main: React.CSSProperties = {
   backgroundColor: "#f6f9fc",
   fontFamily:
@@ -165,6 +178,15 @@ const container: React.CSSProperties = {
   margin: "0 auto",
   padding: "40px 20px",
   maxWidth: "600px",
+};
+
+const logoSection: React.CSSProperties = {
+  textAlign: "center" as const,
+  marginBottom: "24px",
+};
+
+const logo: React.CSSProperties = {
+  margin: "0 auto",
 };
 
 const heading: React.CSSProperties = {
