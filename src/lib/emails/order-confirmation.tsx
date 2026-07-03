@@ -85,8 +85,8 @@ export function OrderConfirmationEmail({
             <Img
               src="https://www.nozfragrances.com/noz.png"
               alt="NOZ Fragrances"
-              width={80}
-              height={80}
+              width={120}
+              height={auto}
               style={logo}
             />
           </Section>
@@ -270,7 +270,7 @@ const container: React.CSSProperties = {
 };
 
 const logoSection: React.CSSProperties = {
-  textAlign: "center" as const,
+  textAlign: "left" as const,
   marginBottom: "24px",
 };
 
