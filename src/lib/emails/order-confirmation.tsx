@@ -325,7 +325,7 @@ const imagePlaceholder: React.CSSProperties = {
 };
 
 const itemDetailsCol: React.CSSProperties = {
-<  paddingLeft: "12px",
+  paddingLeft: "12px",
   verticalAlign: "top",
 };
 
