@@ -58,7 +58,7 @@ export function OrderCanceledEmail({
               src="https://www.nozfragrances.com/noz.png"
               alt="NOZ Fragrances"
               width={120}
-              height={auto}
+              height="auto"
               style={logo}
             />
           </Section>
