@@ -18,19 +18,19 @@ const LEVELS = [
     label: "Subtle",
     filled: 1,
     description:
-      "Delicate, close-to-skin scents you notice up close, not across a room.",
+      "Delicate, close-to-skin scents you notice up close, not across a room.Soft and delicate, With a soft scent close-to-skin that's noticeable in personal space.",
   },
   {
     label: "Moderate",
     filled: 2,
     description:
-      "A noticeable presence that lasts through the day without overwhelming a room.",
+      "Balanced and noticeable, with a well-rounded scent. Presence without feeling overpowering.",
   },
   {
     label: "Intense",
     filled: 3,
     description:
-      "Bold, long-lasting fragrances that make a statement with every spritz.",
+      "Rich and bold, with a stronger scent presence and longer-lasting performance.",
   },
 ] as const;
 
@@ -58,7 +58,7 @@ export function ProductIntensity({ intensity }: ProductIntensityProps) {
   if (!level) return null;
 
   return (
-    <div className="mt-4">
+    <div className="mt-6">
       <p className="text-xs font-medium tracking-wide text-gray-500 mb-1.5">
         Intensity
       </p>
