@@ -12,10 +12,10 @@ function NoteIcon({ name }: { name: string }) {
   const src = `/icons/notes/${slugify(name)}.webp`;
 
   return (
-    <div className="flex flex-col items-center gap-1.5 w-16">
+    <div className="flex flex-col items-center gap-1.5 w-20">
       {failed ? (
-        <div className="w-16 h-16 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center">
-          <span className="text-lg font-medium text-gray-400">
+        <div className="w-20 h-20 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-center">
+          <span className="text-xl font-medium text-gray-400">
             {name.charAt(0).toUpperCase()}
           </span>
         </div>
@@ -23,9 +23,9 @@ function NoteIcon({ name }: { name: string }) {
         <img
           src={src}
           alt={name}
-          width={64}
-          height={64}
-          className="w-16 h-16 rounded-xl object-cover border border-gray-200"
+          width={80}
+          height={80}
+          className="w-20 h-20 rounded-xl object-cover border border-gray-200"
           onError={() => setFailed(true)}
         />
       )}
