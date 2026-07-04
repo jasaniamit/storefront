@@ -1,5 +1,6 @@
 import type { CustomField } from "@spree/sdk";
 import { useTranslations } from "next-intl";
+import { MANAGED_CUSTOM_FIELD_KEYS } from "@/lib/utils/product-fields";
 
 interface ProductCustomFieldsProps {
   customFields?: Array<CustomField>;
@@ -41,7 +42,12 @@ export function ProductCustomFields({
 }: ProductCustomFieldsProps): React.JSX.Element | null {
   const t = useTranslations("products");
 
-  if (!customFields || customFields.length === 0) {
+  const remainingFields = (customFields || []).filter(
+    (field) =>
+      !(MANAGED_CUSTOM_FIELD_KEYS as readonly string[]).includes(field.key),
+  );
+
+  if (remainingFields.length === 0) {
     return null;
   }
 
@@ -51,7 +57,7 @@ export function ProductCustomFields({
         {t("properties")}
       </h2>
       <dl className="space-y-3">
-        {customFields.map((field) => {
+        {remainingFields.map((field) => {
           const type = normalizeType(field.type);
           return (
             <div key={field.id} className="flex">
