@@ -276,17 +276,6 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
             )}
           </div>
 
-          {/* Shipping Note */}
-          <div className="mt-1.5 text-sm text-gray-500">
-            <a
-              href="/policies/shipping-policy"
-              className="underline hover:text-gray-900 transition-colors"
-            >
-              Shipping
-            </a>{" "}
-            calculated at checkout.
-          </div>
-
           {/* Stock Status */}
           <div className="mt-4">
             {displayInStock ? (
