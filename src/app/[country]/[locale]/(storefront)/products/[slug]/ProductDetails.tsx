@@ -5,13 +5,20 @@ import { CircleX, Loader2, ShoppingBag } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { MediaGallery } from "@/components/products/MediaGallery";
+import { ProductConcentration } from "@/components/products/ProductConcentration";
 import { ProductCustomFields } from "@/components/products/ProductCustomFields";
+import { ProductFragranceNotesWords } from "@/components/products/ProductFragranceNotesWords";
+import { ProductIngredients } from "@/components/products/ProductIngredients";
+import { ProductIntensity } from "@/components/products/ProductIntensity";
+import { ProductNotesImageGrid } from "@/components/products/ProductNotesImageGrid";
+import { ShippingPolicyBlock } from "@/components/products/ShippingPolicyBlock";
 import { VariantPicker } from "@/components/products/VariantPicker";
 import { Button } from "@/components/ui/button";
 import { QuantityPicker } from "@/components/ui/quantity-picker";
 import { useCart } from "@/contexts/CartContext";
 import { useStore } from "@/contexts/StoreContext";
 import { trackAddToCart, trackViewItem } from "@/lib/analytics/gtm";
+import { getCustomField, stripHtml } from "@/lib/utils/product-fields";
 
 //import { RazorpayAffordability } from "@/components/products/RazorpayAffordability";
 
@@ -106,6 +113,37 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
     };
     fetchReviewSummary();
   }, [product.slug]);
+
+  // Fragrance metafields (see src/lib/utils/product-fields.ts for the key list)
+  const mainNotes = getCustomField(product.custom_fields, "notes.main_notes")
+    ?.value as string | undefined;
+  const topNotes = getCustomField(product.custom_fields, "notes.top_notes")
+    ?.value as string | undefined;
+  const middleNotes = getCustomField(
+    product.custom_fields,
+    "notes.middle_notes",
+  )?.value as string | undefined;
+  const baseNotes = getCustomField(product.custom_fields, "notes.base_notes")
+    ?.value as string | undefined;
+  const intensity = stripHtml(
+    getCustomField(product.custom_fields, "scent.intensity")?.value as
+      | string
+      | undefined,
+  );
+  const concentration = stripHtml(
+    getCustomField(
+      product.custom_fields,
+      "oil_concentration.oil_concentration",
+    )?.value as string | undefined,
+  );
+  const ingredientsList = getCustomField(
+    product.custom_fields,
+    "ingredients.list",
+  )?.value as string | undefined;
+  const ingredientBadges = getCustomField(
+    product.custom_fields,
+    "ingredients.badges",
+  )?.value as string | undefined;
 
   const galleryImages = useMemo((): Media[] => {
     return product.media || [];
@@ -273,6 +311,12 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
             )}
           </div>
 
+          {/* Intensity */}
+          <ProductIntensity intensity={intensity} />
+
+          {/* Notes image grid */}
+          <ProductNotesImageGrid mainNotes={mainNotes} />
+
           {/* Variant Picker */}
           {hasVariants && optionTypes.length > 0 && (
             <div className="mt-8">
@@ -348,6 +392,25 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
               />
             </div>
           )}
+
+          {/* Fragrance notes (words) */}
+          <ProductFragranceNotesWords
+            topNotes={topNotes}
+            middleNotes={middleNotes}
+            baseNotes={baseNotes}
+          />
+
+          {/* Concentration */}
+          <ProductConcentration concentration={concentration} />
+
+          {/* Ingredients */}
+          <ProductIngredients
+            ingredientsList={ingredientsList}
+            badges={ingredientBadges}
+          />
+
+          {/* Shipping policy */}
+          <ShippingPolicyBlock />
 
           {/* Dynamic Landing Page Features from Spree Metafields */}
           {product.custom_fields?.map((field) => {
