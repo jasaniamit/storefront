@@ -258,7 +258,7 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
           )}
 
           {/* Price */}
-          <div className="mt-4 mb-4 flex items-center gap-2">
+          <div className="mt-3 flex items-center gap-2">
             {displayPrice && (
               <span className="text-xl font-bold text-gray-900">
                 {displayPrice}
@@ -277,7 +277,7 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
           </div>
 
           {/* Stock Status */}
-          <div className="mt-4">
+          <div className="mt-5">
             {displayInStock ? (
               <div className="flex items-center gap-2.5 text-[#14854E]">
                 <div className="relative flex h-[13px] w-[13px] shrink-0 items-center justify-center z-0">
