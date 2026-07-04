@@ -18,7 +18,7 @@ const LEVELS = [
     label: "Subtle",
     filled: 1,
     description:
-      "Soft and delicate, With a soft scent close-to-skin that's noticeable in personal space.",
+      "Soft and delicate, close-to-skin that's noticeable in personal space.",
   },
   {
     label: "Moderate",
