@@ -1,8 +1,13 @@
 "use server";
 
-import type { CategoryListParams, ProductListParams } from "@spree/sdk";
+import type {
+  Category,
+  CategoryListParams,
+  ProductListParams,
+} from "@spree/sdk";
 import { cacheLife, cacheTag } from "next/cache";
 import { getAccessToken, getClient, getLocaleOptions } from "@/lib/spree";
+import { isScentFamilyCategory } from "@/lib/data/scent-families";
 
 async function cachedListCategories(
   params: CategoryListParams | undefined,
@@ -56,6 +61,21 @@ async function cachedListCategoryProducts(
     { ...params, in_category: categoryId },
     options,
   );
+}
+
+export async function getRelatedProducts(product: {
+  id: string;
+  categories?: Category[];
+}) {
+  const scentFamilyCategory = product.categories?.find((c) =>
+    isScentFamilyCategory(c.permalink),
+  );
+  if (!scentFamilyCategory) return [];
+
+  const { data } = await getCategoryProducts(scentFamilyCategory.id, {
+    per_page: 9,
+  });
+  return data.filter((p) => p.id !== product.id).slice(0, 4);
 }
 
 export async function getCategoryProducts(
