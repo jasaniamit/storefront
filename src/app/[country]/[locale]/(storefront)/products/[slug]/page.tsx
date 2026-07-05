@@ -8,6 +8,8 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { getCachedProduct, PRODUCT_PAGE_EXPAND } from "@/lib/data/cached";
 import { getRelatedProducts } from "@/lib/data/categories";
 import { generateProductMetadata } from "@/lib/metadata/product";
+import { RecentlyViewed } from "@/components/products/RecentlyViewed";
+import { RelatedProducts } from "@/components/products/RelatedProducts";
 import {
   buildBreadcrumbJsonLd,
   buildCanonicalUrl,
@@ -109,11 +111,10 @@ export default async function ProductPage({
         )}
       </div>
 
-      <ProductDetails
-        product={product}
-        basePath={basePath}
-        relatedProducts={relatedProducts}
-      />
+      <ProductDetails product={product} basePath={basePath} />
+
+      <RelatedProducts products={relatedProducts} basePath={basePath} />
+      <RecentlyViewed currentProductSlug={product.slug} basePath={basePath} />
 
       {/* Passed basePath so the component knows where to route logins */}
       <ProductReviews
