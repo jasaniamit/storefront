@@ -61,16 +61,16 @@ export function RecentlyViewed({
   if (!loaded || products.length === 0) return null;
 
   return (
-    <div className="mt-12 border-t pt-10">
-      <h2 className="text-lg font-medium text-gray-900 mb-6">
-        Recently viewed
-      </h2>
+    <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-2xl font-bold text-gray-900">Recently viewed</h2>
+      </div>
       <ProductGrid
         products={products.slice(0, 4)}
         basePath={basePath}
         listId="recently_viewed"
         listName="Recently Viewed"
       />
-    </div>
+    </section>
   );
 }
