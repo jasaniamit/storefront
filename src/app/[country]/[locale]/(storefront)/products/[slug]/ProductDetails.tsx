@@ -11,6 +11,8 @@ import { ProductFragranceNotesWords } from "@/components/products/ProductFragran
 import { ProductIngredients } from "@/components/products/ProductIngredients";
 import { ProductIntensity } from "@/components/products/ProductIntensity";
 import { ProductNotesImageGrid } from "@/components/products/ProductNotesImageGrid";
+import { RecentlyViewed } from "@/components/products/RecentlyViewed";
+import { RelatedProducts } from "@/components/products/RelatedProducts";
 import { ShippingPolicyBlock } from "@/components/products/ShippingPolicyBlock";
 import { VariantPicker } from "@/components/products/VariantPicker";
 import { Button } from "@/components/ui/button";
@@ -25,6 +27,7 @@ import { getCustomField, stripHtml } from "@/lib/utils/product-fields";
 interface ProductDetailsProps {
   product: Product;
   basePath: string;
+  relatedProducts?: Product[];
 }
 
 // Reusable Star Icon
@@ -40,7 +43,11 @@ const StarIcon = ({ filled = true, className = "" }) => (
   </svg>
 );
 
-export function ProductDetails({ product, basePath }: ProductDetailsProps) {
+export function ProductDetails({
+  product,
+  basePath,
+  relatedProducts = [],
+}: ProductDetailsProps) {
   const { addItem } = useCart();
   const { currency } = useStore();
   const t = useTranslations("products");
@@ -400,6 +407,15 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
 
           {/* Shipping policy */}
           <ShippingPolicyBlock />
+
+          {/* Related products (same scent family) */}
+          <RelatedProducts products={relatedProducts} basePath={basePath} />
+
+          {/* Recently viewed (client-side, localStorage) */}
+          <RecentlyViewed
+            currentProductSlug={product.slug}
+            basePath={basePath}
+          />
 
           {/* Dynamic Landing Page Features from Spree Metafields */}
           {product.custom_fields?.map((field) => {
