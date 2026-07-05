@@ -6,6 +6,7 @@ import { Breadcrumbs } from "@/components/navigation/Breadcrumbs";
 import ProductReviews from "@/components/products/ProductReviews";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getCachedProduct, PRODUCT_PAGE_EXPAND } from "@/lib/data/cached";
+import { getRelatedProducts } from "@/lib/data/categories";
 import { generateProductMetadata } from "@/lib/metadata/product";
 import {
   buildBreadcrumbJsonLd,
@@ -82,6 +83,8 @@ export default async function ProductPage({
     category_id,
   );
 
+  const relatedProducts = await getRelatedProducts(product);
+
   return (
     <>
       {canonicalUrl && (
@@ -106,7 +109,11 @@ export default async function ProductPage({
         )}
       </div>
 
-      <ProductDetails product={product} basePath={basePath} />
+      <ProductDetails
+        product={product}
+        basePath={basePath}
+        relatedProducts={relatedProducts}
+      />
 
       {/* Passed basePath so the component knows where to route logins */}
       <ProductReviews
