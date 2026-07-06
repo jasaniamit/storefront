@@ -1,5 +1,5 @@
 import type { Product } from "@spree/sdk";
-import { ProductGrid } from "@/components/products/ProductGrid";
+import { ProductCarousel } from "@/components/products/ProductCarousel";
 
 interface RelatedProductsProps {
   products: Product[];
@@ -14,8 +14,8 @@ export function RelatedProducts({ products, basePath }: RelatedProductsProps) {
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-2xl font-bold text-gray-900">You may also like</h2>
       </div>
-      <ProductGrid
-        products={products.slice(0, 4)}
+      <ProductCarousel
+        products={products}
         basePath={basePath}
         listId="related_products"
         listName="Related Products"
