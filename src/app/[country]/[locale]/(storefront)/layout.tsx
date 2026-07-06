@@ -50,6 +50,15 @@ export default async function StorefrontLayout({
       return [] as Category[];
     });
 
+  // The "r" taxonomy holds internal tags (r/aqua-fresh, r/office, etc.)
+  // used to power the Related Products carousel — it's not meant to be
+  // browsable navigation, so it's excluded from the header/footer/nav
+  // category list here. This has no effect on Related Products itself,
+  // which fetches by category ID directly, not through this list.
+  const navRootCategories = rootCategories.filter(
+    (category) => category.name?.trim().toLowerCase() !== "r",
+  );
+
   return (
     <>
       <AnnouncementBar />
