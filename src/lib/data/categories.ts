@@ -3,6 +3,7 @@
 import type {
   Category,
   CategoryListParams,
+  Product,
   ProductListParams,
 } from "@spree/sdk";
 import { cacheLife, cacheTag } from "next/cache";
@@ -67,15 +68,28 @@ export async function getRelatedProducts(product: {
   id: string;
   categories?: Category[];
 }) {
-  const scentFamilyCategory = product.categories?.find((c) =>
+  const relatedCategories = (product.categories || []).filter((c) =>
     isScentFamilyCategory(c.permalink),
   );
-  if (!scentFamilyCategory) return [];
+  if (relatedCategories.length === 0) return [];
 
-  const { data } = await getCategoryProducts(scentFamilyCategory.id, {
-    per_page: 9,
-  });
-  return data.filter((p) => p.id !== product.id).slice(0, 4);
+  const results = await Promise.all(
+    relatedCategories.map((c) =>
+      getCategoryProducts(c.id, { per_page: 12 }),
+    ),
+  );
+
+  const seen = new Set<string>([product.id]);
+  const merged: Product[] = [];
+  for (const { data } of results) {
+    for (const p of data) {
+      if (!seen.has(p.id)) {
+        seen.add(p.id);
+        merged.push(p);
+      }
+    }
+  }
+  return merged.slice(0, 12);
 }
 
 export async function getCategoryProducts(
