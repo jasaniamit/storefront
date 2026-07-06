@@ -3,10 +3,10 @@
 import type { Product } from "@spree/sdk";
 import { useEffect, useState } from "react";
 import { getProductsBySlugs } from "@/lib/actions/recently-viewed";
-import { ProductGrid } from "@/components/products/ProductGrid";
+import { ProductCarousel } from "@/components/products/ProductCarousel";
 
 const STORAGE_KEY = "noz_recently_viewed";
-const MAX_ITEMS = 8;
+const MAX_ITEMS = 12;
 
 function readStoredSlugs(): string[] {
   try {
@@ -65,8 +65,8 @@ export function RecentlyViewed({
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-2xl font-bold text-gray-900">Recently viewed</h2>
       </div>
-      <ProductGrid
-        products={products.slice(0, 4)}
+      <ProductCarousel
+        products={products}
         basePath={basePath}
         listId="recently_viewed"
         listName="Recently Viewed"
