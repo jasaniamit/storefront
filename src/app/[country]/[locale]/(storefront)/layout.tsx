@@ -63,18 +63,18 @@ export default async function StorefrontLayout({
     <>
       <AnnouncementBar />
       <Header
-        rootCategories={rootCategories}
+        rootCategories={navRootCategories}
         basePath={basePath}
         locale={locale as Locale}
       />
-      {rootCategories.length > 0 && (
+      {navRootCategories.length > 0 && (
         <nav aria-label="Category navigation" className="sr-only">
-          <CategoryLinks categories={rootCategories} basePath={basePath} />
+          <CategoryLinks categories={navRootCategories} basePath={basePath} />
         </nav>
       )}
       <main className="flex-1">{children}</main>
       <Footer
-        rootCategories={rootCategories}
+        rootCategories={navRootCategories}
         basePath={basePath}
         locale={locale as Locale}
       />
