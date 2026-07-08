@@ -1,19 +1,18 @@
 /**
- * Permalinks of categories that represent a "scent family" grouping used
- * for the Related Products section — as opposed to other categories a
- * product might also belong to (Men, Female, 15ml, 2ml Samples, Brands,
- * New Arrivals, etc.) which are not meaningful for "similar fragrances."
+ * A product's "related products" tags live in a dedicated Taxonomy whose
+ * taxons all use the permalink prefix "r/" (e.g. r/aqua-fresh, r/ladies,
+ * r/teen, r/partyware, r/date, r/oud, r/office). This is separate from
+ * the "Categories" taxonomy (Men, Female, 15ml, Brands, etc.) which is
+ * not meaningful for "similar fragrances."
  *
- * Add a new permalink here whenever a new scent-family category is
- * created in Spree Admin (e.g. Woody, Gourmand, Citrus Floral). No other
- * code changes are needed — Related Products will pick it up
- * automatically for any product tagged into it.
+ * A product can belong to several of these at once (e.g. both r/aqua-fresh
+ * and r/office) — that's expected, not a mistake. Related Products
+ * combines results from every matching tag, not just the first one.
+ *
+ * Adding a new taxon under this same taxonomy (e.g. r/woody) needs no
+ * code change at all — it's picked up automatically by the "r/" prefix.
  */
-export const SCENT_FAMILY_PERMALINKS: readonly string[] = [
-  "categories/aqua-fresh",
-];
-
 export function isScentFamilyCategory(permalink: string | undefined): boolean {
   if (!permalink) return false;
-  return SCENT_FAMILY_PERMALINKS.includes(permalink);
+  return permalink.startsWith("r/");
 }
