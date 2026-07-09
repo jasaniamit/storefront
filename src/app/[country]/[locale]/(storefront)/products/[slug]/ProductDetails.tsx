@@ -260,13 +260,13 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
           {/* Price */}
           <div className="mt-3 flex items-center gap-2">
             {displayPrice && (
-              <span className="text-xl font-bold text-gray-900">
+              <span className="font-google text-xl font-bold text-gray-900">
                 {displayPrice}
               </span>
             )}
             {onSale && strikethroughPrice && (
               <>
-                <span className="text-sm text-gray-500 line-through">
+                <span className="font-google text-sm text-gray-500 line-through">
                   {strikethroughPrice}
                 </span>
                 <span className="bg-red-100 text-red-800 text-sm font-medium px-2.5 py-0.5 rounded">
