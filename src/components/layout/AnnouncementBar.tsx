@@ -87,9 +87,10 @@ export function AnnouncementBar() {
         <div
           style={{
             display: "flex",
-            height: "100%",
-            width: `${messages.length * 100}%`,
-            transform: `translateX(-${index * (100 / messages.length)}%)`,
+            flexDirection: "column",
+            width: "100%",
+            height: `${messages.length * 100}%`,
+            transform: `translateY(-${index * (100 / messages.length)}%)`,
             transition: `transform ${TRANSITION_MS}ms ease`,
           }}
         >
@@ -116,8 +117,8 @@ export function AnnouncementBar() {
               <div
                 key={i}
                 style={{
-                  width: `${100 / messages.length}%`,
-                  height: "100%",
+                  width: "100%",
+                  height: `${100 / messages.length}%`,
                   flexShrink: 0,
                   display: "flex",
                   alignItems: "center",
