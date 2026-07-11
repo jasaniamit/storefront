@@ -59,8 +59,8 @@ export function ProductFragranceNotesWords({
               <Image
                 src={row.icon}
                 alt={`${row.label} notes`}
-                width={18}
-                height={18}
+                width={22}
+                height={22}
                 className="mt-0.5 shrink-0"
               />
 
