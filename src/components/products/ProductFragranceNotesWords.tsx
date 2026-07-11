@@ -1,7 +1,5 @@
 "use client";
 
-import { FlaskConical } from "lucide-react";
-
 interface ProductFragranceNotesWordsProps {
   topNotes: string | undefined;
   middleNotes: string | undefined;
@@ -9,9 +7,24 @@ interface ProductFragranceNotesWordsProps {
 }
 
 const ROWS = [
-  { key: "top", label: "Top", caption: "the first notes you smell" },
-  { key: "middle", label: "Middle", caption: "the heart of the perfume" },
-  { key: "base", label: "Base", caption: "the notes that linger all day" },
+  {
+    key: "top",
+    label: "Top",
+    caption: "the first notes you smell",
+    icon: "/icons/top.svg",
+  },
+  {
+    key: "middle",
+    label: "Middle",
+    caption: "the heart of the perfume",
+    icon: "/icons/middle.svg",
+  },
+  {
+    key: "base",
+    label: "Base",
+    caption: "the notes that linger all day",
+    icon: "/icons/base.svg",
+  },
 ] as const;
 
 export function ProductFragranceNotesWords({
