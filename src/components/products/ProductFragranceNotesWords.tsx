@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 interface ProductFragranceNotesWordsProps {
   topNotes: string | undefined;
   middleNotes: string | undefined;
@@ -43,21 +45,31 @@ export function ProductFragranceNotesWords({
 
   return (
     <div className="mt-10 border-t pt-8">
-      <h2 className="text-lg font-medium text-gray-900 mb-4">
+      <h2 className="mb-4 text-lg font-medium text-gray-900">
         Fragrance notes
       </h2>
+
       <div className="space-y-3">
         {ROWS.map((row) => {
           const value = values[row.key];
           if (!value) return null;
+
           return (
             <div key={row.key} className="flex gap-3">
-              <FlaskConical className="w-[18px] h-[18px] text-gray-400 mt-0.5 shrink-0" />
+              <Image
+                src={row.icon}
+                alt={`${row.label} notes`}
+                width={18}
+                height={18}
+                className="mt-0.5 shrink-0"
+              />
+
               <div>
                 <p className="text-sm text-gray-900">
                   <span className="font-medium">{row.label}</span>,{" "}
                   {row.caption}
                 </p>
+
                 <p
                   className="text-sm text-gray-500"
                   dangerouslySetInnerHTML={{ __html: value }}
