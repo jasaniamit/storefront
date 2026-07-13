@@ -1,6 +1,3 @@
-import { GoogleTagManager } from "@next/third-parties/google";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import Script from "next/script";
@@ -8,7 +5,6 @@ import "./globals.css";
 import { Suspense } from "react";
 import { getStoreDescription, getStoreName } from "@/lib/store";
 
-const gtmId = process.env.GTM_ID;
 const spreeApiOrigin = (() => {
   try {
     return process.env.SPREE_API_URL
@@ -54,13 +50,6 @@ export default function RootLayout({
           </>
         )}
 
-        {/* Ahrefs Analytics */}
-        <Script
-          src="https://analytics.ahrefs.com/analytics.js"
-          data-key="2xFrdGjJnYdcBJmAFTd6Fw"
-          strategy="afterInteractive"
-        />
-
         {/* Self-hosted Plausible-style Analytics */}
         <Script
           defer
@@ -84,13 +73,10 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
       </head>
-      {gtmId && <GoogleTagManager gtmId={gtmId} />}
       <body
         className={`${geist.variable} antialiased min-h-screen flex flex-col`}
       >
         <Suspense fallback={null}>{children}</Suspense>
-        <Analytics />
-        <SpeedInsights />
       </body>
     </html>
   );
