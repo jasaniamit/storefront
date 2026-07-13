@@ -29,7 +29,6 @@ const nextConfig: NextConfig = {
     },
   },
   images: {
-    minimumCacheTTL: 31536000,
     qualities: [25, 50, 75, 85, 100],
     dangerouslyAllowLocalIP: true,
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
@@ -76,6 +75,19 @@ const nextConfig: NextConfig = {
         pathname: "/rails/active_storage/**",
       },
     ],
+  },
+  headers: async () => {
+    return [
+      {
+        source: "/_next/static/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+    ];
   },
   redirects: async () => {
     return [
