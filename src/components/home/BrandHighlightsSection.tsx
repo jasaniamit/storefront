@@ -77,7 +77,6 @@ export function BrandHighlightsSection() {
                                 fill
                                 className="object-contain"
                                 sizes="(max-width: 1024px) 100vw, 50vw"
-                                unoptimized
                             />
                         </div>
                     </div>
@@ -139,7 +138,6 @@ export function BrandHighlightsSection() {
                                 fill
                                 className="object-cover"
                                 sizes="(max-width: 1024px) 100vw, 50vw"
-                                unoptimized
                             />
                         </div>
                     </div>
