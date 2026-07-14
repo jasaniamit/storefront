@@ -203,6 +203,7 @@ export function HeroSection({ basePath }: HeroSectionProps) {
               width={700}
               height={700}
               priority
+              fetchPriority="high"
               sizes="(max-width: 768px) 100vw, 650px"
               className="noz-hero-img"
             />
