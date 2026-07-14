@@ -21,6 +21,8 @@ export function Footer({ rootCategories, basePath }: FooterProps) {
           <img
             src="/icons/noz_full_animated.svg"
             alt="Noz Fragrances"
+            width={160}
+            height={92}
             className="h-23 w-auto"
           />
 
@@ -115,10 +117,10 @@ export function Footer({ rootCategories, basePath }: FooterProps) {
 
           {/* Payment Icons */}
           <div className="flex items-center space-x-4 opacity-100">
-            <img src="/icons/visa.svg" className="h-6" />
-            <img src="/icons/mastercard.svg" className="h-6" />
-            <img src="/icons/rupay.svg" className="h-6" />
-            <img src="/icons/upi.svg" className="h-6" />
+            <img src="/icons/visa.svg" alt="Visa" width={38} height={24} className="h-6" />
+            <img src="/icons/mastercard.svg" alt="Mastercard" width={38} height={24} className="h-6" />
+            <img src="/icons/rupay.svg" alt="RuPay" width={38} height={24} className="h-6" />
+            <img src="/icons/upi.svg" alt="UPI" width={38} height={24} className="h-6" />
           </div>
 
           {/* Copyright */}
