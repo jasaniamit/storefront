@@ -2,6 +2,13 @@
   "name": "nextjs-starter-spree",
   "version": "0.1.0",
   "private": true,
+  "browserslist": [
+    "> 0.5%",
+    "last 2 versions",
+    "Firefox ESR",
+    "not dead",
+    "not ie 11"
+  ],
   "scripts": {
     "dev": "next dev -p 3001 --turbopack",
     "build": "next build",
