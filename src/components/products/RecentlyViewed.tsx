@@ -1,9 +1,17 @@
 "use client";
 
 import type { Product } from "@spree/sdk";
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { getProductsBySlugs } from "@/lib/actions/recently-viewed";
-import { ProductCarousel } from "@/components/products/ProductCarousel";
+
+const LazyProductCarousel = dynamic(
+  () =>
+    import("@/components/products/ProductCarousel").then((mod) => ({
+      default: mod.ProductCarousel,
+    })),
+  { ssr: false },
+);
 
 const STORAGE_KEY = "noz_recently_viewed";
 const MAX_ITEMS = 12;
@@ -65,7 +73,7 @@ export function RecentlyViewed({
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-2xl font-bold text-gray-900">Recently viewed</h2>
       </div>
-      <ProductCarousel
+      <LazyProductCarousel
         products={products}
         basePath={basePath}
         listId="recently_viewed"
