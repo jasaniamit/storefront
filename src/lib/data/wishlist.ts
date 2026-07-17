@@ -33,7 +33,10 @@ export async function getWishlistStatus(
   variantId: string,
 ): Promise<WishlistStatus | null> {
   const token = await getAccessToken();
-  if (!token) return null;
+  if (!token) {
+    console.error("[wishlist] getWishlistStatus: no access token found");
+    return null;
+  }
 
   const url = `${API_URL}/api/v2/storefront/wishlists/default?is_variant_included=${encodeURIComponent(
     variantId,
@@ -43,7 +46,14 @@ export async function getWishlistStatus(
     headers: authHeaders(token),
     cache: "no-store",
   });
-  if (!res.ok) return null;
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    console.error(
+      `[wishlist] getWishlistStatus failed: ${res.status} ${res.statusText}`,
+      { url, body },
+    );
+    return null;
+  }
 
   const json = await res.json();
   const wishlist: JsonApiResource = json.data;
@@ -68,7 +78,10 @@ export async function addToWishlist(
   variantId: string,
 ): Promise<boolean> {
   const token = await getAccessToken();
-  if (!token) return false;
+  if (!token) {
+    console.error("[wishlist] addToWishlist: no access token found");
+    return false;
+  }
 
   const res = await fetch(
     `${API_URL}/api/v2/storefront/wishlists/${wishlistToken}/add_item`,
@@ -78,6 +91,13 @@ export async function addToWishlist(
       body: JSON.stringify({ variant_id: variantId }),
     },
   );
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    console.error(
+      `[wishlist] addToWishlist failed: ${res.status} ${res.statusText}`,
+      { wishlistToken, variantId, body },
+    );
+  }
   return res.ok;
 }
 
@@ -87,7 +107,10 @@ export async function removeFromWishlist(
   wishedItemId: string,
 ): Promise<boolean> {
   const token = await getAccessToken();
-  if (!token) return false;
+  if (!token) {
+    console.error("[wishlist] removeFromWishlist: no access token found");
+    return false;
+  }
 
   const res = await fetch(
     `${API_URL}/api/v2/storefront/wishlists/${wishlistToken}/remove_item/${wishedItemId}`,
@@ -96,6 +119,13 @@ export async function removeFromWishlist(
       headers: authHeaders(token),
     },
   );
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    console.error(
+      `[wishlist] removeFromWishlist failed: ${res.status} ${res.statusText}`,
+      { wishlistToken, wishedItemId, body },
+    );
+  }
   return res.ok;
 }
 
