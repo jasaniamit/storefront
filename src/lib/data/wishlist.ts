@@ -8,7 +8,7 @@ interface JsonApiResource {
   id: string;
   type: string;
   attributes?: Record<string, unknown>;
-  relationships?: Record<string, { data?: { id: string; type: string } }>;
+  relationships?: Record<string, { data?: { id: string; type: string } | { id: string; type: string }[] }>;
 }
 
 function authHeaders(token: string): HeadersInit {
@@ -25,9 +25,11 @@ export interface WishlistStatus {
 }
 
 /**
- * Looks up whether a given variant is already in the current user's
- * default wishlist. Returns null if the user isn't logged in — callers
- * should treat that as "prompt login" rather than "not saved".
+ * Finds the user's default wishlist (creating one if they don't have one
+ * yet) and reports whether the given variant is already saved in it.
+ *
+ * NOTE: Spree has no "/wishlists/default" endpoint — you have to list the
+ * user's wishlists and find the one flagged `is_default: true` yourself.
  */
 export async function getWishlistStatus(
   variantId: string,
@@ -38,36 +40,69 @@ export async function getWishlistStatus(
     return null;
   }
 
-  const url = `${API_URL}/api/v2/storefront/wishlists/default?is_variant_included=${encodeURIComponent(
-    variantId,
-  )}&include=wished_items`;
+  const listUrl =
+    `${API_URL}/api/v2/storefront/wishlists` +
+    `?is_variant_included=${encodeURIComponent(variantId)}&include=wished_items`;
 
-  const res = await fetch(url, {
+  const res = await fetch(listUrl, {
     headers: authHeaders(token),
     cache: "no-store",
   });
+
   if (!res.ok) {
     const body = await res.text().catch(() => "");
     console.error(
-      `[wishlist] getWishlistStatus failed: ${res.status} ${res.statusText}`,
-      { url, body },
+      `[wishlist] list wishlists failed: ${res.status} ${res.statusText}`,
+      { url: listUrl, body },
     );
     return null;
   }
 
   const json = await res.json();
-  const wishlist: JsonApiResource = json.data;
+  const wishlists: JsonApiResource[] = json.data ?? [];
   const included: JsonApiResource[] = json.included ?? [];
+
+  let defaultWishlist = wishlists.find((w) => w.attributes?.is_default);
+
+  // No default wishlist yet (e.g. brand new customer) — create one.
+  if (!defaultWishlist) {
+    const createRes = await fetch(`${API_URL}/api/v2/storefront/wishlists`, {
+      method: "POST",
+      headers: authHeaders(token),
+      body: JSON.stringify({
+        wishlist: { name: "My Wishlist", is_default: true },
+      }),
+    });
+
+    if (!createRes.ok) {
+      const body = await createRes.text().catch(() => "");
+      console.error(
+        `[wishlist] create default wishlist failed: ${createRes.status} ${createRes.statusText}`,
+        { body },
+      );
+      return null;
+    }
+
+    const createJson = await createRes.json();
+    defaultWishlist = createJson.data;
+    return {
+      wishlistToken: defaultWishlist!.attributes?.token as string,
+      isSaved: false,
+      wishedItemId: null,
+    };
+  }
 
   const wishedItem = included.find(
     (item) =>
       item.type === "wished_item" &&
-      item.relationships?.variant?.data?.id === String(variantId),
+      !Array.isArray(item.relationships?.variant?.data) &&
+      (item.relationships?.variant?.data as { id: string })?.id ===
+        String(variantId),
   );
 
   return {
-    wishlistToken: wishlist.attributes?.token as string,
-    isSaved: Boolean(wishlist.attributes?.variant_included),
+    wishlistToken: defaultWishlist.attributes?.token as string,
+    isSaved: Boolean(defaultWishlist.attributes?.variant_included),
     wishedItemId: wishedItem?.id ?? null,
   };
 }
@@ -147,40 +182,62 @@ export async function listWishlistItems(): Promise<WishlistItem[]> {
   const token = await getAccessToken();
   if (!token) return [];
 
-  const url =
-    `${API_URL}/api/v2/storefront/wishlists/default` +
+  const listUrl =
+    `${API_URL}/api/v2/storefront/wishlists` +
     `?include=wished_items.variant.images,wished_items.variant.product`;
 
-  const res = await fetch(url, {
+  const res = await fetch(listUrl, {
     headers: authHeaders(token),
     cache: "no-store",
   });
-  if (!res.ok) return [];
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    console.error(
+      `[wishlist] listWishlistItems failed: ${res.status} ${res.statusText}`,
+      { body },
+    );
+    return [];
+  }
 
   const json = await res.json();
+  const wishlists: JsonApiResource[] = json.data ?? [];
   const included: JsonApiResource[] = json.included ?? [];
 
-  const byId = new Map(included.map((r) => [`${r.type}:${r.id}`, r]));
+  const defaultWishlist = wishlists.find((w) => w.attributes?.is_default);
+  if (!defaultWishlist) return [];
 
-  const wishedItems = included.filter((r) => r.type === "wished_item");
+  const defaultWishedItemRefs = defaultWishlist.relationships?.wished_items
+    ?.data as { id: string; type: string }[] | undefined;
+  const defaultWishedItemIds = new Set(
+    (defaultWishedItemRefs ?? []).map((r) => r.id),
+  );
+
+  const byId = new Map(included.map((r) => [`${r.type}:${r.id}`, r]));
+  const wishedItems = included.filter(
+    (r) => r.type === "wished_item" && defaultWishedItemIds.has(r.id),
+  );
 
   return wishedItems
     .map((item): WishlistItem | null => {
-      const variantRef = item.relationships?.variant?.data;
+      const variantRef = item.relationships?.variant?.data as
+        | { id: string; type: string }
+        | undefined;
       const variant = variantRef
         ? byId.get(`${variantRef.type}:${variantRef.id}`)
         : undefined;
       if (!variant) return null;
 
-      const productRef = variant.relationships?.product?.data;
+      const productRef = variant.relationships?.product?.data as
+        | { id: string; type: string }
+        | undefined;
       const product = productRef
         ? byId.get(`${productRef.type}:${productRef.id}`)
         : undefined;
 
-      const imagesRel = variant.relationships?.images as
-        | { data?: { id: string; type: string }[] }
+      const imagesRel = variant.relationships?.images?.data as
+        | { id: string; type: string }[]
         | undefined;
-      const firstImageRef = imagesRel?.data?.[0];
+      const firstImageRef = imagesRel?.[0];
       const image = firstImageRef
         ? byId.get(`${firstImageRef.type}:${firstImageRef.id}`)
         : undefined;
@@ -197,5 +254,7 @@ export async function listWishlistItems(): Promise<WishlistItem[]> {
         displayPrice: (variant.attributes?.display_price as string) ?? null,
       };
     })
-    .filter((item): item is WishlistItem => item !== null && !!item.productSlug);
+    .filter(
+      (item): item is WishlistItem => item !== null && !!item.productSlug,
+    );
 }
