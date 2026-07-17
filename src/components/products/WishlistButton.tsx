@@ -54,23 +54,40 @@ export function WishlistButton({
 
     setBusy(true);
     try {
-      if (isSaved && wishlistToken && wishedItemId) {
-        const ok = await removeFromWishlist(wishlistToken, wishedItemId);
+      // Don't trust component state alone — the background fetch on mount
+      // may not have resolved yet (e.g. right after a login redirect).
+      // Always confirm the current status fresh before acting.
+      const status = await getWishlistStatus(String(variantId));
+      if (!status) return;
+
+      if (status.isSaved && status.wishedItemId) {
+        const ok = await removeFromWishlist(
+          status.wishlistToken,
+          status.wishedItemId,
+        );
         if (ok) {
           setIsSaved(false);
           setWishedItemId(null);
+          setWishlistToken(status.wishlistToken);
         }
-      } else if (wishlistToken) {
-        const ok = await addToWishlist(wishlistToken, String(variantId));
+      } else {
+        const ok = await addToWishlist(status.wishlistToken, String(variantId));
         if (ok) {
-          // Re-fetch to get the new wished_item id for future removal.
-          const status = await getWishlistStatus(String(variantId));
-          if (status) {
-            setIsSaved(status.isSaved);
-            setWishedItemId(status.wishedItemId);
+          const updated = await getWishlistStatus(String(variantId));
+          if (updated) {
+            setIsSaved(updated.isSaved);
+            setWishedItemId(updated.wishedItemId);
+            setWishlistToken(updated.wishlistToken);
           }
+        } else {
+          console.error("Failed to add item to wishlist", {
+            variantId,
+            wishlistToken: status.wishlistToken,
+          });
         }
       }
+    } catch (err) {
+      console.error("Wishlist toggle failed", err);
     } finally {
       setBusy(false);
     }
