@@ -24,7 +24,7 @@ export function WishlistButton({
   const { isAuthenticated, loading: authLoading } = useAuth();
   const router = useRouter();
   const [isSaved, setIsSaved] = useState(false);
-  const [wishlistToken, setWishlistToken] = useState<string | null>(null);
+  const [wishlistId, setWishlistId] = useState<string | null>(null);
   const [wishedItemId, setWishedItemId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -34,7 +34,7 @@ export function WishlistButton({
     getWishlistStatus(String(variantId)).then((status) => {
       if (cancelled || !status) return;
       setIsSaved(status.isSaved);
-      setWishlistToken(status.wishlistToken);
+      setWishlistId(status.wishlistId);
       setWishedItemId(status.wishedItemId);
     });
     return () => {
@@ -62,27 +62,27 @@ export function WishlistButton({
 
       if (status.isSaved && status.wishedItemId) {
         const ok = await removeFromWishlist(
-          status.wishlistToken,
+          status.wishlistId,
           status.wishedItemId,
         );
         if (ok) {
           setIsSaved(false);
           setWishedItemId(null);
-          setWishlistToken(status.wishlistToken);
+          setWishlistId(status.wishlistId);
         }
       } else {
-        const ok = await addToWishlist(status.wishlistToken, String(variantId));
+        const ok = await addToWishlist(status.wishlistId, String(variantId));
         if (ok) {
           const updated = await getWishlistStatus(String(variantId));
           if (updated) {
             setIsSaved(updated.isSaved);
             setWishedItemId(updated.wishedItemId);
-            setWishlistToken(updated.wishlistToken);
+            setWishlistId(updated.wishlistId);
           }
         } else {
           console.error("Failed to add item to wishlist", {
             variantId,
-            wishlistToken: status.wishlistToken,
+            wishlistId: status.wishlistId,
           });
         }
       }
