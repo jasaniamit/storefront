@@ -21,9 +21,9 @@ export function WishlistList({ items, basePath }: WishlistListProps) {
     // We need the wishlist's own token, not the item's — look it up fresh
     // rather than threading it through every list item.
     const status = await getWishlistStatus(item.variantId);
-    if (status?.wishlistToken) {
+    if (status?.wishlistId) {
       const ok = await removeFromWishlist(
-        status.wishlistToken,
+        status.wishlistId,
         item.wishedItemId,
       );
       if (ok) {
