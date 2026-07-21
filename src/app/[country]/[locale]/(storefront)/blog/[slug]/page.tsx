@@ -17,21 +17,32 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     <div className="max-w-2xl mx-auto px-5 py-12">
       <Link
         href={`${basePath}/blog`}
-        className="text-sm text-gray-500 hover:text-gray-900 mb-8 inline-block"
+        className="text-sm text-gray-500 hover:text-gray-900 mb-8 block"
       >
         ← Back to Blog
       </Link>
 
+      {post.image_url && (
+        <div className="aspect-video rounded-xl overflow-hidden bg-gray-100 mb-6">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={post.image_url}
+            alt={post.title}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
+
       {post.category && (
         <Link
           href={`${basePath}/blog?category=${post.category.slug}`}
-          className="text-xs font-medium uppercase tracking-wide text-[#F07867]"
+          className="text-xs font-medium uppercase tracking-wide text-[#F07867] block mb-2"
         >
           {post.category.title}
         </Link>
       )}
 
-      <h1 className="text-3xl font-semibold text-gray-900 mt-2 mb-3">
+      <h1 className="text-3xl font-semibold text-gray-900 mb-3">
         {post.title}
       </h1>
 
