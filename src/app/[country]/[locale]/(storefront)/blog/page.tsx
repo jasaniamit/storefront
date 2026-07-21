@@ -33,6 +33,16 @@ export default async function BlogPage({ params, searchParams }: BlogPageProps) 
               href={`${basePath}/blog/${post.slug}`}
               className="block group"
             >
+              {post.image_url && (
+                <div className="aspect-video rounded-lg overflow-hidden bg-gray-100 mb-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={post.image_url}
+                    alt={post.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
               {post.category && (
                 <span className="text-xs font-medium uppercase tracking-wide text-[#F07867]">
                   {post.category.title}
