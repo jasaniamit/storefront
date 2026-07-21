@@ -18,6 +18,7 @@ export interface PostSummary {
   published_at: string;
   meta_title: string;
   meta_description: string;
+  image_url: string | null;
   category: PostCategory | null;
 }
 
