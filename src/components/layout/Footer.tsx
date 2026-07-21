@@ -10,7 +10,7 @@ interface FooterProps {
 
 export function Footer({ rootCategories, basePath }: FooterProps) {
   return (
-    <footer className="bg-[#1D2024] text-gray-300">
+    <footer className="bg-[#2A2D35] text-gray-300">
 
       {/* Top Section */}
       <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-5 gap-10">
