@@ -74,7 +74,7 @@ export function Footer({ rootCategories, basePath }: FooterProps) {
           <ul className="space-y-2 text-sm">
             {POLICY_LINKS.map((policy) => (
               <li key={policy.slug}>
-                <Link href={`${basePath}/${policy.slug}`}>
+                <Link href={`${basePath}/policies/${policy.slug}`}>
                   {policy.name}
                 </Link>
               </li>
