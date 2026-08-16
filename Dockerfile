@@ -6,6 +6,9 @@
 #   docker build \
 #     --build-arg SPREE_API_URL=https://your-spree.example.com \
 #     --build-arg SPREE_PUBLISHABLE_KEY=your_publishable_key \
+#     --build-arg NEXT_PUBLIC_SITE_URL=https://your-store.example.com \
+#     --build-arg NEXT_PUBLIC_STORE_NAME="Your Store Name" \
+#     --build-arg NEXT_PUBLIC_STORE_DESCRIPTION="A short description of your store." \
 #     -t storefront .
 #
 # Run:
@@ -51,6 +54,20 @@ ARG SPREE_API_URL
 ARG SPREE_PUBLISHABLE_KEY
 ENV SPREE_API_URL=$SPREE_API_URL \
     SPREE_PUBLISHABLE_KEY=$SPREE_PUBLISHABLE_KEY
+
+# Store branding / SEO config — NEXT_PUBLIC_* vars are inlined into the
+# client bundle at build time, so they must be passed as build args, not
+# just runtime env vars.
+ARG NEXT_PUBLIC_SITE_URL
+ARG NEXT_PUBLIC_STORE_NAME
+ARG NEXT_PUBLIC_STORE_DESCRIPTION
+ARG STORE_SEO_TITLE
+ARG STORE_META_DESCRIPTION
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL \
+    NEXT_PUBLIC_STORE_NAME=$NEXT_PUBLIC_STORE_NAME \
+    NEXT_PUBLIC_STORE_DESCRIPTION=$NEXT_PUBLIC_STORE_DESCRIPTION \
+    STORE_SEO_TITLE=$STORE_SEO_TITLE \
+    STORE_META_DESCRIPTION=$STORE_META_DESCRIPTION
 
 # Optional Sentry release/source-map upload. When SENTRY_DSN is empty,
 # next.config.ts skips withSentryConfig entirely, so the build still works.
