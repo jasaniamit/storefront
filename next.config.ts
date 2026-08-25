@@ -1,7 +1,9 @@
 import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+
 const withNextIntl = createNextIntlPlugin();
+
 const nextConfig: NextConfig = {
   output: "standalone",
   allowedDevOrigins: ["shop.lvh.me", "*.trycloudflare.com", "192.168.33.13"],
@@ -142,6 +144,17 @@ const nextConfig: NextConfig = {
     const baseUrl = (
       process.env.SPREE_API_URL || "http://localhost:3000"
     ).replace(/\/$/, "");
+
+    // Proxies the self-hosted Plausible instance through this app's own
+    // domain, under generic-looking paths (no "track"/"analytics"/"stats"/
+    // "pageview" keywords), so ad blockers see a same-origin request
+    // instead of a third-party domain with an obviously tracking-shaped
+    // script filename. The browser never talks to stats.nozfragrances.com
+    // directly - Next.js forwards the request server-side. See the two
+    // <Script> tags in src/app/layout.tsx that point at these paths.
+    const plausibleUpstream =
+      process.env.PLAUSIBLE_UPSTREAM_URL || "https://stats.nozfragrances.com";
+
     return [
       {
         source: "/api/:path*",
@@ -155,10 +168,20 @@ const nextConfig: NextConfig = {
         source: "/rails/active_storage/:path*",
         destination: `${baseUrl}/rails/active_storage/:path*`,
       },
+      {
+        source: "/js/vg-insights.js",
+        destination: `${plausibleUpstream}/js/script.file-downloads.hash.outbound-links.pageview-props.revenue.tagged-events.js`,
+      },
+      {
+        source: "/vg/events",
+        destination: `${plausibleUpstream}/api/event`,
+      },
     ];
   },
 };
+
 const configWithIntl = withNextIntl(nextConfig);
+
 export default process.env.SENTRY_DSN
   ? withSentryConfig(configWithIntl, {
       org: process.env.SENTRY_ORG,
