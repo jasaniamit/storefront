@@ -50,16 +50,11 @@ export default function RootLayout({
           </>
         )}
 
-        {/* Self-hosted Plausible-style Analytics - proxied through this
-            domain's own /js and /vg paths (see next.config.ts rewrites)
-            instead of loading directly from stats.nozfragrances.com, so ad
-            blockers see a same-origin request instead of a third-party
-            analytics domain with a tracking-shaped filename. */}
+        {/* Self-hosted Plausible-style Analytics */}
         <Script
           defer
           data-domain="nozfragrances.com"
-          data-api="/vg/events"
-          src="/js/vg-insights.js"
+          src="https://stats.nozfragrances.com/js/script.file-downloads.hash.outbound-links.pageview-props.revenue.tagged-events.js"
           strategy="afterInteractive"
         />
         <Script
@@ -70,11 +65,7 @@ export default function RootLayout({
           }}
         />
 
-        {/* Umami Analytics (cloud) - NOT proxied yet. cloud.umami.is is a
-            known analytics domain and is commonly blocklisted by name, so
-            this one is very likely still being silently blocked by ad
-            blockers the same way Plausible was before the fix above. Left
-            as-is for now - ask before proxying this one too. */}
+        {/* Umami Analytics (cloud) */}
         <Script
           defer
           src="https://cloud.umami.is/script.js"
