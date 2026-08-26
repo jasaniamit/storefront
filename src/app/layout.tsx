@@ -1,197 +1,92 @@
-import { withSentryConfig } from "@sentry/nextjs";
-import type { NextConfig } from "next";
-import createNextIntlPlugin from "next-intl/plugin";
+import type { Metadata, Viewport } from "next";
+import { Geist } from "next/font/google";
+import Script from "next/script";
+import "./globals.css";
+import { Suspense } from "react";
+import { getStoreDescription, getStoreName } from "@/lib/store";
 
-const withNextIntl = createNextIntlPlugin();
+const spreeApiOrigin = (() => {
+  try {
+    return process.env.SPREE_API_URL
+      ? new URL(process.env.SPREE_API_URL).origin
+      : undefined;
+  } catch {
+    return undefined;
+  }
+})();
 
-const nextConfig: NextConfig = {
-  output: "standalone",
-  allowedDevOrigins: ["shop.lvh.me", "*.trycloudflare.com", "192.168.33.13"],
-  env: {
-    NEXT_PUBLIC_SENTRY_DSN: process.env.SENTRY_DSN || "",
-  },
-  transpilePackages: ["@spree/sdk"],
-  reactCompiler: true,
-  experimental: {
-    optimizePackageImports: [
-      "lucide-react",
-      "@radix-ui/react-dropdown-menu",
-      "@radix-ui/react-dialog",
-    ],
-  },
-  turbopack: {
-    root: __dirname,
-  },
-  cacheComponents: true,
-  cacheLife: {
-    tenMinutes: {
-      stale: 300,
-      revalidate: 600,
-      expire: 3600,
-    },
-  },
-  images: {
-    qualities: [25, 50, 75, 85, 100],
-    dangerouslyAllowLocalIP: true,
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    remotePatterns: [
-      {
-        protocol: "http",
-        hostname: "localhost",
-        pathname: "/rails/active_storage/**",
-      },
-      {
-        protocol: "https",
-        hostname: "**.vendo.dev",
-        pathname: "/rails/active_storage/**",
-      },
-      {
-        protocol: "https",
-        hostname: "**.spree.sh",
-        pathname: "/rails/active_storage/**",
-      },
-      {
-        protocol: "https",
-        hostname: "**.trycloudflare.com",
-        pathname: "/rails/active_storage/**",
-      },
-      {
-        protocol: "https",
-        hostname: "spree.nozfragrances.com",
-        pathname: "/rails/active_storage/**",
-      },
-      {
-        protocol: "https",
-        hostname: "server.nozfragrances.com",
-        pathname: "/rails/active_storage/**",
-      },
-      {
-        protocol: "https",
-        hostname: "nozfragrances.com",
-        pathname: "/rails/active_storage/**",
-      },
-      {
-        protocol: "https",
-        hostname: "www.nozfragrances.com",
-        pathname: "/rails/active_storage/**",
-      },
-    ],
-  },
-  headers: async () => {
-    return [
-      {
-        source: "/_next/static/:path*",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
-          },
-        ],
-      },
-      {
-        source: "/fonts/:path*",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
-          },
-        ],
-      },
-      {
-        source: "/icons/:path*",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=2592000",
-          },
-        ],
-      },
-      {
-        source: "/images/:path*",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=2592000",
-          },
-        ],
-      },
-    ];
-  },
-  redirects: async () => {
-    return [
-      {
-        // Redirect legacy Spree Taxons to Next.js Categories
-        source: "/t/:path*",
-        destination: "/in/en/c/:path*",
-        permanent: true,
-      },
-      {
-        // Redirect legacy Products to Next.js Products
-        source: "/products/:slug",
-        destination: "/in/en/products/:slug",
-        permanent: true,
-      },
-      {
-        // Catch stray root sitemap requests and point them to Next.js chunks
-        source: "/sitemap.xml",
-        destination: "/sitemap/0.xml",
-        permanent: true,
-      },
-    ];
-  },
-  rewrites: async () => {
-    const baseUrl = (
-      process.env.SPREE_API_URL || "http://localhost:3000"
-    ).replace(/\/$/, "");
+const geist = Geist({
+  variable: "--font-geist",
+  subsets: ["latin"],
+  display: "swap",
+});
 
-    // Proxies the self-hosted Plausible instance through this app's own
-    // domain, under generic-looking paths (no "track"/"analytics"/"stats"/
-    // "pageview" keywords), so ad blockers see a same-origin request
-    // instead of a third-party domain with an obviously tracking-shaped
-    // script filename. The browser never talks to stats.nozfragrances.com
-    // directly - Next.js forwards the request server-side. See the two
-    // <Script> tags in src/app/layout.tsx that point at these paths.
-    const plausibleUpstream =
-      process.env.PLAUSIBLE_UPSTREAM_URL || "https://stats.nozfragrances.com";
+const rootStoreName = getStoreName();
 
-    return [
-      {
-        source: "/api/:path*",
-        destination: `${baseUrl}/api/:path*`,
-      },
-      {
-        source: "/api/custom_reviews/:path*",
-        destination: `${baseUrl}/api/custom_reviews/:path*`,
-      },
-      {
-        source: "/rails/active_storage/:path*",
-        destination: `${baseUrl}/rails/active_storage/:path*`,
-      },
-      {
-        source: "/js/vg-insights.js",
-        destination: `${plausibleUpstream}/js/script.file-downloads.hash.outbound-links.pageview-props.revenue.tagged-events.js`,
-      },
-      {
-        source: "/vg/events",
-        destination: `${plausibleUpstream}/api/event`,
-      },
-    ];
-  },
+export const viewport: Viewport = {
+  themeColor: "#F07867",
 };
 
-const configWithIntl = withNextIntl(nextConfig);
+export const metadata: Metadata = {
+  title: {
+    template: `%s | ${rootStoreName}`,
+    default: rootStoreName,
+  },
+  description: getStoreDescription(),
+};
 
-export default process.env.SENTRY_DSN
-  ? withSentryConfig(configWithIntl, {
-      org: process.env.SENTRY_ORG,
-      project: process.env.SENTRY_PROJECT,
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-      silent: !process.env.CI,
-      widenClientFileUpload: true,
-      sourcemaps: {
-        deleteSourcemapsAfterUpload: true,
-      },
-      telemetry: false,
-    })
-  : configWithIntl;
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <head>
+        {spreeApiOrigin && (
+          <>
+            <link rel="preconnect" href={spreeApiOrigin} />
+            <link rel="dns-prefetch" href={spreeApiOrigin} />
+          </>
+        )}
+
+        {/* Self-hosted Plausible-style Analytics - proxied through this
+            domain's own /js and /vg paths (see next.config.ts rewrites)
+            instead of loading directly from stats.nozfragrances.com, so ad
+            blockers see a same-origin request instead of a third-party
+            analytics domain with a tracking-shaped filename. */}
+        <Script
+          defer
+          data-domain="nozfragrances.com"
+          data-api="/vg/events"
+          src="/js/vg-insights.js"
+          strategy="afterInteractive"
+        />
+        <Script
+          id="plausible-queue-init"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`,
+          }}
+        />
+
+        {/* Umami Analytics (cloud) - NOT proxied yet. cloud.umami.is is a
+            known analytics domain and is commonly blocklisted by name, so
+            this one is very likely still being silently blocked by ad
+            blockers the same way Plausible was before the fix above. Left
+            as-is for now - ask before proxying this one too. */}
+        <Script
+          defer
+          src="https://cloud.umami.is/script.js"
+          data-website-id="26c905b8-4b5f-4133-8e08-d03512494514"
+          strategy="afterInteractive"
+        />
+      </head>
+      <body
+        className={`${geist.variable} antialiased min-h-screen flex flex-col`}
+      >
+        <Suspense fallback={null}>{children}</Suspense>
+      </body>
+    </html>
+  );
+}
