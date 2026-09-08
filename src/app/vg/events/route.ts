@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     method: 'POST',
     headers: {
       'Content-Type': req.headers.get('content-type') || 'text/plain',
-      'X-Forwarded-For': req.headers.get('x-forwarded-for') || req.ip || '',
+      'X-Forwarded-For': req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || '',
       'User-Agent': req.headers.get('user-agent') || '',
     },
     body,
