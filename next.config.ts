@@ -145,22 +145,13 @@ const nextConfig: NextConfig = {
       process.env.SPREE_API_URL || "http://localhost:3000"
     ).replace(/\/$/, "");
 
-    // Proxies the self-hosted Plausible script through this app's own
-    // domain, under a generic-looking path (no "track"/"analytics"/
-    // "stats"/"pageview" keywords), so ad blockers see a same-origin
-    // request instead of a third-party domain with an obviously
-    // tracking-shaped script filename. The browser never talks to
-    // stats.nozfragrances.com directly - Next.js forwards the request
-    // server-side. See src/app/layout.tsx / AnalyticsScripts.tsx.
-    //
-    // Note: the EVENT SUBMISSION endpoint (POST /vg/events) used to be a
-    // second rewrite entry here, but rewrites to an external destination
-    // don't reliably forward non-GET requests in this app's standalone
-    // build - it was silently falling through to the app's own
-    // [country]/[locale] routing instead of reaching Plausible. That's now
-    // a real Route Handler at src/app/vg/events/route.ts instead, which
-    // Next.js always matches before any dynamic segment, regardless of
-    // HTTP method.
+    // Proxies the self-hosted Plausible instance through this app's own
+    // domain, under generic-looking paths (no "track"/"analytics"/"stats"/
+    // "pageview" keywords), so ad blockers see a same-origin request
+    // instead of a third-party domain with an obviously tracking-shaped
+    // script filename. The browser never talks to stats.nozfragrances.com
+    // directly - Next.js forwards the request server-side. See the two
+    // <Script> tags in src/app/layout.tsx that point at these paths.
     const plausibleUpstream =
       process.env.PLAUSIBLE_UPSTREAM_URL || "https://stats.nozfragrances.com";
 
@@ -180,6 +171,10 @@ const nextConfig: NextConfig = {
       {
         source: "/js/vg-insights.js",
         destination: `${plausibleUpstream}/js/script.file-downloads.hash.outbound-links.pageview-props.revenue.tagged-events.js`,
+      },
+      {
+        source: "/vg/events",
+        destination: `${plausibleUpstream}/api/event`,
       },
     ];
   },
