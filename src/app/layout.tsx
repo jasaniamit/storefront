@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { Suspense } from "react";
+import AnalyticsScripts from "@/components/AnalyticsScripts";
 import { getStoreDescription, getStoreName } from "@/lib/store";
 
 const spreeApiOrigin = (() => {
@@ -50,13 +51,12 @@ export default function RootLayout({
           </>
         )}
 
-        {/* Self-hosted Plausible-style Analytics */}
-        <Script
-          defer
-          data-domain="nozfragrances.com"
-          src="https://stats.nozfragrances.com/js/script.file-downloads.hash.outbound-links.pageview-props.revenue.tagged-events.js"
-          strategy="afterInteractive"
-        />
+        {/* Defines window.plausible as a queueing stub, so any plausible()
+            call made before the real tracking script finishes loading gets
+            queued instead of erroring. Safe to run this every time (it's
+            a no-op if window.plausible already exists), so it stays as a
+            normal next/script - only the scripts that make real network
+            requests need the manual-load guard (see AnalyticsScripts). */}
         <Script
           id="plausible-queue-init"
           strategy="afterInteractive"
@@ -64,19 +64,12 @@ export default function RootLayout({
             __html: `window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`,
           }}
         />
-
-        {/* Umami Analytics (cloud) */}
-        <Script
-          defer
-          src="https://cloud.umami.is/script.js"
-          data-website-id="26c905b8-4b5f-4133-8e08-d03512494514"
-          strategy="afterInteractive"
-        />
       </head>
       <body
         className={`${geist.variable} antialiased min-h-screen flex flex-col`}
       >
         <Suspense fallback={null}>{children}</Suspense>
+        <AnalyticsScripts />
       </body>
     </html>
   );
