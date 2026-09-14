@@ -1,5 +1,22 @@
 "use server";
 
+// ⚠️ CURRENTLY UNUSED by the tracking page as of the latest revision.
+//
+// This calls Velocity's AUTHENTICATED Custom API (order-tracking endpoint)
+// for live status. In testing, this did not reliably return data for
+// shipments created through Velocity's bulk CSV upload flow (which is how
+// this store actually ships) — the Custom API appears scoped to shipments
+// created via their Custom Integration API specifically. The tracking page
+// now embeds Velocity's own public tracker (velocityshipping.in/track/<AWB>)
+// instead, which requires no auth and works for any AWB regardless of how
+// it was created.
+//
+// Kept here in case it's useful later (e.g. a background job that
+// reconciles order status, or if Velocity confirms CSV-manifested
+// shipments ARE queryable once real credentials are configured) — but
+// nothing currently calls trackAwb() below. Don't assume it's wired up
+// without checking.
+//
 // Server-side client for Velocity Shipping's Custom API
 // (Velocity_Shipping_Custom_API_Documentation). Never import this from a
 // client component — it holds the account username/password and talks
