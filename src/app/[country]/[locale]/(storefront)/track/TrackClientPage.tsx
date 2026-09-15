@@ -3,7 +3,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Package, Search, AlertCircle } from "lucide-react";
+import { Package, Search, AlertCircle, Check, Truck, Home, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -201,6 +201,60 @@ function TrackingResult({ data }: { data: SearchResponse }) {
   );
 }
 
+// The 4 major milestones shown in the step tracker. Granular activity
+// (pickup rescheduled, shipment booked, etc.) still shows in the
+// timeline below — this row only reflects the big picture, same idea as
+// DTDC's "Picked Up / In Transit / Out for Delivery / Delivered" bar.
+const STEPS = [
+  { key: "picked_up", label: "Picked up", icon: Check },
+  { key: "in_transit", label: "In transit", icon: Truck },
+  { key: "out_for_delivery", label: "Out for delivery", icon: Package },
+  { key: "delivered", label: "Delivered", icon: Home },
+];
+
+// Checked most-specific-first so e.g. "delivered" doesn't get matched by
+// a looser "deliver" substring meant for "out_for_delivery".
+function getStepIndex(rawStatus: string): number {
+  const s = rawStatus.trim().toLowerCase().replace(/\s+/g, "_");
+  if (s.includes("delivered")) return 3;
+  if (s.includes("out_for_delivery") || s.includes("out for delivery")) return 2;
+  if (s.includes("in_transit") || s.includes("transit")) return 1;
+  if (s.includes("picked_up") || s.includes("picked up") || s.includes("shipment_booked")) return 0;
+  return -1; // pickup requested/scheduled/rescheduled/awaited, not picked, etc.
+}
+
+function StepTracker({ status }: { status: string }) {
+  const currentIndex = getStepIndex(status);
+
+  return (
+    <div className="mb-2 mt-8 flex items-start">
+      {STEPS.map((step, i) => {
+        const reached = i <= currentIndex;
+        const nextReached = i < currentIndex; // segment AFTER this node only fills once we've moved past it
+        const Icon = step.icon;
+        return (
+          <div key={step.key} className="flex-1 text-center">
+            <div className="flex items-center">
+              <div className={`h-0.5 flex-1 ${i === 0 ? "invisible" : reached ? "bg-[#e86c5f]" : "bg-border"}`} />
+              <div
+                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${
+                  reached ? "bg-[#e86c5f] text-white" : "border-[1.5px] border-border text-muted-foreground"
+                }`}
+              >
+                <Icon className="h-3.5 w-3.5" />
+              </div>
+              <div className={`h-0.5 flex-1 ${i === STEPS.length - 1 ? "invisible" : nextReached ? "bg-[#e86c5f]" : "bg-border"}`} />
+            </div>
+            <p className={`mt-1.5 text-xs ${reached ? "font-medium text-foreground" : "text-muted-foreground"}`}>
+              {step.label}
+            </p>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function NativeTracking({
   order,
   awb,
@@ -220,7 +274,7 @@ function NativeTracking({
           {order ? `Order ${order.order_number}` : `AWB ${awb}`}
         </p>
         <div className="mt-2 flex items-center justify-center gap-2">
-          <span className="text-xl font-semibold md:text-2xl">{formatState(statusLabel)}</span>
+          <span className="text-xl font-semibold md:text-2xl">{friendlyStatus(statusLabel)}</span>
           {isDelivered && (
             <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
               Delivered
@@ -228,6 +282,22 @@ function NativeTracking({
           )}
         </div>
       </div>
+
+      <StepTracker status={statusLabel} />
+
+      {(live.origin || live.destination) && (
+        <div className="mb-6 mt-6 flex items-center justify-between rounded-lg bg-muted/50 px-4 py-3">
+          <div>
+            <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Origin</p>
+            <p className="mt-0.5 text-sm font-medium">{live.origin || "—"}</p>
+          </div>
+          <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
+          <div className="text-right">
+            <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Destination</p>
+            <p className="mt-0.5 text-sm font-medium">{live.destination || "—"}</p>
+          </div>
+        </div>
+      )}
 
       <div className="mt-8 flex flex-wrap justify-center gap-x-10 gap-y-4 border-y py-5 text-center">
         {live.estimated_delivery_date && !isDelivered && (
@@ -277,6 +347,17 @@ function NativeTracking({
       )}
     </div>
   );
+}
+
+// Raw Velocity status values that need a friendlier, less alarming label
+// for customers than a literal translation of their internal wording.
+const STATUS_LABEL_OVERRIDES: Record<string, string> = {
+  not_picked: "Waiting for update",
+};
+
+function friendlyStatus(value: string) {
+  const key = value.trim().toLowerCase().replace(/\s+/g, "_");
+  return STATUS_LABEL_OVERRIDES[key] ?? formatState(value);
 }
 
 function formatState(value: string) {
