@@ -2,17 +2,11 @@
 "use client";
 
 import { useState } from "react";
-import { Package, Search, AlertCircle, ExternalLink } from "lucide-react";
+import { Package, Search, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-// Velocity's own public tracking page — no auth needed, works for any AWB
-// regardless of how the shipment was created (bulk CSV upload or their
-// Custom API). We embed this directly rather than re-implementing our own
-// live-status UI on top of their authenticated API, which doesn't
-// reliably cover CSV-manifested shipments.
 const VELOCITY_TRACK_BASE_URL = "https://www.velocityshipping.in/track";
 
 interface OrderTrackingInfo {
@@ -24,10 +18,28 @@ interface OrderTrackingInfo {
   shipped_at: string | null;
 }
 
+interface VelocityTrackActivity {
+  date: string;
+  activity: string;
+  location: string;
+}
+
+interface VelocityTrackResult {
+  found: boolean;
+  shipment_status: string | null;
+  current_status: string | null;
+  origin: string | null;
+  destination: string | null;
+  pickup_date: string | null;
+  delivered_date: string | null;
+  estimated_delivery_date: string | null;
+  activities: VelocityTrackActivity[];
+}
+
 interface SearchResponse {
-  type: "order" | "awb";
   order: OrderTrackingInfo | null;
   awb: string | null;
+  live: VelocityTrackResult | null;
 }
 
 type Status = "idle" | "loading" | "success" | "error";
@@ -37,7 +49,6 @@ export default function TrackClientPage() {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [result, setResult] = useState<SearchResponse | null>(null);
-  const [iframeFailed, setIframeFailed] = useState(false);
 
   async function handleSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -47,7 +58,6 @@ export default function TrackClientPage() {
     setStatus("loading");
     setErrorMessage("");
     setResult(null);
-    setIframeFailed(false);
 
     try {
       const res = await fetch("/api/tracking/search", {
@@ -73,16 +83,16 @@ export default function TrackClientPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12 md:py-16">
-      <div className="mb-8 text-center">
-        <Package className="mx-auto mb-3 h-10 w-10 text-primary" />
+    <div className="mx-auto max-w-2xl px-4 py-12 md:py-16">
+      <div className="mb-10 text-center">
+        <Package className="mx-auto mb-3 h-9 w-9 text-[#e86c5f]" />
         <h1 className="text-2xl font-semibold md:text-3xl">Track Your Order</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Enter your Order Id or AWB number from your confirmation email.
         </p>
       </div>
 
-      <form onSubmit={handleSearch} className="mb-8 flex gap-2">
+      <form onSubmit={handleSearch} className="mb-10 flex gap-2">
         <Input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -104,101 +114,144 @@ export default function TrackClientPage() {
         </Alert>
       )}
 
-      {status === "success" && result && (
-        <TrackingResult data={result} iframeFailed={iframeFailed} onIframeError={() => setIframeFailed(true)} />
-      )}
+      {status === "success" && result && <TrackingResult data={result} />}
     </div>
   );
 }
 
-function TrackingResult({
-  data,
-  iframeFailed,
-  onIframeError,
-}: {
-  data: SearchResponse;
-  iframeFailed: boolean;
-  onIframeError: () => void;
-}) {
-  const { order, awb } = data;
+function TrackingResult({ data }: { data: SearchResponse }) {
+  const { order, awb, live } = data;
 
   // Order found in Spree, but not shipped yet — nothing to track.
   if (order && !order.shipped) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Package className="h-5 w-5 text-muted-foreground" />
-            Order {order.order_number}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">
-            This order is <span className="font-medium text-foreground">{formatState(order.order_state)}</span> and
-            hasn&apos;t shipped yet. Once it ships, tracking details will appear here automatically.
-          </p>
-        </CardContent>
-      </Card>
+      <div className="border-t pt-6 text-center">
+        <p className="text-sm uppercase tracking-widest text-muted-foreground">
+          Order {order.order_number}
+        </p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          This order is <span className="font-medium text-foreground">{formatState(order.order_state)}</span> and
+          hasn&apos;t shipped yet. Once it ships, tracking details will appear here automatically.
+        </p>
+      </div>
     );
   }
 
   // Order shipped but no AWB recorded yet (webhook hasn't caught up).
   if (order && order.shipped && !awb) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Package className="h-5 w-5 text-muted-foreground" />
-            Order {order.order_number}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">
-            This order has shipped and tracking details are being updated — please check back shortly.
-          </p>
-        </CardContent>
-      </Card>
+      <div className="border-t pt-6 text-center">
+        <p className="text-sm uppercase tracking-widest text-muted-foreground">
+          Order {order.order_number}
+        </p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          This order has shipped and tracking details are being updated — please check back shortly.
+        </p>
+      </div>
     );
   }
 
   if (!awb) return null;
 
+  // Real structured data from Velocity's API — render natively in the
+  // site's own design.
+  if (live?.found) {
+    return <NativeTracking order={order} awb={awb} live={live} />;
+  }
+
+  // Velocity's authenticated API had nothing for this AWB (currently the
+  // case for every AWB, since API access is disabled for the account —
+  // see lib/velocity/client.ts). Fall back to their public tracker,
+  // embedded full-width and borderless so it sits as close to "native" as
+  // an embedded page can.
   const trackUrl = `${VELOCITY_TRACK_BASE_URL}/${encodeURIComponent(awb)}`;
+  return (
+    <div className="border-t pt-6">
+      {order && (
+        <p className="mb-4 text-center text-sm uppercase tracking-widest text-muted-foreground">
+          Order {order.order_number}
+        </p>
+      )}
+      <iframe src={trackUrl} title="Shipment tracking" className="h-[560px] w-full border-0" />
+    </div>
+  );
+}
+
+function NativeTracking({
+  order,
+  awb,
+  live,
+}: {
+  order: OrderTrackingInfo | null;
+  awb: string;
+  live: VelocityTrackResult;
+}) {
+  const statusLabel = live.current_status || live.shipment_status || "In transit";
+  const isDelivered = statusLabel.toLowerCase() === "delivered";
 
   return (
-    <Card className="overflow-hidden">
-      {order && (
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base">Order {order.order_number}</CardTitle>
-          <p className="text-xs text-muted-foreground">AWB: {awb}</p>
-        </CardHeader>
-      )}
-      <CardContent className="p-0">
-        {!iframeFailed && (
-          <iframe
-            src={trackUrl}
-            title="Shipment tracking"
-            className="h-[520px] w-full border-0"
-            onError={onIframeError}
-          />
-        )}
-
-        {/* Always shown, not just as an error fallback — some browsers
-            don't fire onError for a blocked/refused iframe, so this is
-            the guaranteed-working path regardless of what Velocity's
-            page does with embedding. */}
-        <div className="flex justify-center border-t p-4">
-          <a
-            href={trackUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-sm text-primary underline underline-offset-2"
-          >
-            Open full tracking page <ExternalLink className="h-3.5 w-3.5" />
-          </a>
+    <div className="border-t pt-8">
+      <div className="text-center">
+        <p className="text-sm uppercase tracking-widest text-muted-foreground">
+          {order ? `Order ${order.order_number}` : `AWB ${awb}`}
+        </p>
+        <div className="mt-2 flex items-center justify-center gap-2">
+          <span className="text-xl font-semibold md:text-2xl">{formatState(statusLabel)}</span>
+          {isDelivered && (
+            <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
+              Delivered
+            </span>
+          )}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+
+      <div className="mt-8 flex flex-wrap justify-center gap-x-10 gap-y-4 border-y py-5 text-center">
+        {live.estimated_delivery_date && !isDelivered && (
+          <div>
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">Expected delivery</p>
+            <p className="mt-1 text-sm font-medium text-[#e86c5f]">{formatDate(live.estimated_delivery_date)}</p>
+          </div>
+        )}
+        {live.pickup_date && (
+          <div>
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">Picked up</p>
+            <p className="mt-1 text-sm font-medium">{formatDate(live.pickup_date)}</p>
+          </div>
+        )}
+        {live.delivered_date && (
+          <div>
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">Delivered</p>
+            <p className="mt-1 text-sm font-medium">{formatDate(live.delivered_date)}</p>
+          </div>
+        )}
+        <div>
+          <p className="text-xs uppercase tracking-wide text-muted-foreground">Tracking ID</p>
+          <p className="mt-1 text-sm font-medium">{awb}</p>
+        </div>
+      </div>
+
+      {live.activities.length > 0 && (
+        <div className="mt-8">
+          <p className="mb-5 text-sm uppercase tracking-widest text-muted-foreground">Tracking updates</p>
+          <ol>
+            {live.activities.map((activity, i) => (
+              <li key={`${activity.date}-${i}`} className="flex gap-4">
+                <div className="flex flex-col items-center">
+                  <span className={`h-2.5 w-2.5 rounded-full ${i === 0 ? "bg-[#e86c5f]" : "bg-muted-foreground/30"}`} />
+                  {i < live.activities.length - 1 && <span className="mt-1 w-px flex-1 bg-border" />}
+                </div>
+                <div className="pb-6">
+                  <p className={`text-sm ${i === 0 ? "font-medium" : "text-muted-foreground"}`}>{activity.activity}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {activity.location} · {formatDate(activity.date)}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -207,4 +260,15 @@ function formatState(value: string) {
     .split(/[_\s]+/)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(" ");
+}
+
+function formatDate(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleString(undefined, {
+    day: "numeric",
+    month: "short",
+    hour: "numeric",
+    minute: "2-digit",
+  });
 }
