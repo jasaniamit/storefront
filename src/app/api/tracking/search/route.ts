@@ -1,6 +1,7 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { getOrderTracking } from "@/lib/data/tracking";
+import { trackAwb } from "@/lib/velocity/client";
 
 /**
  * Public tracking search — accepts EITHER an order number (e.g. R043155873)
@@ -8,31 +9,30 @@ import { getOrderTracking } from "@/lib/data/tracking";
  * both are only ever known to someone who received the confirmation/
  * shipping email).
  *
- * IMPORTANT: this deliberately does NOT call Velocity's authenticated
- * Custom API (order-tracking endpoint) for live status anymore. That API
- * is meant for shipments created through Velocity's Custom Integration
- * API — orders manifested via the bulk CSV upload (which is how this
- * store actually ships) don't reliably show up through it, and it adds a
- * whole extra failure surface (credentials, token refresh, endpoint
- * scope) for something Velocity already solves better on their own:
+ * Data source: Velocity's authenticated order-tracking API (see
+ * lib/velocity/client.ts) is the primary source — it returns real
+ * structured data (status, timeline, expected delivery) that the page
+ * renders natively, matching the site's own design.
  *
- *   https://www.velocityshipping.in/track/<AWB>
- *
- * is Velocity's own public tracking page, requires no auth, and already
- * works correctly for any AWB regardless of how the shipment was created.
- * We embed that directly in the tracking page instead of re-implementing
- * a live-status UI ourselves — fewer moving parts, more reliable.
+ * As of 2026-09-15, this API returns API_ACCESS_DISABLED for this
+ * account — Velocity support needs to enable API access first. Once
+ * enabled, it's still an open question whether shipments created via the
+ * bulk CSV upload (rather than their Custom Integration API) are covered.
+ * To avoid another redesign/redeploy cycle either way, this route
+ * degrades gracefully: if trackAwb() ever returns "not found" for a
+ * specific AWB (including right now, while access is disabled), the page
+ * falls back to embedding Velocity's own public tracker
+ * (velocityshipping.in/track/<AWB>), which is confirmed working for any
+ * AWB regardless of how it was created.
  *
  * Strategy:
  *   1. Try the input as an Order Id first (fast local DB lookup via Spree).
- *      - Order found + has an AWB   -> return the AWB so the page can
- *        embed Velocity's public tracker for it.
- *      - Order found, not shipped  -> return Spree's own status, no AWB
- *        to embed yet.
- *   2. Order not found             -> assume the input IS a raw AWB and
- *      hand it straight back for the page to embed directly. (If it's not
- *      a real AWB, Velocity's own tracker page shows its own not-found
- *      state — no need to duplicate that validation here.)
+ *      - Order found, not shipped  -> return Spree's own status, nothing
+ *        to track yet.
+ *      - Order found + shipped     -> use its stored AWB below.
+ *   2. Order not found             -> assume the input IS a raw AWB.
+ *   3. Whichever AWB we end up with, try Velocity's API for real data.
+ *      If that fails/returns nothing, fall back to the embed URL.
  */
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
@@ -44,17 +44,26 @@ export async function POST(request: NextRequest) {
 
   try {
     const order = await getOrderTracking(query);
+    const awb = order ? (order.shipped ? order.awb_code : null) : query;
 
-    if (order) {
-      return NextResponse.json({
-        type: "order",
-        order,
-        awb: order.shipped ? order.awb_code : null,
-      });
+    if (order && !order.shipped) {
+      return NextResponse.json({ order, awb: null, live: null });
     }
 
-    // No matching order in Spree — treat the input directly as an AWB.
-    return NextResponse.json({ type: "awb", order: null, awb: query });
+    if (!awb) {
+      return NextResponse.json({ order, awb: null, live: null });
+    }
+
+    const live = await trackAwb(awb).catch((err) => {
+      console.error("[tracking-search] Velocity API call failed:", err);
+      return null;
+    });
+
+    return NextResponse.json({
+      order,
+      awb,
+      live: live?.found ? live : null,
+    });
   } catch (error) {
     console.error("[tracking-search] Unexpected error:", error);
     return NextResponse.json(
