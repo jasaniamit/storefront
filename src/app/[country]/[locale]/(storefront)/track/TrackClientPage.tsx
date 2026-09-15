@@ -34,6 +34,7 @@ interface VelocityTrackResult {
   pickup_date: string | null;
   delivered_date: string | null;
   estimated_delivery_date: string | null;
+  courier_brand: string | null;
   activities: VelocityTrackActivity[];
 }
 
@@ -281,6 +282,9 @@ function NativeTracking({
             </span>
           )}
         </div>
+        {live.courier_brand && (
+          <p className="mt-1 text-xs text-muted-foreground">Shipped via {live.courier_brand}</p>
+        )}
       </div>
 
       <StepTracker status={statusLabel} />
