@@ -307,9 +307,7 @@ function NativeTracking({
         {live.estimated_delivery_date && !isDelivered && (
           <div>
             <p className="text-xs uppercase tracking-wide text-muted-foreground">Expected delivery</p>
-            <span className="mt-1 inline-block rounded-full bg-[#fdece8] px-4 py-1.5 text-lg font-semibold text-[#c44a2e]">
-              {formatDateOnly(live.estimated_delivery_date)}
-            </span>
+            <p className="mt-1 text-2xl font-semibold text-[#e86c5f]">{formatDateOnly(live.estimated_delivery_date)}</p>
           </div>
         )}
         {live.delivered_date && (
@@ -318,10 +316,6 @@ function NativeTracking({
             <p className="mt-1 text-sm font-medium">{formatDate(live.delivered_date)}</p>
           </div>
         )}
-        <div>
-          <p className="text-xs uppercase tracking-wide text-muted-foreground">Tracking ID</p>
-          <p className="mt-1 text-sm font-medium">{awb}</p>
-        </div>
       </div>
 
       {live.activities.length > 0 && (
