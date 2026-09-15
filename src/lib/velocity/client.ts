@@ -29,6 +29,29 @@ const BASE_URL = process.env.VELOCITY_API_BASE_URL;
 const USERNAME = process.env.VELOCITY_USERNAME;
 const PASSWORD = process.env.VELOCITY_PASSWORD;
 
+// Static courier ID → display name lookup. Velocity's carrier_id values
+// are fixed/global (not per-account) — confirmed because CAR0EPDPJXXL4
+// showed up as "DTDC Standard" in Velocity's own API documentation sample,
+// and the exact same ID came back for a real shipment we tested. A
+// hardcoded table is deliberately used here instead of an extra live call
+// to their Serviceability API — one less external request that could fail
+// on page load, for data that doesn't change. Sourced from the
+// serviceability sample response in Velocity_Shipping_Custom_API_Documentation.
+// Add new entries here if an AWB ever comes back with an unlisted id.
+export const COURIER_NAMES: Record<string, { name: string; brand: string }> = {
+  CAR0EPDPJXXL4: { name: "DTDC Standard", brand: "DTDC" },
+  CARCVBWTPRH08: { name: "Ekart Standard", brand: "Ekart" },
+  CAR5IXXJVT5MD: { name: "Delhivery Standard 5 Kg", brand: "Delhivery" },
+  CARVKGNGNLOCU: { name: "Blitz Special", brand: "Blitz" },
+  CARFYXUKCQHBM: { name: "Delhivery Special Standard 20 kg", brand: "Delhivery" },
+  CARVPHPLJQJOA: { name: "Delhivery Special Standard 10 kg", brand: "Delhivery" },
+  CARO0ZZQH1H6U: { name: "Delhivery Standard", brand: "Delhivery" },
+  CAR2FZNOLGJ2X: { name: "Bluedart Standard", brand: "BlueDart" },
+  CARLTTKCUYWRM: { name: "Delhivery Standard 250G", brand: "Delhivery" },
+  CARTS5SW8LSJT: { name: "XpressBees Standard", brand: "XpressBees" },
+  CARKX7WW6UNS8: { name: "Pikndel NDD", brand: "Pikndel" },
+};
+
 interface VelocityAuthResponse {
   token: string;
   expires_at: string;
@@ -72,6 +95,7 @@ export interface VelocityTrackResult {
   pickup_date: string | null;
   delivered_date: string | null;
   estimated_delivery_date: string | null;
+  courier_brand: string | null;
   activities: VelocityTrackActivity[];
   track_url: string | null;
 }
@@ -86,6 +110,7 @@ const NOT_FOUND_RESULT: VelocityTrackResult = {
   pickup_date: null,
   delivered_date: null,
   estimated_delivery_date: null,
+  courier_brand: null,
   activities: [],
   track_url: null,
 };
@@ -120,6 +145,8 @@ export async function trackAwb(awb: string): Promise<VelocityTrackResult> {
   if (!entry) return NOT_FOUND_RESULT;
 
   const latestTrack = entry.shipment_track?.[0];
+  const courierId: string | undefined = latestTrack?.courier_company_id;
+  const courierBrand = courierId ? COURIER_NAMES[courierId]?.brand ?? null : null;
 
   return {
     found: true,
@@ -131,6 +158,7 @@ export async function trackAwb(awb: string): Promise<VelocityTrackResult> {
     pickup_date: latestTrack?.pickup_date ?? null,
     delivered_date: latestTrack?.delivered_date ?? null,
     estimated_delivery_date: entry.estimated_delivery_date ?? entry.original_edd ?? null,
+    courier_brand: courierBrand,
     activities: (entry.shipment_track_activities ?? []) as VelocityTrackActivity[],
     track_url: entry.track_url ?? null,
   };
