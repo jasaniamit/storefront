@@ -130,7 +130,7 @@ export async function trackAwb(awb: string): Promise<VelocityTrackResult> {
     consignee_name: latestTrack?.consignee_name ?? null,
     pickup_date: latestTrack?.pickup_date ?? null,
     delivered_date: latestTrack?.delivered_date ?? null,
-    estimated_delivery_date: entry.estimated_delivery_date ?? null,
+    estimated_delivery_date: entry.estimated_delivery_date ?? entry.original_edd ?? null,
     activities: (entry.shipment_track_activities ?? []) as VelocityTrackActivity[],
     track_url: entry.track_url ?? null,
   };
