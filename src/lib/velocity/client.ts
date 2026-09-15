@@ -1,26 +1,17 @@
 "use server";
 
-// ⚠️ CURRENTLY UNUSED by the tracking page as of the latest revision.
-//
-// This calls Velocity's AUTHENTICATED Custom API (order-tracking endpoint)
-// for live status. In testing, this did not reliably return data for
-// shipments created through Velocity's bulk CSV upload flow (which is how
-// this store actually ships) — the Custom API appears scoped to shipments
-// created via their Custom Integration API specifically. The tracking page
-// now embeds Velocity's own public tracker (velocityshipping.in/track/<AWB>)
-// instead, which requires no auth and works for any AWB regardless of how
-// it was created.
-//
-// Kept here in case it's useful later (e.g. a background job that
-// reconciles order status, or if Velocity confirms CSV-manifested
-// shipments ARE queryable once real credentials are configured) — but
-// nothing currently calls trackAwb() below. Don't assume it's wired up
-// without checking.
-//
 // Server-side client for Velocity Shipping's Custom API
 // (Velocity_Shipping_Custom_API_Documentation). Never import this from a
 // client component — it holds the account username/password and talks
 // directly to Velocity's base URL.
+//
+// STATUS (2026-09-15): API access confirmed enabled and working — verified
+// against a real CSV-uploaded shipment (AWB 7D140289950), which returned
+// full tracking data. Both earlier open questions are resolved: API access
+// just needed to be turned on by Velocity support, and CSV-uploaded
+// shipments ARE covered by this endpoint. The tracking page's fallback to
+// Velocity's public embed (see app/api/tracking/search/route.ts) is now a
+// pure safety net for transient failures, not the primary path.
 //
 // Required env vars:
 //   VELOCITY_API_BASE_URL   e.g. https://shazam.velocity.in
@@ -80,6 +71,7 @@ export interface VelocityTrackResult {
   consignee_name: string | null;
   pickup_date: string | null;
   delivered_date: string | null;
+  estimated_delivery_date: string | null;
   activities: VelocityTrackActivity[];
   track_url: string | null;
 }
@@ -93,6 +85,7 @@ const NOT_FOUND_RESULT: VelocityTrackResult = {
   consignee_name: null,
   pickup_date: null,
   delivered_date: null,
+  estimated_delivery_date: null,
   activities: [],
   track_url: null,
 };
@@ -137,6 +130,7 @@ export async function trackAwb(awb: string): Promise<VelocityTrackResult> {
     consignee_name: latestTrack?.consignee_name ?? null,
     pickup_date: latestTrack?.pickup_date ?? null,
     delivered_date: latestTrack?.delivered_date ?? null,
+    estimated_delivery_date: entry.estimated_delivery_date ?? null,
     activities: (entry.shipment_track_activities ?? []) as VelocityTrackActivity[],
     track_url: entry.track_url ?? null,
   };
