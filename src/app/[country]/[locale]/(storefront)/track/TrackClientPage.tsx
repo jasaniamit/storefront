@@ -307,13 +307,9 @@ function NativeTracking({
         {live.estimated_delivery_date && !isDelivered && (
           <div>
             <p className="text-xs uppercase tracking-wide text-muted-foreground">Expected delivery</p>
-            <p className="mt-1 text-sm font-medium text-[#e86c5f]">{formatDate(live.estimated_delivery_date)}</p>
-          </div>
-        )}
-        {live.pickup_date && (
-          <div>
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">Picked up</p>
-            <p className="mt-1 text-sm font-medium">{formatDate(live.pickup_date)}</p>
+            <span className="mt-1 inline-block rounded-full bg-[#fdece8] px-4 py-1.5 text-lg font-semibold text-[#c44a2e]">
+              {formatDateOnly(live.estimated_delivery_date)}
+            </span>
           </div>
         )}
         {live.delivered_date && (
@@ -379,5 +375,17 @@ function formatDate(value: string) {
     month: "short",
     hour: "numeric",
     minute: "2-digit",
+  });
+}
+
+// Date only, with year, no time — for the large "Expected delivery"
+// headline (e.g. "21 Sept 2026"), matching the DTDC-style big date treatment.
+function formatDateOnly(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleDateString(undefined, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
   });
 }
