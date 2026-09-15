@@ -30,6 +30,7 @@ const NAV_LINKS = [
   { label: "15ML", href: "/c/categories/15ml" },
   { label: "2ML SAMPLES", href: "/c/categories/2ml-samples" },
   { label: "NEW ARRIVALS", href: "/c/categories/new-arrivals" },
+  { label: "TRACK YOUR ORDER", href: "/track" },
   { label: "SHOP ALL", href: "/products" },
 ];
 
