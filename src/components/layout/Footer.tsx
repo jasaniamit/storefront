@@ -61,6 +61,9 @@ export function Footer({ rootCategories, basePath }: FooterProps) {
               <Link href={`${basePath}/account/orders`}>Order History</Link>
             </li>
             <li>
+              <Link href={`${basePath}/track`}>Track Your Order</Link>
+            </li>
+            <li>
               <Link href={`${basePath}/cart`}>Cart</Link>
             </li>
           </ul>
