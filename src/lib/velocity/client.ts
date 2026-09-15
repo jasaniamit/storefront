@@ -38,7 +38,7 @@ const PASSWORD = process.env.VELOCITY_PASSWORD;
 // on page load, for data that doesn't change. Sourced from the
 // serviceability sample response in Velocity_Shipping_Custom_API_Documentation.
 // Add new entries here if an AWB ever comes back with an unlisted id.
-export const COURIER_NAMES: Record<string, { name: string; brand: string }> = {
+const COURIER_NAMES: Record<string, { name: string; brand: string }> = {
   CAR0EPDPJXXL4: { name: "DTDC Standard", brand: "DTDC" },
   CARCVBWTPRH08: { name: "Ekart Standard", brand: "Ekart" },
   CAR5IXXJVT5MD: { name: "Delhivery Standard 5 Kg", brand: "Delhivery" },
