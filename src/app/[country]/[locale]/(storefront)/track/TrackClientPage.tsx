@@ -1,7 +1,8 @@
 // src/app/[country]/[locale]/(storefront)/track/TrackClientPage.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Package, Search, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,14 +46,15 @@ interface SearchResponse {
 type Status = "idle" | "loading" | "success" | "error";
 
 export default function TrackClientPage() {
+  const searchParams = useSearchParams();
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [result, setResult] = useState<SearchResponse | null>(null);
+  const autoSearchedRef = useRef(false);
 
-  async function handleSearch(e: React.FormEvent) {
-    e.preventDefault();
-    const trimmed = query.trim();
+  async function runSearch(value: string) {
+    const trimmed = value.trim();
     if (!trimmed) return;
 
     setStatus("loading");
@@ -81,6 +83,28 @@ export default function TrackClientPage() {
       setErrorMessage("Something went wrong. Please try again in a moment.");
     }
   }
+
+  function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    runSearch(query);
+  }
+
+  // Deep-link support — a tracking link from an order email or the Spree
+  // order page can point straight here as
+  // /track?awb=<tracking-number> (or ?order=<order-number>) and the search
+  // runs automatically, no typing or clicking needed. Mirrors DTDC's
+  // ?awb= deep-link pattern, minus the captcha since this isn't a public
+  // multi-tenant tracking site.
+  useEffect(() => {
+    if (autoSearchedRef.current) return;
+    const fromUrl = searchParams.get("awb") || searchParams.get("order") || searchParams.get("q");
+    if (fromUrl) {
+      autoSearchedRef.current = true;
+      setQuery(fromUrl);
+      runSearch(fromUrl);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 md:py-16">
