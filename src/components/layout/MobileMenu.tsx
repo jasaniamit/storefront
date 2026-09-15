@@ -260,6 +260,13 @@ export function MobileMenu({ rootCategories, basePath }: MobileMenuProps) {
               >
                 {t("contact")}
               </Link>
+              <Link
+                href={`${basePath}/track`}
+                onClick={() => setOpen(false)}
+                className={linkClass}
+              >
+                Track Your Order
+              </Link>
             </nav>
 
             {/* Footer: Country switcher (mobile + tablet) + Account (mobile only) */}
