@@ -306,7 +306,7 @@ function NativeTracking({
       )}
 
       {(live.estimated_delivery_date || live.delivered_date || awb) && (
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-6 rounded-lg bg-muted/60 px-5 py-5">
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-6 border-y py-6">
           <div>
             <p className="text-xs uppercase tracking-wide text-muted-foreground">
               {isDelivered ? "Delivered" : "Expected delivery"}
@@ -377,7 +377,7 @@ function NativeTracking({
                     <div className="flex items-center gap-2">
                       <p className={`text-sm ${isLatest ? "font-medium" : "text-muted-foreground"}`}>{enriched}</p>
                       {isLatest && (
-                        <span className="rounded bg-[#fdece8] px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-[#c44a2e]">
+                        <span className="rounded bg-green-100 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-green-800">
                           Current
                         </span>
                       )}
