@@ -52,6 +52,18 @@ const COURIER_NAMES: Record<string, { name: string; brand: string }> = {
   CARKX7WW6UNS8: { name: "Pikndel NDD", brand: "Pikndel" },
 };
 
+// Logo file per courier BRAND (not per courier_id) — several courier_ids
+// above share the same brand (e.g. the 4 Delhivery weight variants all use
+// one Delhivery logo). Files live in /public/couriers/ — add a new entry
+// here whenever a new logo file gets added to that folder. A brand with no
+// entry here just renders as a plain text badge instead, no code change
+// needed for that fallback.
+const COURIER_LOGOS: Record<string, string> = {
+  DTDC: "/couriers/dtdc.svg",
+  Delhivery: "/couriers/delhivery.svg",
+  BlueDart: "/couriers/bluedart.png",
+};
+
 interface VelocityAuthResponse {
   token: string;
   expires_at: string;
@@ -96,6 +108,7 @@ export interface VelocityTrackResult {
   delivered_date: string | null;
   estimated_delivery_date: string | null;
   courier_brand: string | null;
+  courier_logo: string | null;
   activities: VelocityTrackActivity[];
   track_url: string | null;
 }
@@ -111,6 +124,7 @@ const NOT_FOUND_RESULT: VelocityTrackResult = {
   delivered_date: null,
   estimated_delivery_date: null,
   courier_brand: null,
+  courier_logo: null,
   activities: [],
   track_url: null,
 };
@@ -147,6 +161,7 @@ export async function trackAwb(awb: string): Promise<VelocityTrackResult> {
   const latestTrack = entry.shipment_track?.[0];
   const courierId: string | undefined = latestTrack?.courier_company_id;
   const courierBrand = courierId ? COURIER_NAMES[courierId]?.brand ?? null : null;
+  const courierLogo = courierBrand ? COURIER_LOGOS[courierBrand] ?? null : null;
 
   return {
     found: true,
@@ -159,6 +174,7 @@ export async function trackAwb(awb: string): Promise<VelocityTrackResult> {
     delivered_date: latestTrack?.delivered_date ?? null,
     estimated_delivery_date: entry.estimated_delivery_date ?? entry.original_edd ?? null,
     courier_brand: courierBrand,
+    courier_logo: courierLogo,
     activities: (entry.shipment_track_activities ?? []) as VelocityTrackActivity[],
     track_url: entry.track_url ?? null,
   };
