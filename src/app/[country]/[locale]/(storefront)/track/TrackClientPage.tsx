@@ -305,40 +305,49 @@ function NativeTracking({
         </div>
       )}
 
-      <div className="mt-8 flex flex-wrap justify-center gap-x-10 gap-y-4 border-y py-5 text-center">
-        {live.estimated_delivery_date && !isDelivered && (
+      {(live.estimated_delivery_date || live.delivered_date || awb) && (
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-6 rounded-lg bg-muted/60 px-5 py-5">
           <div>
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">Expected delivery</p>
-            <span className="mt-1 inline-block rounded-full bg-green-100 px-4 py-1.5 text-lg font-semibold text-green-800">
-              {formatDateOnly(live.estimated_delivery_date)}
-            </span>
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">
+              {isDelivered ? "Delivered" : "Expected delivery"}
+            </p>
+            <p className="mt-1 text-3xl font-bold text-[#e86c5f]">
+              {isDelivered && live.delivered_date
+                ? formatDateOnly(live.delivered_date)
+                : live.estimated_delivery_date
+                  ? formatDateOnly(live.estimated_delivery_date)
+                  : "—"}
+            </p>
           </div>
-        )}
-        {live.delivered_date && (
-          <div>
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">Delivered</p>
-            <p className="mt-1 text-sm font-medium">{formatDate(live.delivered_date)}</p>
-          </div>
-        )}
-      </div>
 
-      {awb && (
-        <div className="mt-5 flex items-center justify-center gap-2 rounded-lg bg-muted/60 px-4 py-3 text-sm">
-          {live.courier_logo ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={live.courier_logo} alt={live.courier_brand || "Courier"} className="h-5 w-auto max-w-[90px] object-contain" />
-          ) : (
-            live.courier_brand && <span className="font-medium text-foreground">{live.courier_brand}</span>
+          {awb && (
+            <div className="flex flex-col items-end gap-2 text-sm">
+              {(live.courier_logo || live.courier_brand) && (
+                <div className="flex items-center gap-2">
+                  {live.courier_logo && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={live.courier_logo}
+                      alt={live.courier_brand || "Courier"}
+                      className="h-8 w-auto max-w-[120px] object-contain"
+                    />
+                  )}
+                  {live.courier_brand && <span className="font-medium text-foreground">{live.courier_brand}</span>}
+                </div>
+              )}
+              <div>
+                <span className="text-muted-foreground">Tracking ID: </span>
+                <a
+                  href={live.track_url || `${VELOCITY_TRACK_BASE_URL}/${encodeURIComponent(awb)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-foreground underline underline-offset-2"
+                >
+                  {awb}
+                </a>
+              </div>
+            </div>
           )}
-          <span className="text-muted-foreground">Tracking ID:</span>
-          <a
-            href={live.track_url || `${VELOCITY_TRACK_BASE_URL}/${encodeURIComponent(awb)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-medium text-foreground underline underline-offset-2"
-          >
-            {awb}
-          </a>
         </div>
       )}
 
@@ -346,25 +355,49 @@ function NativeTracking({
         <div className="mt-8">
           <p className="mb-5 text-sm uppercase tracking-widest text-muted-foreground">Tracking updates</p>
           <ol>
-            {live.activities.map((activity, i) => (
-              <li key={`${activity.date}-${i}`} className="flex gap-4">
-                <div className="flex flex-col items-center">
-                  <span className={`h-2.5 w-2.5 rounded-full ${i === 0 ? "bg-[#e86c5f]" : "bg-muted-foreground/30"}`} />
-                  {i < live.activities.length - 1 && <span className="mt-1 w-px flex-1 bg-border" />}
-                </div>
-                <div className="pb-6">
-                  <p className={`text-sm ${i === 0 ? "font-medium" : "text-muted-foreground"}`}>{activity.activity}</p>
-                  <p className="mt-0.5 text-xs text-muted-foreground">
-                    {activity.location} · {formatDate(activity.date)}
-                  </p>
-                </div>
-              </li>
-            ))}
+            {live.activities.map((activity, i) => {
+              const isLatest = i === 0;
+              // Velocity only tells us the current hub for each event, never
+              // the specific next stop on that leg (unlike some couriers'
+              // own portals). Rather than inventing a next-hub we don't
+              // actually know, the honest improvement is reframing the
+              // latest "in transit"-type event against the shipment's real,
+              // known final destination.
+              const enriched = isLatest && isTransitActivity(activity.activity) && live.destination
+                ? `${activity.activity} — on its way to ${live.destination}`
+                : activity.activity;
+
+              return (
+                <li key={`${activity.date}-${i}`} className="flex gap-4">
+                  <div className="flex flex-col items-center">
+                    <span className={`h-2.5 w-2.5 rounded-full ${isLatest ? "bg-[#e86c5f]" : "bg-muted-foreground/30"}`} />
+                    {i < live.activities.length - 1 && <span className="mt-1 w-px flex-1 bg-border" />}
+                  </div>
+                  <div className="pb-6">
+                    <div className="flex items-center gap-2">
+                      <p className={`text-sm ${isLatest ? "font-medium" : "text-muted-foreground"}`}>{enriched}</p>
+                      {isLatest && (
+                        <span className="rounded bg-[#fdece8] px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-[#c44a2e]">
+                          Current
+                        </span>
+                      )}
+                    </div>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      {activity.location} · {formatDate(activity.date)}
+                    </p>
+                  </div>
+                </li>
+              );
+            })}
           </ol>
         </div>
       )}
     </div>
   );
+}
+
+function isTransitActivity(activity: string) {
+  return activity.toLowerCase().includes("transit");
 }
 
 // Raw Velocity status values that need a friendlier, less alarming label
