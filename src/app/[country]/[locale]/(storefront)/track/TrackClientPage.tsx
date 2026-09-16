@@ -35,7 +35,9 @@ interface VelocityTrackResult {
   delivered_date: string | null;
   estimated_delivery_date: string | null;
   courier_brand: string | null;
+  courier_logo: string | null;
   activities: VelocityTrackActivity[];
+  track_url: string | null;
 }
 
 interface SearchResponse {
@@ -307,7 +309,9 @@ function NativeTracking({
         {live.estimated_delivery_date && !isDelivered && (
           <div>
             <p className="text-xs uppercase tracking-wide text-muted-foreground">Expected delivery</p>
-            <p className="mt-1 text-2xl font-semibold text-[#e86c5f]">{formatDateOnly(live.estimated_delivery_date)}</p>
+            <span className="mt-1 inline-block rounded-full bg-green-100 px-4 py-1.5 text-lg font-semibold text-green-800">
+              {formatDateOnly(live.estimated_delivery_date)}
+            </span>
           </div>
         )}
         {live.delivered_date && (
@@ -317,6 +321,26 @@ function NativeTracking({
           </div>
         )}
       </div>
+
+      {awb && (
+        <div className="mt-5 flex items-center justify-center gap-2 rounded-lg bg-muted/60 px-4 py-3 text-sm">
+          {live.courier_logo ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={live.courier_logo} alt={live.courier_brand || "Courier"} className="h-5 w-auto max-w-[90px] object-contain" />
+          ) : (
+            live.courier_brand && <span className="font-medium text-foreground">{live.courier_brand}</span>
+          )}
+          <span className="text-muted-foreground">Tracking ID:</span>
+          <a
+            href={live.track_url || `${VELOCITY_TRACK_BASE_URL}/${encodeURIComponent(awb)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-foreground underline underline-offset-2"
+          >
+            {awb}
+          </a>
+        </div>
+      )}
 
       {live.activities.length > 0 && (
         <div className="mt-8">
