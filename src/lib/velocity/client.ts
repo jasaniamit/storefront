@@ -107,6 +107,8 @@ export interface VelocityTrackResult {
   pickup_date: string | null;
   delivered_date: string | null;
   estimated_delivery_date: string | null;
+  original_edd: string | null;
+  is_delayed: boolean;
   courier_brand: string | null;
   courier_logo: string | null;
   activities: VelocityTrackActivity[];
@@ -123,6 +125,8 @@ const NOT_FOUND_RESULT: VelocityTrackResult = {
   pickup_date: null,
   delivered_date: null,
   estimated_delivery_date: null,
+  original_edd: null,
+  is_delayed: false,
   courier_brand: null,
   courier_logo: null,
   activities: [],
@@ -163,6 +167,19 @@ export async function trackAwb(awb: string): Promise<VelocityTrackResult> {
   const courierBrand = courierId ? COURIER_NAMES[courierId]?.brand ?? null : null;
   const courierLogo = courierBrand ? COURIER_LOGOS[courierBrand] ?? null : null;
 
+  // Velocity's own public tracking page treats `original_edd` (the date
+  // committed at booking) as THE headline "Expected Delivery Date", and
+  // flags "DELAYED" when the live recalculated forecast
+  // (`estimated_delivery_date`) has slipped past it. We match that
+  // behavior instead of showing the recalculated date as if it were a
+  // normal, on-track estimate — confirmed against a real delayed shipment
+  // (AWB 7D140800901: original_edd Sep 26, estimated_delivery_date pushed
+  // to Oct 6, Velocity's page showed Sep 26 + DELAYED).
+  const originalEdd: string | null = entry.original_edd ?? null;
+  const recalculatedEdd: string | null = entry.estimated_delivery_date ?? null;
+  const isDelayed =
+    !!originalEdd && !!recalculatedEdd && new Date(recalculatedEdd).getTime() > new Date(originalEdd).getTime();
+
   return {
     found: true,
     shipment_status: entry.shipment_status ?? null,
@@ -172,7 +189,12 @@ export async function trackAwb(awb: string): Promise<VelocityTrackResult> {
     consignee_name: latestTrack?.consignee_name ?? null,
     pickup_date: latestTrack?.pickup_date ?? null,
     delivered_date: latestTrack?.delivered_date ?? null,
-    estimated_delivery_date: entry.estimated_delivery_date ?? entry.original_edd ?? null,
+    // Primary headline date shown to customers — the original commitment,
+    // matching Velocity's own page. Falls back to the recalculated date
+    // only if no original commitment was ever set (rare/early shipments).
+    estimated_delivery_date: originalEdd ?? recalculatedEdd,
+    original_edd: originalEdd,
+    is_delayed: isDelayed,
     courier_brand: courierBrand,
     courier_logo: courierLogo,
     activities: (entry.shipment_track_activities ?? []) as VelocityTrackActivity[],
