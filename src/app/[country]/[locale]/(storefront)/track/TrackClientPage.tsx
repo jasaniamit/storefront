@@ -34,6 +34,7 @@ interface VelocityTrackResult {
   pickup_date: string | null;
   delivered_date: string | null;
   estimated_delivery_date: string | null;
+  is_delayed: boolean;
   courier_brand: string | null;
   courier_logo: string | null;
   activities: VelocityTrackActivity[];
@@ -308,9 +309,16 @@ function NativeTracking({
       {(live.estimated_delivery_date || live.delivered_date || awb) && (
         <div className="mt-8 flex flex-wrap items-center justify-between gap-6 border-y py-6">
           <div>
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">
-              {isDelivered ? "Delivered" : "Expected delivery"}
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                {isDelivered ? "Delivered" : "Expected delivery"}
+              </p>
+              {!isDelivered && live.is_delayed && (
+                <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-amber-800">
+                  Delayed
+                </span>
+              )}
+            </div>
             <p className="mt-1 text-3xl font-bold text-[#e86c5f]">
               {isDelivered && live.delivered_date
                 ? formatDateOnly(live.delivered_date)
