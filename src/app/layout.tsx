@@ -50,18 +50,26 @@ export default function RootLayout({
           </>
         )}
 
-        {/* Self-hosted Plausible-style Analytics */}
+        {/* Privacy-friendly analytics by Plausible */}
         <Script
-          defer
-          data-domain="nozfragrances.com"
-          src="https://stats.nozfragrances.com/js/script.file-downloads.hash.outbound-links.pageview-props.revenue.tagged-events.js"
+          async
+          src="https://plausible.io/js/pa-JHwgMMJlpNPnJ6hoUAMoh.js"
           strategy="afterInteractive"
         />
+
         <Script
-          id="plausible-queue-init"
+          id="plausible-init"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
-            __html: `window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`,
+            __html: `
+              window.plausible = window.plausible || function() {
+                (plausible.q = plausible.q || []).push(arguments)
+              };
+              plausible.init = plausible.init || function(i) {
+                plausible.o = i || {}
+              };
+              plausible.init();
+            `,
           }}
         />
 
@@ -73,6 +81,7 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
       </head>
+
       <body
         className={`${geist.variable} antialiased min-h-screen flex flex-col`}
       >
