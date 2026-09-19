@@ -2,32 +2,33 @@
 
 // Server-side client for Velocity Shipping's Custom API
 // (Velocity_Shipping_Custom_API_Documentation). Never import this from a
-// client component — it holds the account username/password and talks
-// directly to Velocity's base URL.
+// client component — it holds the account's API key and talks directly to
+// Velocity's base URL.
 //
-// STATUS (2026-09-15): API access confirmed enabled and working — verified
-// against a real CSV-uploaded shipment (AWB 7D140289950), which returned
-// full tracking data. Both earlier open questions are resolved: API access
-// just needed to be turned on by Velocity support, and CSV-uploaded
-// shipments ARE covered by this endpoint. The tracking page's fallback to
-// Velocity's public embed (see app/api/tracking/search/route.ts) is now a
-// pure safety net for transient failures, not the primary path.
+// STATUS (2026-09-19): switched from username/password token exchange to
+// a static dashboard-generated API key, per Velocity's notice that
+// POST /custom/api/v1/auth-token is being retired on 2026-09-30. Verified
+// with a real request (AWB 7D140800901, key generated from Settings → API
+// Keys on their dashboard) — confirmed the header format is unchanged
+// (`Authorization: <key>`, no "Bearer " prefix, despite their email
+// wording suggesting otherwise). This actually simplifies the client: no
+// more per-request token exchange, no more username/password.
 //
 // Required env vars:
-//   VELOCITY_API_BASE_URL   e.g. https://shazam.velocity.in
-//   VELOCITY_USERNAME       mobile number with country code, e.g. +91xxxxxxxxxx
-//   VELOCITY_PASSWORD       Velocity Shipping account password
+//   VELOCITY_API_BASE_URL   e.g. https://shazam.velocity.in (unchanged)
+//   VELOCITY_API_KEY        generated from dashboard.velocity.in →
+//                           Settings → API Keys (NOT the Webhooks page's
+//                           API Key, which is a different secret used for
+//                           the opposite direction — Velocity calling us).
+//                           Expires per whatever you set on generation
+//                           (max 365 days) — needs manual renewal before
+//                           then, no auto-refresh possible.
 //
-// Token handling: Velocity's token is valid for 24h, but this app runs on
-// stateless serverless functions — rather than sharing a cached token
-// across invocations (which adds a failure mode if it ever goes stale
-// unexpectedly), we simply fetch a fresh token on every tracking request.
-// This is one extra cheap API call per search, traded for zero chance of
-// a stuck/expired-token bug on a live site.
+// VELOCITY_USERNAME / VELOCITY_PASSWORD are no longer used and can be
+// removed from the environment once this is deployed.
 
 const BASE_URL = process.env.VELOCITY_API_BASE_URL;
-const USERNAME = process.env.VELOCITY_USERNAME;
-const PASSWORD = process.env.VELOCITY_PASSWORD;
+const API_KEY = process.env.VELOCITY_API_KEY;
 
 // Static courier ID → display name lookup. Velocity's carrier_id values
 // are fixed/global (not per-account) — confirmed because CAR0EPDPJXXL4
@@ -64,32 +65,7 @@ const COURIER_LOGOS: Record<string, string> = {
   BlueDart: "/couriers/bluedart.png",
 };
 
-interface VelocityAuthResponse {
-  token: string;
-  expires_at: string;
-}
 
-async function getVelocityToken(): Promise<string> {
-  if (!BASE_URL || !USERNAME || !PASSWORD) {
-    throw new Error(
-      "Velocity API is not configured (missing VELOCITY_API_BASE_URL / VELOCITY_USERNAME / VELOCITY_PASSWORD)",
-    );
-  }
-
-  const res = await fetch(`${BASE_URL}/custom/api/v1/auth-token`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username: USERNAME, password: PASSWORD }),
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    throw new Error(`Velocity auth failed: ${res.status} ${res.statusText}`);
-  }
-
-  const data: VelocityAuthResponse = await res.json();
-  return data.token;
-}
 
 export interface VelocityTrackActivity {
   date: string;
@@ -140,13 +116,15 @@ const NOT_FOUND_RESULT: VelocityTrackResult = {
  * show a friendly message instead of an error screen.
  */
 export async function trackAwb(awb: string): Promise<VelocityTrackResult> {
-  const token = await getVelocityToken();
+  if (!BASE_URL || !API_KEY) {
+    throw new Error("Velocity API is not configured (missing VELOCITY_API_BASE_URL / VELOCITY_API_KEY)");
+  }
 
   const res = await fetch(`${BASE_URL}/custom/api/v1/order-tracking`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: token,
+      Authorization: API_KEY,
     },
     body: JSON.stringify({ awbs: [awb] }),
     cache: "no-store",
