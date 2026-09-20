@@ -265,10 +265,10 @@ function StepTracker({ status }: { status: string }) {
               <div className={`relative h-0.5 flex-1 ${i === STEPS.length - 1 ? "invisible" : nextReached ? "bg-[#e86c5f]" : "bg-border"}`}>
                 {showTruck && i === currentIndex && (
                   <div
-                    className="truck-indicator absolute top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full bg-[#e86c5f] text-white"
+                    className="truck-indicator absolute top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-[#e86c5f] text-white"
                     aria-hidden="true"
                   >
-                    <Truck className="h-3 w-3" />
+                    <Truck className="h-3.5 w-3.5" />
                   </div>
                 )}
               </div>
