@@ -11,6 +11,7 @@ import { ProductFragranceNotesWords } from "@/components/products/ProductFragran
 import { ProductIngredients } from "@/components/products/ProductIngredients";
 import { ProductIntensity } from "@/components/products/ProductIntensity";
 import { ProductNotesImageGrid } from "@/components/products/ProductNotesImageGrid";
+import { StickyMobileCartBar } from "@/components/products/StickyMobileCartBar";
 import { ShippingPolicyBlock } from "@/components/products/ShippingPolicyBlock";
 import { VariantPicker } from "@/components/products/VariantPicker";
 import { Button } from "@/components/ui/button";
@@ -193,6 +194,12 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
   const displayPurchasable = initialPurchasable && !isLiveOutOfStock;
   const displayInStock = initialInStock && !isLiveOutOfStock;
 
+  const stickyThumbUrl =
+    (galleryImages[variantImageIndex ?? 0] ?? galleryImages[0])?.small_url ||
+    (galleryImages[variantImageIndex ?? 0] ?? galleryImages[0])?.mini_url ||
+    (galleryImages[variantImageIndex ?? 0] ?? galleryImages[0])?.original_url ||
+    null;
+
   const handleAddToCart = async () => {
     const variantId =
       selectedVariant?.id ||
@@ -334,7 +341,7 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
           )}
 
           {/* Quantity & Add to Cart */}
-          <div className="mt-6">
+          <div id="inline-add-to-cart" className="mt-6">
             <div className="flex gap-4">
               <QuantityPicker
                 quantity={quantity}
@@ -475,6 +482,22 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
           </div>
         </div>
       </div>
+
+      {/* MOBILE ONLY sticky bottom bar (hidden from md breakpoint up) */}
+      <StickyMobileCartBar
+        inlineCtaId="inline-add-to-cart"
+        imageUrl={stickyThumbUrl}
+        name={product.name}
+        optionsText={selectedVariant?.options_text}
+        price={displayPrice}
+        strikethroughPrice={strikethroughPrice}
+        loading={loading}
+        purchasable={displayPurchasable}
+        addToCartLabel={t("addToCart")}
+        addingLabel={t("adding")}
+        outOfStockLabel={t("outOfStock")}
+        onAddToCart={handleAddToCart}
+      />
     </div>
   );
 }
