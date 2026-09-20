@@ -239,8 +239,8 @@ function StepTracker({ status }: { status: string }) {
   return (
     <div className="mb-2 mt-8 flex items-start">
       <style>{`
-        @keyframes truck-slide { 0%, 100% { left: 8%; } 50% { left: 78%; } }
-        .truck-indicator { animation: truck-slide 2.2s ease-in-out infinite; }
+        @keyframes truck-slide-once { from { left: 20%; } to { left: 50%; } }
+        .truck-indicator { left: 20%; animation: truck-slide-once 1.6s ease-out 0.3s forwards; }
       `}</style>
       {STEPS.map((step, i) => {
         const reached = i <= currentIndex;
