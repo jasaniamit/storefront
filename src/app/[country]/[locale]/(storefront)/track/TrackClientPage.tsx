@@ -245,7 +245,12 @@ function StepTracker({ status }: { status: string }) {
       {STEPS.map((step, i) => {
         const reached = i <= currentIndex;
         const nextReached = i < currentIndex; // segment AFTER this node only fills once we've moved past it
-        const Icon = step.icon;
+        // Once a step is reached (including the current one — the truck
+        // itself has moved on to the connector line by then), its circle
+        // shows a checkmark like a completed stage, matching DTDC's own
+        // reference. Only not-yet-reached future steps show their own
+        // category icon (truck, package, home).
+        const Icon = reached ? Check : step.icon;
         return (
           <div key={step.key} className="flex-1 text-center">
             <div className="flex items-center">
