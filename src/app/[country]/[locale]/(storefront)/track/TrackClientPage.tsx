@@ -229,9 +229,19 @@ function getStepIndex(rawStatus: string): number {
 
 function StepTracker({ status }: { status: string }) {
   const currentIndex = getStepIndex(status);
+  // The animated truck sits on the segment leading OUT of the current step
+  // toward the next one — a motion cue, not a literal progress percentage
+  // (Velocity's data doesn't tell us how far along that leg the shipment
+  // actually is, so this loops back and forth rather than claiming precision
+  // we don't have). No truck once delivered, or before the first pickup.
+  const showTruck = currentIndex >= 0 && currentIndex < STEPS.length - 1;
 
   return (
     <div className="mb-2 mt-8 flex items-start">
+      <style>{`
+        @keyframes truck-slide { 0%, 100% { left: 8%; } 50% { left: 78%; } }
+        .truck-indicator { animation: truck-slide 2.2s ease-in-out infinite; }
+      `}</style>
       {STEPS.map((step, i) => {
         const reached = i <= currentIndex;
         const nextReached = i < currentIndex; // segment AFTER this node only fills once we've moved past it
@@ -247,7 +257,16 @@ function StepTracker({ status }: { status: string }) {
               >
                 <Icon className="h-3.5 w-3.5" />
               </div>
-              <div className={`h-0.5 flex-1 ${i === STEPS.length - 1 ? "invisible" : nextReached ? "bg-[#e86c5f]" : "bg-border"}`} />
+              <div className={`relative h-0.5 flex-1 ${i === STEPS.length - 1 ? "invisible" : nextReached ? "bg-[#e86c5f]" : "bg-border"}`}>
+                {showTruck && i === currentIndex && (
+                  <div
+                    className="truck-indicator absolute top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full bg-[#e86c5f] text-white"
+                    aria-hidden="true"
+                  >
+                    <Truck className="h-3 w-3" />
+                  </div>
+                )}
+              </div>
             </div>
             <p className={`mt-1.5 text-xs ${reached ? "font-medium text-foreground" : "text-muted-foreground"}`}>
               {step.label}
