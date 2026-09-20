@@ -25,6 +25,7 @@ const rootStoreName = getStoreName();
 
 export const viewport: Viewport = {
   themeColor: "#F07867",
+  viewportFit: "cover", // lets the sticky bar respect iPhone safe-area (home indicator)
 };
 
 export const metadata: Metadata = {
