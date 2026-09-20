@@ -147,16 +147,27 @@ export async function trackAwb(awb: string): Promise<VelocityTrackResult> {
 
   // Velocity's own public tracking page treats `original_edd` (the date
   // committed at booking) as THE headline "Expected Delivery Date", and
-  // flags "DELAYED" when the live recalculated forecast
-  // (`estimated_delivery_date`) has slipped past it. We match that
-  // behavior instead of showing the recalculated date as if it were a
-  // normal, on-track estimate — confirmed against a real delayed shipment
-  // (AWB 7D140800901: original_edd Sep 26, estimated_delivery_date pushed
-  // to Oct 6, Velocity's page showed Sep 26 + DELAYED).
+  // flags "DELAYED" using TWO different triggers — confirmed against two
+  // real shipments:
+  //   1. Velocity recalculated a later forecast than the original promise
+  //      (AWB 7D140800901: original_edd Sep 26, estimated_delivery_date
+  //      pushed to Oct 6 — no recalculation needed to notice this one).
+  //   2. The original promise date has simply already passed and the
+  //      shipment still isn't delivered — even when Velocity never
+  //      recalculated a separate date at all (AWB 7D140700754:
+  //      estimated_delivery_date and original_edd were IDENTICAL at
+  //      Sep 19, today is Sep 20, shipment still in_transit with a
+  //      "VEHICLE BREAKDOWN" event in its history — Velocity's page still
+  //      showed DELAYED because the promise date itself had lapsed).
+  // Checking only #1 misses every case like #2, which is exactly the bug
+  // this replaces.
   const originalEdd: string | null = entry.original_edd ?? null;
   const recalculatedEdd: string | null = entry.estimated_delivery_date ?? null;
-  const isDelayed =
+  const isDelivered = (entry.shipment_status ?? "").toLowerCase() === "delivered" || !!latestTrack?.delivered_date;
+  const recalculatedIsLater =
     !!originalEdd && !!recalculatedEdd && new Date(recalculatedEdd).getTime() > new Date(originalEdd).getTime();
+  const originalDatePassed = !!originalEdd && new Date(originalEdd).getTime() < Date.now();
+  const isDelayed = !isDelivered && (recalculatedIsLater || originalDatePassed);
 
   return {
     found: true,
