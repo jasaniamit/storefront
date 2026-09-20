@@ -69,9 +69,11 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
     if (product.default_variant) {
       return product.default_variant;
     }
+
     if (hasVariants) {
       return variants.find((v) => v.purchasable) || variants[0];
     }
+
     return product.default_variant || null;
   });
 
@@ -94,14 +96,18 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
     const fetchReviewSummary = async () => {
       try {
         const res = await fetch(`/api/custom_reviews/${product.slug}`);
+
         if (res.ok) {
           const json = await res.json();
+
           if (json.data && json.data.length > 0) {
             const fetchedReviews = json.data;
             let sum = 0;
+
             fetchedReviews.forEach((r: any) => {
               sum += r.rating;
             });
+
             setReviewSummary({
               average: Number((sum / fetchedReviews.length).toFixed(1)),
               totalCount: json.meta?.total_count || fetchedReviews.length,
@@ -112,35 +118,49 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
         console.error("Failed to fetch review summary:", error);
       }
     };
+
     fetchReviewSummary();
   }, [product.slug]);
 
   // Fragrance metafields (see src/lib/utils/product-fields.ts for the key list)
-  const mainNotes = getCustomField(product.custom_fields, "notes.main_notes")
-    ?.value as string | undefined;
-  const topNotes = getCustomField(product.custom_fields, "notes.top_notes")
-    ?.value as string | undefined;
+  const mainNotes = getCustomField(
+    product.custom_fields,
+    "notes.main_notes",
+  )?.value as string | undefined;
+
+  const topNotes = getCustomField(
+    product.custom_fields,
+    "notes.top_notes",
+  )?.value as string | undefined;
+
   const middleNotes = getCustomField(
     product.custom_fields,
     "notes.middle_notes",
   )?.value as string | undefined;
-  const baseNotes = getCustomField(product.custom_fields, "notes.base_notes")
-    ?.value as string | undefined;
+
+  const baseNotes = getCustomField(
+    product.custom_fields,
+    "notes.base_notes",
+  )?.value as string | undefined;
+
   const intensity = stripHtml(
     getCustomField(product.custom_fields, "scent.intensity")?.value as
       | string
       | undefined,
   );
+
   const concentration = stripHtml(
     getCustomField(
       product.custom_fields,
       "oil_concentration.oil_concentration",
     )?.value as string | undefined,
   );
+
   const ingredientsList = getCustomField(
     product.custom_fields,
     "ingredients.list",
   )?.value as string | undefined;
+
   const ingredientBadges = getCustomField(
     product.custom_fields,
     "ingredients.badges",
@@ -152,20 +172,25 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
 
   const variantImageIndex = useMemo((): number | null => {
     if (!selectedVariant) return null;
+
     const index = galleryImages.findIndex((m) =>
       m.variant_ids.includes(selectedVariant.id),
     );
+
     return index >= 0 ? index : null;
   }, [selectedVariant, galleryImages]);
 
   const price = selectedVariant?.price ?? product.price;
+
   const originalPrice =
     selectedVariant?.original_price ?? product.original_price;
+
   const displayPrice = price?.display_amount;
 
   const currentAmountCents = price?.amount_in_cents;
   const originalAmountCents = originalPrice?.amount_in_cents;
   const compareAtAmountCents = price?.compare_at_amount_in_cents;
+
   const onSale =
     (currentAmountCents != null &&
       originalAmountCents != null &&
@@ -176,7 +201,7 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
 
   const strikethroughPrice = onSale
     ? ((originalPrice?.display_amount &&
-      originalPrice.display_amount !== displayPrice
+        originalPrice.display_amount !== displayPrice
         ? originalPrice.display_amount
         : price?.display_compare_at_amount) ?? null)
     : null;
@@ -212,8 +237,11 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
     }
 
     setLoading(true);
+
     await addItem(variantId, quantity);
+
     setLoading(false);
+
     trackAddToCart(product, selectedVariant, quantity, currency);
   };
 
@@ -253,9 +281,11 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
                   />
                 ))}
               </div>
+
               <p className="text-sm font-medium leading-none text-gray-500">
                 ({reviewSummary.average})
               </p>
+
               <button
                 onClick={() =>
                   window.scrollTo({
@@ -278,11 +308,13 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
                 {displayPrice}
               </span>
             )}
+
             {onSale && strikethroughPrice && (
               <>
                 <span className="font-google text-sm text-gray-500 line-through">
                   {strikethroughPrice}
                 </span>
+
                 <span className="bg-red-100 text-red-800 text-sm font-medium px-2.5 py-0.5 rounded">
                   {t("sale")}
                 </span>
@@ -298,6 +330,7 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#14854E] opacity-75 -z-10"></span>
                   <span className="relative inline-flex h-full w-full rounded-full bg-white shadow-[inset_0_0_0_4px_#14854E]"></span>
                 </div>
+
                 <span className="text-sm font-medium flex-1">
                   In Stock and ready to ship
                 </span>
@@ -307,6 +340,7 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
                 <div className="relative flex h-[13px] w-[13px] shrink-0 items-center justify-center">
                   <span className="relative inline-flex h-full w-full rounded-full bg-white shadow-[inset_0_0_0_4px_currentColor]"></span>
                 </div>
+
                 <span className="text-sm font-medium flex-1">
                   {t("outOfStock")}
                 </span>
@@ -373,15 +407,17 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
           </div>
 
           {/* {process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID && (
-    <div className="mt-6">
-      <RazorpayAffordability
-        amount={currentAmountCents || (parseFloat(price?.amount || "0") * 100)}
-        currency={currency || "INR"}
-        clientKey={process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID}
-      />
-    </div>
-  )} 
-*/}
+            <div className="mt-6">
+              <RazorpayAffordability
+                amount={
+                  currentAmountCents ||
+                  (parseFloat(price?.amount || "0") * 100)
+                }
+                currency={currency || "INR"}
+                clientKey={process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID}
+              />
+            </div>
+          )} */}
 
           {/* Description */}
           {product.description && (
@@ -389,6 +425,7 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
               <h2 className="text-lg font-medium text-gray-900 mb-4">
                 {t("description")}
               </h2>
+
               <div
                 className="text-gray-600 prose prose-sm max-w-none"
                 dangerouslySetInnerHTML={{ __html: product.description }}
@@ -423,6 +460,7 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
             ) {
               try {
                 const features = JSON.parse(field.value);
+
                 return (
                   <div
                     key={field.id}
@@ -437,6 +475,7 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
                           <h4 className="font-semibold text-gray-900">
                             {feat.title}
                           </h4>
+
                           <p className="text-sm text-gray-600 mt-1">
                             {feat.description}
                           </p>
@@ -446,10 +485,14 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
                   </div>
                 );
               } catch (e) {
-                console.error("Failed to parse landing_page_features JSON", e);
+                console.error(
+                  "Failed to parse landing_page_features JSON",
+                  e,
+                );
                 return null;
               }
             }
+
             return null;
           })}
 
@@ -461,18 +504,24 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
             <h2 className="text-lg font-medium text-gray-900 mb-4">
               {t("details")}
             </h2>
+
             <dl className="space-y-3">
               {selectedVariant?.sku && (
                 <div className="flex">
                   <dt className="w-32 text-gray-500 text-sm">{t("sku")}</dt>
+
                   <dd className="text-gray-900 text-sm">
                     {selectedVariant.sku}
                   </dd>
                 </div>
               )}
+
               {selectedVariant?.options_text && (
                 <div className="flex">
-                  <dt className="w-32 text-gray-500 text-sm">{t("options")}</dt>
+                  <dt className="w-32 text-gray-500 text-sm">
+                    {t("options")}
+                  </dt>
+
                   <dd className="text-gray-900 text-sm">
                     {selectedVariant.options_text}
                   </dd>
@@ -489,7 +538,7 @@ export function ProductDetails({ product, basePath }: ProductDetailsProps) {
         imageUrl={stickyThumbUrl}
         name={product.name}
         optionsText={selectedVariant?.options_text}
-        price={displayPrice}
+        price={displayPrice ?? undefined}
         strikethroughPrice={strikethroughPrice}
         loading={loading}
         purchasable={displayPurchasable}
